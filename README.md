@@ -202,4 +202,4 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 
 ## License
 
-MIT
+GPL v3.0
