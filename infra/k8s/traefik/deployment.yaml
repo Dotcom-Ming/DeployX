@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: deployx
+  labels:
+    app: traefik
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/part-of: deployx-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+        app.kubernetes.io/name: traefik
+    spec:
+      serviceAccountName: traefik-ingress
+      containers:
+        - name: traefik
+          image: traefik:v3.0
+          args:
+            - --api.dashboard=true
+            - --ping=true
+            - --providers.kubernetesIngress=true
+            - --providers.kubernetesCRD=true
+            - --entryPoints.web.address=:80
+            - --entryPoints.websecure.address=:443
+            - --entryPoints.web.http.redirections.entryPoint.to=websecure
+            - --entryPoints.web.http.redirections.entryPoint.scheme=https
+            - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+            - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=clouddns
+            - --certificatesresolvers.letsencrypt.acme.email=admin@deployx.io
+            - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
+          ports:
+            - name: web
+              containerPort: 80
+              protocol: TCP
+            - name: websecure
+              containerPort: 443
+              protocol: TCP
+            - name: dashboard
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: acme-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: acme-data
+          emptyDir: {}

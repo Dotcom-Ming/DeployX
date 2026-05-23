@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns
+  labels:
+    app.kubernetes.io/part-of: deployx-platform
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@deployx.io
+    privateKeySecretRef:
+      name: letsencrypt-dns-key
+    solvers:
+      - dns01:
+          cloudDNS:
+            project: deployx-production
+            serviceAccountRef:
+              name: clouddns-solver
+              key: key.json

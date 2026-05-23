@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: billing
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.billing.replicas }}
+  selector:
+    matchLabels:
+      app: billing
+  template:
+    metadata:
+      labels:
+        app: billing
+    spec:
+      containers:
+        - name: billing
+          image: {{ .Values.images.billing }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.billing.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: billing
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  selector:
+    app: billing
+  ports:
+    - port: {{ .Values.billing.port }}
+      targetPort: {{ .Values.billing.port }}

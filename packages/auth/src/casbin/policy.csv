@@ -1,0 +1,47 @@
+p, owner, *, project, *
+p, owner, *, deployment, *
+p, owner, *, domain, *
+p, owner, *, env, *
+p, owner, *, billing, *
+p, owner, *, org, *
+p, owner, *, team, *
+p, owner, *, log, *
+p, owner, *, settings, *
+p, owner, *, token, *
+p, owner, *, webhook, *
+
+p, admin, *, project, *
+p, admin, *, deployment, *
+p, admin, *, domain, *
+p, admin, *, env, *
+p, admin, *, billing, view
+p, admin, *, org, *
+p, admin, *, org, delete, deny
+p, admin, *, team, *
+p, admin, *, log, *
+p, admin, *, settings, *
+p, admin, *, token, *
+p, admin, *, webhook, *
+
+p, developer, *, project, view
+p, developer, *, project, create
+p, developer, *, project, edit
+p, developer, *, project, deploy
+p, developer, *, deployment, *
+p, developer, *, domain, view
+p, developer, *, env, view
+p, developer, *, env, edit
+p, developer, *, log, *
+
+p, viewer, *, project, view
+p, viewer, *, deployment, view
+p, viewer, *, domain, view
+p, viewer, *, env, view
+p, viewer, *, log, view
+p, viewer, *, org, view
+p, viewer, *, team, view
+p, viewer, *, billing, view
+
+p, billing_manager, *, billing, *
+p, billing_manager, *, org, view
+p, billing_manager, *, team, view

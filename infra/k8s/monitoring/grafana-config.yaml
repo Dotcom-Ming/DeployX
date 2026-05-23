@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+  namespace: deployx
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki:3100
+  dashboard-overview.json: |
+    {
+      "title": "DeployX Operations Overview",
+      "schemaVersion": 39,
+      "version": 1,
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "API Request Latency",
+          "targets": [
+            {"expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))"}
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Deployment Success Rate",
+          "targets": [
+            {"expr": "sum(rate(deployments_success_total[5m])) / sum(rate(deployments_total[5m]))"}
+          ]
+        }
+      ]
+    }

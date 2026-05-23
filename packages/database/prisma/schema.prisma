@@ -1,0 +1,283 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String                   @id @default(cuid())
+  email                   String                   @unique
+  name                    String?
+  avatarUrl               String?
+  githubId                String?                  @unique
+  gitlabId                String?                  @unique
+  googleId                String?                  @unique
+  passwordHash            String?
+  mfaSecret               String?
+  emailVerified           Boolean                  @default(false)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  apiTokens               ApiToken[]
+  auditLogs               AuditLog[]
+  deployments             Deployment[]
+  emailVerificationTokens EmailVerificationToken[]
+  memberships             Membership[]
+  notifications           Notification[]
+  organizations           Organization[]           @relation("UserOrganizations")
+  passwordResetTokens     PasswordResetToken[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Organization {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  plan          String         @default("HOBBY")
+  ownerId       String
+  logoUrl       String?
+  defaultRegion String         @default("us-east-1")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  auditLogs     AuditLog[]
+  invoices      Invoice[]
+  memberships   Membership[]
+  notifications Notification[]
+  owner         User           @relation("UserOrganizations", fields: [ownerId], references: [id])
+  projects      Project[]
+  subscriptions Subscription[]
+  usageRecords  UsageRecord[]
+
+  @@index([slug])
+  @@map("organizations")
+}
+
+model Membership {
+  id           String       @id @default(cuid())
+  userId       String
+  orgId        String
+  role         String       @default("VIEWER")
+  acceptedAt   DateTime?
+  createdAt    DateTime     @default(now())
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+  @@map("memberships")
+}
+
+model Project {
+  id           String        @id @default(cuid())
+  orgId        String
+  name         String
+  slug         String
+  framework    String        @default("OTHER")
+  gitProvider  String        @default("GITHUB")
+  gitRepo      String?
+  gitRepoId    String?
+  rootDir      String        @default("/")
+  buildCmd     String?
+  outputDir    String?
+  installCmd   String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deployments  Deployment[]
+  domains      Domain[]
+  envVariables EnvVariable[]
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  usageRecords UsageRecord[]
+
+  @@unique([orgId, slug])
+  @@map("projects")
+}
+
+model Deployment {
+  id            String   @id @default(cuid())
+  projectId     String
+  commitSha     String?
+  commitMessage String?
+  branch        String?
+  status        String   @default("QUEUED")
+  type          String   @default("PRODUCTION")
+  url           String?
+  buildDuration Int?
+  triggeredById String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  triggeredBy   User?    @relation(fields: [triggeredById], references: [id])
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([commitSha])
+  @@index([createdAt])
+  @@index([projectId, status])
+  @@map("deployments")
+}
+
+model Domain {
+  id                 String   @id @default(cuid())
+  projectId          String
+  domain             String   @unique
+  sslStatus          String   @default("PENDING")
+  verified           Boolean  @default(false)
+  verificationMethod String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  project            Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([domain])
+  @@map("domains")
+}
+
+model EnvVariable {
+  id             String   @id @default(cuid())
+  projectId      String
+  key            String
+  encryptedValue String
+  target         String   @default("PRODUCTION")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, key, target])
+  @@map("env_variables")
+}
+
+model ApiToken {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  hashedToken String
+  scopes      String
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_tokens")
+}
+
+model Subscription {
+  id                   String       @id @default(cuid())
+  orgId                String
+  plan                 String       @default("HOBBY")
+  status               String       @default("ACTIVE")
+  stripeCustomerId     String?      @unique
+  stripeSubscriptionId String?      @unique
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean      @default(false)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  organization         Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model UsageRecord {
+  id           String       @id @default(cuid())
+  orgId        String
+  projectId    String?
+  metric       String
+  quantity     Float
+  timestamp    DateTime
+  createdAt    DateTime     @default(now())
+  project      Project?     @relation(fields: [projectId], references: [id])
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, metric, timestamp])
+  @@map("usage_records")
+}
+
+model Invoice {
+  id              String       @id @default(cuid())
+  orgId           String
+  stripeInvoiceId String?      @unique
+  amount          Float
+  currency        String       @default("usd")
+  status          String       @default("DRAFT")
+  items           String
+  pdfUrl          String?
+  createdAt       DateTime     @default(now())
+  organization    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+model AuditLog {
+  id           String       @id @default(cuid())
+  orgId        String
+  userId       String?
+  action       String
+  resource     String
+  resourceId   String?
+  metadata     String?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime     @default(now())
+  user         User?        @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, createdAt])
+  @@map("audit_logs")
+}
+
+model CasbinRule {
+  id    Int     @id @default(autoincrement())
+  ptype String?
+  v0    String?
+  v1    String?
+  v2    String?
+  v3    String?
+  v4    String?
+  v5    String?
+
+  @@map("casbin_rule")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@map("password_reset_tokens")
+}
+
+model Notification {
+  id           String       @id @default(cuid())
+  orgId        String
+  userId       String?
+  type         String
+  title        String
+  message      String
+  read         Boolean      @default(false)
+  metadata     String?
+  createdAt    DateTime     @default(now())
+  user         User?        @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, read, createdAt])
+  @@index([userId, read])
+  @@map("notifications")
+}

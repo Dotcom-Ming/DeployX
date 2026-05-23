@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: builder
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: builder
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.builder.replicas }}
+  selector:
+    matchLabels:
+      app: builder
+  template:
+    metadata:
+      labels:
+        app: builder
+    spec:
+      containers:
+        - name: builder
+          image: {{ .Values.images.builder }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.builder.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: builder
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: builder
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  selector:
+    app: builder
+  ports:
+    - port: {{ .Values.builder.port }}
+      targetPort: {{ .Values.builder.port }}

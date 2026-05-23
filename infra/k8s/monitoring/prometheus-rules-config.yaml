@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: deployx
+data:
+  deployx-alerts.yml: |
+    groups:
+      - name: deployx-platform-alerts
+        rules:
+          - alert: ApiHighP95Latency
+            expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 0.8
+            for: 10m
+            labels:
+              severity: warning
+              service: api
+            annotations:
+              summary: API p95 latency is high
+              description: API p95 latency exceeds 800ms for 10 minutes.
+
+          - alert: DeploymentSuccessRateLow
+            expr: (sum(rate(deployments_success_total[15m])) / clamp_min(sum(rate(deployments_total[15m])), 1)) < 0.95
+            for: 15m
+            labels:
+              severity: critical
+              service: builder
+            annotations:
+              summary: Deployment success rate degraded
+              description: Deployment success rate is below 95% in the last 15 minutes.
+
+          - alert: BuildDurationP95High
+            expr: histogram_quantile(0.95, sum(rate(build_duration_seconds_bucket[10m])) by (le)) > 900
+            for: 15m
+            labels:
+              severity: warning
+              service: builder
+            annotations:
+              summary: Build duration p95 is high
+              description: Build duration p95 exceeds 15 minutes for 15 minutes.

@@ -1,0 +1,125 @@
+name: Deploy Production
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  K8S_NAMESPACE: deployx
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [api, builder, billing, gateway, web, admin]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        run: |
+          RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          IMAGE_TAG=${{ env.ECR_REGISTRY }}/deployx/${{ matrix.app }}:${RELEASE_TAG}
+          LATEST_TAG=${{ env.ECR_REGISTRY }}/deployx/${{ matrix.app }}:production-latest
+          docker build \
+            -f infra/docker/${{ matrix.app }}.Dockerfile \
+            -t $IMAGE_TAG \
+            -t $LATEST_TAG \
+            --build-arg NODE_ENV=production \
+            .
+          docker push $IMAGE_TAG
+          docker push $LATEST_TAG
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+
+  deploy-production:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.29.0"
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name deployx-production --region ${{ env.AWS_REGION }}
+
+      - name: Record current deployment state
+        id: pre-deploy
+        run: |
+          CURRENT_IMAGE=$(kubectl get deployment/api -n ${{ env.K8S_NAMESPACE }} -o jsonpath='{.spec.template.spec.containers[0].image}')
+          echo "CURRENT_IMAGE=$CURRENT_IMAGE" >> $GITHUB_OUTPUT
+
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/api api=${{ env.ECR_REGISTRY }}/deployx/api:production-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/builder builder=${{ env.ECR_REGISTRY }}/deployx/builder:production-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/billing billing=${{ env.ECR_REGISTRY }}/deployx/billing:production-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/gateway gateway=${{ env.ECR_REGISTRY }}/deployx/gateway:production-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/web web=${{ env.ECR_REGISTRY }}/deployx/web:production-latest -n ${{ env.K8S_NAMESPACE }}
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/api -n ${{ env.K8S_NAMESPACE }} --timeout=600s
+          kubectl rollout status deployment/builder -n ${{ env.K8S_NAMESPACE }} --timeout=600s
+          kubectl rollout status deployment/billing -n ${{ env.K8S_NAMESPACE }} --timeout=600s
+          kubectl rollout status deployment/gateway -n ${{ env.K8S_NAMESPACE }} --timeout=600s
+          kubectl rollout status deployment/web -n ${{ env.K8S_NAMESPACE }} --timeout=600s
+
+      - name: Smoke test production
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -sf https://api.deployx.io/health; then
+              echo "API health check passed"
+              break
+            fi
+            if [ "$i" -eq 5 ]; then
+              echo "API health check failed"
+              exit 1
+            fi
+            echo "Attempt $i failed, retrying in 15s..."
+            sleep 15
+          done
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "Deployment failed, rolling back..."
+          kubectl rollout undo deployment/api -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout undo deployment/builder -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout undo deployment/billing -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout undo deployment/gateway -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout undo deployment/web -n ${{ env.K8S_NAMESPACE }}
+          echo "Rollback completed"
+          exit 1

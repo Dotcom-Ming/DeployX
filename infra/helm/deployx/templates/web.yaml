@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: web
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.images.web }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.web.port }}
+          resources:
+{{ toYaml .Values.web.resources | indent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: {{ include "deployx.namespace" . }}
+  labels:
+    app: web
+{{ include "deployx.labels" . | indent 4 }}
+spec:
+  selector:
+    app: web
+  ports:
+    - port: {{ .Values.web.port }}
+      targetPort: {{ .Values.web.port }}

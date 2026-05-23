@@ -1,0 +1,45 @@
+namespace: deployx
+
+global:
+  imagePullPolicy: IfNotPresent
+
+images:
+  api: deployx/api:latest
+  web: deployx/web:latest
+  builder: deployx/builder:latest
+  billing: deployx/billing:latest
+  gateway: deployx/gateway:latest
+
+api:
+  replicas: 3
+  port: 3001
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+web:
+  replicas: 2
+  port: 3000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+builder:
+  replicas: 2
+  port: 3002
+
+billing:
+  replicas: 2
+  port: 3003
+
+gateway:
+  replicas: 2
+  port: 3004

@@ -1,0 +1,27 @@
+{
+  "name": "@deployx/auth",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "casbin": "^5.37.2",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "passport-gitlab2": "^5.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "@deployx/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/passport": "^1.0.16",
+    "@types/passport-github2": "^1.2.6",
+    "@types/passport-google-oauth20": "^2.0.15",
+    "typescript": "^5.4.5"
+  }
+}

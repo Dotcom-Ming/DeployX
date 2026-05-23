@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: deployx
+  labels:
+    app: postgres-backup
+spec:
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: postgres:16-alpine
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secrets
+                      key: POSTGRES_PASSWORD
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-s3-credentials
+                      key: AWS_ACCESS_KEY_ID
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-s3-credentials
+                      key: AWS_SECRET_ACCESS_KEY
+                - name: AWS_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-s3-credentials
+                      key: AWS_REGION
+                - name: S3_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-s3-credentials
+                      key: S3_BUCKET
+                - name: DB_HOST
+                  value: postgres
+                - name: DB_NAME
+                  value: deployx
+                - name: DB_USER
+                  value: deployx
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  ts=$(date +%Y%m%d-%H%M%S)
+                  file="deployx-${ts}.sql.gz"
+                  apk add --no-cache aws-cli gzip
+                  pg_dump -h "$DB_HOST" -U "$DB_USER" "$DB_NAME" | gzip > "/tmp/${file}"
+                  aws s3 cp "/tmp/${file}" "s3://${S3_BUCKET}/postgres/${file}"

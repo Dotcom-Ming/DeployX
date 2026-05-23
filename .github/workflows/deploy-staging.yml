@@ -1,0 +1,117 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [develop]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  K8S_NAMESPACE: deployx-staging
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [api, builder, billing, gateway, web, admin]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG=${{ env.ECR_REGISTRY }}/deployx/${{ matrix.app }}:sha-${GITHUB_SHA::7}
+          LATEST_TAG=${{ env.ECR_REGISTRY }}/deployx/${{ matrix.app }}:staging-latest
+          docker build \
+            -f infra/docker/${{ matrix.app }}.Dockerfile \
+            -t $IMAGE_TAG \
+            -t $LATEST_TAG \
+            --build-arg NODE_ENV=staging \
+            .
+          docker push $IMAGE_TAG
+          docker push $LATEST_TAG
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+  deploy-staging:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.29.0"
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name deployx-staging --region ${{ env.AWS_REGION }}
+
+      - name: Deploy to staging
+        run: |
+          kubectl set image deployment/api api=${{ env.ECR_REGISTRY }}/deployx/api:staging-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/builder builder=${{ env.ECR_REGISTRY }}/deployx/builder:staging-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/billing billing=${{ env.ECR_REGISTRY }}/deployx/billing:staging-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/gateway gateway=${{ env.ECR_REGISTRY }}/deployx/gateway:staging-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/web web=${{ env.ECR_REGISTRY }}/deployx/web:staging-latest -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout status deployment/api -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/builder -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/billing -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/gateway -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+          kubectl rollout status deployment/web -n ${{ env.K8S_NAMESPACE }} --timeout=300s
+
+  smoke-test:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Smoke test API
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -sf https://api-staging.deployx.io/health; then
+              echo "API health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
+          echo "API health check failed after 5 attempts"
+          exit 1
+
+      - name: Smoke test Web
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -sf https://app-staging.deployx.io -o /dev/null; then
+              echo "Web health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
+          echo "Web health check failed after 5 attempts"
+          exit 1
