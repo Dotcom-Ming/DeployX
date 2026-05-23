@@ -27,7 +27,7 @@ export function CodeBlock({ children, language = "text", filename }: CodeBlockPr
           onClick={handleCopy}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          {copied ? "Copied!" : "Copy"}
+          {copied ? "已复制！" : "复制"}
         </button>
       </div>
       <pre className="overflow-x-auto p-4">

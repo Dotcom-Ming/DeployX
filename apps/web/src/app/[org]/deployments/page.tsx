@@ -92,19 +92,19 @@ export default function OrgDeploymentsPage() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-semibold">Deployments</h1>
+        <h1 className="text-2xl font-semibold">部署</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          All deployments across your organization
+          组织中所有部署
         </p>
       </motion.div>
 
       <div className="flex flex-wrap items-center gap-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder="状态" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="all">全部状态</SelectItem>
             {Object.values(DeploymentStatus).map((s) => (
               <SelectItem key={s} value={s} className="capitalize">{s.toLowerCase()}</SelectItem>
             ))}
@@ -112,10 +112,10 @@ export default function OrgDeploymentsPage() {
         </Select>
         <Select value={projectFilter} onValueChange={setProjectFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Project" />
+            <SelectValue placeholder="项目" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Projects</SelectItem>
+            <SelectItem value="all">全部项目</SelectItem>
             {projects.map((p: any) => (
               <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
             ))}
@@ -123,12 +123,12 @@ export default function OrgDeploymentsPage() {
         </Select>
         <Select value={envFilter} onValueChange={setEnvFilter}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Environment" />
+            <SelectValue placeholder="环境" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Environments</SelectItem>
-            <SelectItem value={DeploymentType.PRODUCTION}>Production</SelectItem>
-            <SelectItem value={DeploymentType.PREVIEW}>Preview</SelectItem>
+            <SelectItem value="all">全部环境</SelectItem>
+            <SelectItem value={DeploymentType.PRODUCTION}>生产环境</SelectItem>
+            <SelectItem value={DeploymentType.PREVIEW}>预览环境</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -139,8 +139,8 @@ export default function OrgDeploymentsPage() {
             <CardContent className="py-8">
               <EmptyState
                 icon={Rocket}
-                title="No deployments found"
-                description={deployments.length === 0 ? "Deploy your first project to see deployments here" : "Try adjusting your filters"}
+                title="未找到部署"
+                description={deployments.length === 0 ? "部署您的第一个项目以在此查看部署" : "请尝试调整筛选条件"}
               />
             </CardContent>
           </Card>
@@ -151,12 +151,12 @@ export default function OrgDeploymentsPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-muted-foreground">
-                      <th className="text-left p-4 font-medium">Status</th>
-                      <th className="text-left p-4 font-medium">Project</th>
-                      <th className="text-left p-4 font-medium">Environment</th>
-                      <th className="text-left p-4 font-medium">Source</th>
-                      <th className="text-left p-4 font-medium">Duration</th>
-                      <th className="text-left p-4 font-medium">Created</th>
+                      <th className="text-left p-4 font-medium">状态</th>
+                      <th className="text-left p-4 font-medium">项目</th>
+                      <th className="text-left p-4 font-medium">环境</th>
+                      <th className="text-left p-4 font-medium">来源</th>
+                      <th className="text-left p-4 font-medium">时长</th>
+                      <th className="text-left p-4 font-medium">创建时间</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -179,7 +179,7 @@ export default function OrgDeploymentsPage() {
                         </td>
                         <td className="p-4">
                           <Badge variant={dep.type === DeploymentType.PRODUCTION ? "default" : "secondary"}>
-                            {dep.type === DeploymentType.PRODUCTION ? "Production" : "Preview"}
+                            {dep.type === DeploymentType.PRODUCTION ? "生产环境" : "预览环境"}
                           </Badge>
                         </td>
                         <td className="p-4">
@@ -195,7 +195,7 @@ export default function OrgDeploymentsPage() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     navigator.clipboard.writeText(dep.commitSha);
-                                    toast.success("Copied commit SHA");
+                                    toast.success("已复制提交 SHA");
                                   }}
                                 >
                                   <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />

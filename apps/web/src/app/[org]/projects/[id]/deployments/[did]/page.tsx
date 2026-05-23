@@ -67,13 +67,13 @@ export default function DeploymentDetailPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast.success("已复制到剪贴板");
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading deployment...</p>
+        <p className="text-muted-foreground">加载部署详情...</p>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function DeploymentDetailPage() {
   if (!deployment) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Deployment not found</p>
+        <p className="text-muted-foreground">未找到部署</p>
       </div>
     );
   }
@@ -113,7 +113,7 @@ export default function DeploymentDetailPage() {
           {/* Source info */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Source</CardTitle>
+              <CardTitle className="text-sm">来源</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center gap-2">
@@ -137,23 +137,23 @@ export default function DeploymentDetailPage() {
           {/* Build info */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Build Info</CardTitle>
+              <CardTitle className="text-sm">构建信息</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Started</span>
+                <span className="text-muted-foreground">开始时间</span>
                 <span>{new Date(deployment.createdAt).toLocaleTimeString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Completed</span>
+                <span className="text-muted-foreground">完成时间</span>
                 <span>{deployment.status === DeploymentStatus.READY ? "—" : "—"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Duration</span>
+                <span className="text-muted-foreground">时长</span>
                 <span>{deployment.buildDuration ? `${Math.floor(deployment.buildDuration / 1000)}s` : "—"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Builder</span>
+                <span className="text-muted-foreground">构建器</span>
                 <span className="font-mono text-xs">DeployX v2</span>
               </div>
             </CardContent>
@@ -163,7 +163,7 @@ export default function DeploymentDetailPage() {
           {deployment.url && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Domains</CardTitle>
+                <CardTitle className="text-sm">域名</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 text-sm font-mono">
@@ -181,20 +181,20 @@ export default function DeploymentDetailPage() {
           <div className="space-y-2">
             {deployment.url && (
               <Button variant="outline" className="w-full justify-start" onClick={() => window.open(deployment.url, "_blank")}>
-                <ExternalLink className="h-4 w-4 mr-2" /> Visit
+                <ExternalLink className="h-4 w-4 mr-2" /> 访问
               </Button>
             )}
             <Button variant="outline" className="w-full justify-start">
-              <Eye className="h-4 w-4 mr-2" /> Inspect
+              <Eye className="h-4 w-4 mr-2" /> 检查
             </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => toast.info("Redeploying...")}>
-              <RotateCcw className="h-4 w-4 mr-2" /> Redeploy
+            <Button variant="outline" className="w-full justify-start" onClick={() => toast.info("正在重新部署...")}>
+              <RotateCcw className="h-4 w-4 mr-2" /> 重新部署
             </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => toast.info("Rolling back...")}>
-              <ArrowLeftRight className="h-4 w-4 mr-2" /> Rollback
+            <Button variant="outline" className="w-full justify-start" onClick={() => toast.info("正在回滚...")}>
+              <ArrowLeftRight className="h-4 w-4 mr-2" /> 回滚
             </Button>
             <Button variant="outline" className="w-full justify-start text-destructive hover:text-destructive">
-              <XCircle className="h-4 w-4 mr-2" /> Cancel
+              <XCircle className="h-4 w-4 mr-2" /> 取消
             </Button>
           </div>
         </motion.div>
@@ -205,16 +205,16 @@ export default function DeploymentDetailPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
             <TabsTrigger value="build-logs">
-              <Terminal className="h-4 w-4 mr-2" /> Build Logs
+              <Terminal className="h-4 w-4 mr-2" /> 构建日志
             </TabsTrigger>
             <TabsTrigger value="runtime-logs">
-              <Terminal className="h-4 w-4 mr-2" /> Runtime Logs
+              <Terminal className="h-4 w-4 mr-2" /> 运行时日志
             </TabsTrigger>
             <TabsTrigger value="source">
-              <GitBranch className="h-4 w-4 mr-2" /> Source
+              <GitBranch className="h-4 w-4 mr-2" /> 来源
             </TabsTrigger>
             <TabsTrigger value="functions">
-              <Wrench className="h-4 w-4 mr-2" /> Functions
+              <Wrench className="h-4 w-4 mr-2" /> 函数
             </TabsTrigger>
           </TabsList>
 
@@ -230,12 +230,12 @@ export default function DeploymentDetailPage() {
             <Card>
               <CardContent className="p-6 space-y-4">
                 <div>
-                  <h3 className="font-medium mb-2">Commit</h3>
+                  <h3 className="font-medium mb-2">提交</h3>
                   <div className="flex items-center gap-3">
                     <div>
-                      <p className="font-medium">{deployment.commitMessage || "No commit message"}</p>
+                      <p className="font-medium">{deployment.commitMessage || "无提交信息"}</p>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>deployed {new Date(deployment.createdAt).toLocaleString()}</span>
+                        <span>部署于 {new Date(deployment.createdAt).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -250,7 +250,7 @@ export default function DeploymentDetailPage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-medium mb-2">Branch</h3>
+                  <h3 className="font-medium mb-2">分支</h3>
                   <div className="flex items-center gap-2">
                     <GitBranch className="h-4 w-4 text-muted-foreground" />
                     <span className="font-mono">{deployment.branch || "main"}</span>
@@ -264,8 +264,8 @@ export default function DeploymentDetailPage() {
             <Card>
               <CardContent className="p-12 text-center">
                 <Wrench className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-1">No Serverless Functions</h3>
-                <p className="text-sm text-muted-foreground">This project doesn&apos;t have any serverless functions configured.</p>
+                <h3 className="text-lg font-semibold mb-1">无 Serverless 函数</h3>
+                <p className="text-sm text-muted-foreground">此项目未配置任何 Serverless 函数。</p>
               </CardContent>
             </Card>
           </TabsContent>

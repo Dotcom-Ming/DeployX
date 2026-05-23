@@ -30,13 +30,13 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Something went wrong");
+        setError(data.message || "出了点问题");
         return;
       }
 
       setSubmitted(true);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("出了点问题，请重试。");
     } finally {
       setLoading(false);
     }
@@ -48,20 +48,20 @@ export default function ForgotPasswordPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
-            <CardTitle className="mt-4">Check your email</CardTitle>
+            <CardTitle className="mt-4">查看您的邮箱</CardTitle>
             <CardDescription>
-              If an account exists with <strong>{email}</strong>, we&apos;ve sent a password reset link.
+              如果存在与 <strong>{email}</strong> 关联的账号，我们已发送密码重置链接。
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center text-sm text-muted-foreground">
-            <p>The link will expire in 1 hour.</p>
-            <p className="mt-2">Didn&apos;t receive the email? Check your spam folder.</p>
+            <p>链接将在1小时后过期。</p>
+            <p className="mt-2">没有收到邮件？请检查垃圾邮件文件夹。</p>
           </CardContent>
           <CardFooter className="flex justify-center">
             <Link href="/login">
               <Button variant="link">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to login
+                返回登录
               </Button>
             </Link>
           </CardFooter>
@@ -74,9 +74,9 @@ export default function ForgotPasswordPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Forgot password?</CardTitle>
+          <CardTitle>忘记密码？</CardTitle>
           <CardDescription>
-            Enter your email address and we&apos;ll send you a link to reset your password.
+            请输入您的邮箱地址，我们将发送密码重置链接。
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">邮箱</Label>
               <Input
                 id="email"
                 type="email"
@@ -101,10 +101,10 @@ export default function ForgotPasswordPage() {
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Sending..." : "Send reset link"}
+              {loading ? "发送中..." : "发送重置链接"}
             </Button>
             <Link href="/login" className="text-sm text-muted-foreground hover:underline">
-              Back to login
+              返回登录
             </Link>
           </CardFooter>
         </form>

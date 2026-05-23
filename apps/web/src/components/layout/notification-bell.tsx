@@ -30,10 +30,10 @@ function formatTime(dateString: string): string {
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
 
-  if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  return `${diffDays}d ago`;
+  if (diffMins < 1) return "刚刚";
+  if (diffMins < 60) return `${diffMins}分钟前`;
+  if (diffHours < 24) return `${diffHours}小时前`;
+  return `${diffDays}天前`;
 }
 
 export function NotificationBell() {
@@ -121,18 +121,18 @@ export function NotificationBell() {
           {unreadCount > 0 && (
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
           )}
-          <span className="sr-only">Notifications</span>
+          <span className="sr-only">通知</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-4 pb-2">
-          <h4 className="text-sm font-semibold">Notifications</h4>
+          <h4 className="text-sm font-semibold">通知</h4>
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              Mark all as read
+                全部标为已读
             </button>
           )}
         </div>
@@ -140,11 +140,11 @@ export function NotificationBell() {
         <ScrollArea className="h-[300px]">
           {loading ? (
             <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-              Loading...
+              加载中...
             </div>
           ) : notifications.length === 0 ? (
             <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-              No notifications
+              暂无通知
             </div>
           ) : (
             <div className="flex flex-col">

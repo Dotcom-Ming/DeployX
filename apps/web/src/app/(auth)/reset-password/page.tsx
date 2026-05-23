@@ -27,14 +27,14 @@ function ResetPasswordForm() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
-            <CardTitle className="mt-4">Invalid link</CardTitle>
+            <CardTitle className="mt-4">链接无效</CardTitle>
             <CardDescription>
-              This password reset link is invalid. Please request a new one.
+              此密码重置链接无效，请重新申请。
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-center">
             <Link href="/forgot-password">
-              <Button>Request new link</Button>
+              <Button>申请新链接</Button>
             </Link>
           </CardFooter>
         </Card>
@@ -47,12 +47,12 @@ function ResetPasswordForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("两次输入的密码不一致");
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError("密码至少需要8个字符");
       return;
     }
 
@@ -68,13 +68,13 @@ function ResetPasswordForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Something went wrong");
+        setError(data.message || "出了点问题");
         return;
       }
 
       setSuccess(true);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("出了点问题，请重试。");
     } finally {
       setLoading(false);
     }
@@ -86,12 +86,12 @@ function ResetPasswordForm() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
-            <CardTitle className="mt-4">Password reset</CardTitle>
-            <CardDescription>Your password has been reset successfully.</CardDescription>
+            <CardTitle className="mt-4">密码已重置</CardTitle>
+            <CardDescription>您的密码已成功重置。</CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-center">
             <Link href="/login">
-              <Button>Sign in</Button>
+              <Button>登录</Button>
             </Link>
           </CardFooter>
         </Card>
@@ -103,8 +103,8 @@ function ResetPasswordForm() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Reset password</CardTitle>
-          <CardDescription>Enter your new password below.</CardDescription>
+          <CardTitle>重置密码</CardTitle>
+          <CardDescription>请在下方输入您的新密码。</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -115,7 +115,7 @@ function ResetPasswordForm() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="password">New password</Label>
+              <Label htmlFor="password">新密码</Label>
               <Input
                 id="password"
                 type="password"
@@ -126,7 +126,7 @@ function ResetPasswordForm() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Label htmlFor="confirmPassword">确认密码</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -139,10 +139,10 @@ function ResetPasswordForm() {
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Resetting..." : "Reset password"}
+              {loading ? "重置中..." : "重置密码"}
             </Button>
             <Link href="/login" className="text-sm text-muted-foreground hover:underline">
-              Back to login
+              返回登录
             </Link>
           </CardFooter>
         </form>

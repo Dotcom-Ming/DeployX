@@ -16,23 +16,23 @@ const PLANS = [
     id: Plan.HOBBY,
     name: "Hobby",
     price: 0,
-    description: "For personal projects and experiments",
-    features: ["10 projects", "3 team members", "100 GB bandwidth", "1000 build minutes"],
+    description: "适合个人项目和小型实验",
+    features: ["10 个项目", "3 个团队成员", "100 GB 带宽", "1000 分钟构建时长"],
   },
   {
     id: Plan.PRO,
     name: "Pro",
     price: 20,
-    description: "For professional developers and small teams",
-    features: ["Unlimited projects", "Unlimited members", "1 TB bandwidth", "10000 build minutes", "Priority support"],
+    description: "适合专业开发者和中小团队",
+    features: ["无限项目", "无限成员", "1 TB 带宽", "10000 分钟构建时长", "优先支持"],
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || "price_pro",
   },
   {
     id: Plan.ENTERPRISE,
     name: "Enterprise",
     price: null,
-    description: "For large teams with advanced needs",
-    features: ["Everything in Pro", "Custom limits", "SLA guarantee", "Dedicated support", "SSO/SAML"],
+    description: "适合有高级需求的大型团队",
+    features: ["Pro 所有功能", "自定义限制", "SLA 保障", "专属支持", "SSO/SAML"],
     priceId: process.env.NEXT_PUBLIC_STRIPE_ENTERPRISE_PRICE_ID || "price_enterprise",
   },
 ];
@@ -82,13 +82,13 @@ export default function BillingPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to create checkout session");
+        toast.error(data.message || "创建结账会话失败");
         return;
       }
 
       window.location.href = data.url;
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     } finally {
       setCheckoutLoading(null);
     }
@@ -107,13 +107,13 @@ export default function BillingPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to create billing portal session");
+        toast.error(data.message || "创建账单门户会话失败");
         return;
       }
 
       window.location.href = data.url;
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -131,17 +131,17 @@ export default function BillingPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-semibold">Billing</h1>
+        <h1 className="text-2xl font-semibold">账单</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Manage your subscription, view usage, and download invoices
+          管理订阅、查看用量和下载发票
         </p>
       </div>
 
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="plans">Plans</TabsTrigger>
-          <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="overview">概览</TabsTrigger>
+          <TabsTrigger value="plans">方案</TabsTrigger>
+          <TabsTrigger value="invoices">发票</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 mt-6">
@@ -149,9 +149,9 @@ export default function BillingPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Current Plan</CardTitle>
+                  <CardTitle>当前方案</CardTitle>
                   <CardDescription>
-                    Your organization is on the {PLAN_DISPLAY_NAMES[currentPlan as keyof typeof PLAN_DISPLAY_NAMES]} plan
+                    您的组织当前使用 {PLAN_DISPLAY_NAMES[currentPlan as keyof typeof PLAN_DISPLAY_NAMES]} 方案
                   </CardDescription>
                 </div>
                 <Badge variant="secondary">
@@ -162,26 +162,26 @@ export default function BillingPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Projects</p>
-                  <p className="font-medium">{limits.projects === 0 ? "Unlimited" : limits.projects}</p>
+                  <p className="text-sm text-muted-foreground">项目</p>
+                  <p className="font-medium">{limits.projects === 0 ? "无限" : limits.projects}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Members</p>
-                  <p className="font-medium">{limits.members === 0 ? "Unlimited" : limits.members}</p>
+                  <p className="text-sm text-muted-foreground">成员</p>
+                  <p className="font-medium">{limits.members === 0 ? "无限" : limits.members}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Bandwidth</p>
+                  <p className="text-sm text-muted-foreground">带宽</p>
                   <p className="font-medium">{limits.bandwidth} GB</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Build Minutes</p>
+                  <p className="text-sm text-muted-foreground">构建时长</p>
                   <p className="font-medium">{limits.buildMinutes} min</p>
                 </div>
               </div>
               {subscription?.stripeSubscriptionId && (
                 <Button variant="outline" onClick={handleManageBilling}>
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Manage Billing
+                  管理账单
                 </Button>
               )}
             </CardContent>
@@ -189,13 +189,13 @@ export default function BillingPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Usage This Period</CardTitle>
+              <CardTitle>本期用量</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Bandwidth</span>
+                    <span>带宽</span>
                     <span className="text-muted-foreground">0 / {limits.bandwidth} GB</span>
                   </div>
                   <div className="h-2 rounded-full bg-muted">
@@ -204,7 +204,7 @@ export default function BillingPage() {
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Build Minutes</span>
+                    <span>构建时长</span>
                     <span className="text-muted-foreground">0 / {limits.buildMinutes} min</span>
                   </div>
                   <div className="h-2 rounded-full bg-muted">
@@ -225,11 +225,11 @@ export default function BillingPage() {
                   <CardDescription>{plan.description}</CardDescription>
                   <div className="mt-2">
                     {plan.price === 0 ? (
-                      <span className="text-2xl font-bold">Free</span>
+                      <span className="text-2xl font-bold">免费</span>
                     ) : plan.price ? (
                       <span className="text-2xl font-bold">${plan.price}<span className="text-sm font-normal text-muted-foreground">/mo</span></span>
                     ) : (
-                      <span className="text-2xl font-bold">Contact us</span>
+                      <span className="text-2xl font-bold">联系我们</span>
                     )}
                   </div>
                 </CardHeader>
@@ -251,12 +251,12 @@ export default function BillingPage() {
                       {checkoutLoading === plan.priceId ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : null}
-                      {currentPlan === Plan.HOBBY ? "Upgrade" : "Switch Plan"}
+                      {currentPlan === Plan.HOBBY ? "升级" : "切换方案"}
                     </Button>
                   )}
                   {currentPlan === plan.id && (
                     <Badge variant="secondary" className="w-full justify-center py-2">
-                      Current Plan
+                      当前方案
                     </Badge>
                   )}
                 </CardContent>
@@ -268,19 +268,19 @@ export default function BillingPage() {
         <TabsContent value="invoices" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Payment History</CardTitle>
+              <CardTitle>付款历史</CardTitle>
             </CardHeader>
             <CardContent>
               {invoices.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No invoices yet</p>
+                <p className="text-sm text-muted-foreground">暂无发票</p>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Invoice</TableHead>
+                      <TableHead>日期</TableHead>
+                      <TableHead>金额</TableHead>
+                      <TableHead>状态</TableHead>
+                      <TableHead className="text-right">发票</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -298,7 +298,7 @@ export default function BillingPage() {
                             <Button variant="ghost" size="sm" asChild>
                               <a href={invoice.hostedInvoiceUrl} target="_blank" rel="noopener noreferrer">
                                 <Download className="h-4 w-4 mr-1" />
-                                View
+                                查看
                               </a>
                             </Button>
                           )}

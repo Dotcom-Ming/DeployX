@@ -57,12 +57,12 @@ const FILE_TYPE_ICONS: Record<FileType, React.ElementType> = {
 };
 
 const FILE_TYPE_LABELS: Record<FileType, string> = {
-  artifact: "Build Artifact",
-  log: "Build Log",
-  cache: "Cache",
-  image: "Image",
-  config: "Config",
-  bundle: "Bundle",
+  artifact: "构建产物",
+  log: "构建日志",
+  cache: "缓存",
+  image: "图片",
+  config: "配置",
+  bundle: "打包文件",
 };
 
 const MOCK_STORAGE: StorageItem[] = [
@@ -156,14 +156,14 @@ export default function StoragePage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Storage</h1>
+          <h1 className="text-2xl font-semibold">存储</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Build artifacts, logs, and deployment files
+            构建产物、日志和部署文件
           </p>
         </div>
         <Button size="sm">
           <Upload className="h-4 w-4 mr-1" />
-          Upload
+          上传
         </Button>
       </div>
 
@@ -171,7 +171,7 @@ export default function StoragePage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Files</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">总文件数</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{items.length}</div>
@@ -179,7 +179,7 @@ export default function StoragePage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Size</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">总大小</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatBytes(totalSize)}</div>
@@ -187,7 +187,7 @@ export default function StoragePage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Cache Size</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">缓存大小</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -205,22 +205,22 @@ export default function StoragePage() {
       {items.length === 0 ? (
         <EmptyState
           icon={HardDrive}
-          title="No storage items"
-          description="Build artifacts and logs will appear here after your first deployment"
+          title="暂无存储文件"
+          description="首次部署后，构建产物和日志将显示在此处"
         />
       ) : (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Files</CardTitle>
+            <CardTitle className="text-base">文件</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Size</TableHead>
-                  <TableHead>Last Modified</TableHead>
+                  <TableHead>名称</TableHead>
+                  <TableHead>类型</TableHead>
+                  <TableHead>大小</TableHead>
+                  <TableHead>修改时间</TableHead>
                   <TableHead className="w-[50px]" />
                 </TableRow>
               </TableHeader>
@@ -256,13 +256,13 @@ export default function StoragePage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Download</DropdownMenuItem>
+                            <DropdownMenuItem>下载</DropdownMenuItem>
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
                               onClick={() => handleDelete(item.id)}
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
+                              删除
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

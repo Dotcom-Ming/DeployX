@@ -67,13 +67,13 @@ export default function BillingPage() {
             setData(isBillingData(normalized) ? normalized : null);
             setError(null);
           } else {
-            setError(`API error: ${res.status}`);
+            setError(`API错误：${res.status}`);
           }
           setLoading(false);
         }
       } catch {
         if (!cancelled) {
-          setError("Failed to connect to API");
+          setError("无法连接到API服务器");
           setLoading(false);
         }
       }
@@ -95,12 +95,12 @@ export default function BillingPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Billing</h1>
-          <p className="text-sm text-muted-foreground">Revenue overview and subscription metrics</p>
+          <h1 className="text-2xl font-bold text-foreground">账单</h1>
+          <p className="text-sm text-muted-foreground">收入概览和订阅指标</p>
         </div>
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       </div>
     );
@@ -109,10 +109,10 @@ export default function BillingPage() {
   if (!data) return null;
 
   const billingStats = [
-    { label: "MRR", value: data.stats.mrr, change: "Monthly recurring revenue" },
-    { label: "Total Revenue", value: data.stats.totalRevenue, change: "Lifetime" },
-    { label: "Active Subscriptions", value: data.stats.activeSubscriptions.toLocaleString(), change: "Current active" },
-    { label: "Churn Rate", value: data.stats.churnRate, change: "Monthly churn" },
+    { label: "月经常性收入", value: data.stats.mrr, change: "月度经常性收入" },
+    { label: "总收入", value: data.stats.totalRevenue, change: "累计" },
+    { label: "活跃订阅", value: data.stats.activeSubscriptions.toLocaleString(), change: "当前活跃" },
+    { label: "流失率", value: data.stats.churnRate, change: "月度流失" },
   ];
 
   const maxRevenue = Math.max(...data.revenueByMonth.map((d) => d.value), 1);
@@ -138,7 +138,7 @@ export default function BillingPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Revenue Chart */}
         <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Revenue Trend</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">收入趋势</h2>
           <div className="flex items-end gap-3 h-48">
             {data.revenueByMonth.map((d) => (
               <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
@@ -157,7 +157,7 @@ export default function BillingPage() {
 
         {/* Plan Distribution */}
         <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Plan Distribution</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">方案分布</h2>
           <div className="space-y-4">
             {data.planDistribution.map((plan) => (
               <div key={plan.plan} className="space-y-1">
@@ -183,21 +183,21 @@ export default function BillingPage() {
 
       {/* Top Organizations by Spend */}
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Top Organizations by Spend</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">消费最高的组织</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="pb-2 text-left font-medium text-muted-foreground">Organization</th>
-                <th className="pb-2 text-left font-medium text-muted-foreground">Plan</th>
-                <th className="pb-2 text-right font-medium text-muted-foreground">Monthly Spend</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">组织</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">方案</th>
+                <th className="pb-2 text-right font-medium text-muted-foreground">月消费</th>
               </tr>
             </thead>
             <tbody>
               {data.topOrgs.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="py-4 text-center text-muted-foreground">
-                    No organizations with subscriptions
+                    暂无订阅组织
                   </td>
                 </tr>
               ) : (

@@ -39,28 +39,28 @@ const providers = [
     id: GitProvider.GITHUB,
     name: "GitHub",
     icon: Github,
-    description: "Import repositories from GitHub",
+    description: "从 GitHub 导入仓库",
   },
   {
     id: GitProvider.GITLAB,
     name: "GitLab",
     icon: Gitlab,
-    description: "Import repositories from GitLab",
+    description: "从 GitLab 导入仓库",
   },
   {
     id: GitProvider.BITBUCKET,
     name: "Bitbucket",
     icon: Box,
-    description: "Import repositories from Bitbucket",
+    description: "从 Bitbucket 导入仓库",
   },
 ];
 
 const buildStages = [
-  { label: "Cloning", status: "completed" as const },
-  { label: "Installing", status: "completed" as const },
-  { label: "Building", status: "running" as const },
-  { label: "Deploying", status: "pending" as const },
-  { label: "Ready", status: "pending" as const },
+  { label: "克隆", status: "completed" as const },
+  { label: "安装", status: "completed" as const },
+  { label: "构建", status: "running" as const },
+  { label: "部署", status: "pending" as const },
+  { label: "就绪", status: "pending" as const },
 ];
 
 export default function NewProjectPage() {
@@ -115,7 +115,7 @@ export default function NewProjectPage() {
       const res = await fetch(`/api/git-repos/${endpoint}`);
 
       if (!res.ok) {
-        toast.error(`Failed to fetch ${provider} repositories`);
+        toast.error(`获取 ${provider} 仓库失败`);
         setRepos([]);
         return;
       }
@@ -124,7 +124,7 @@ export default function NewProjectPage() {
       setRepos(data);
       setStep(2);
     } catch {
-      toast.error(`Failed to connect to ${provider}`);
+      toast.error(`连接 ${provider} 失败`);
       setRepos([]);
     } finally {
       setLoadingRepos(false);
@@ -161,7 +161,7 @@ export default function NewProjectPage() {
 
   const handleDeploy = async () => {
     if (projectCount >= projectLimit) {
-      toast.error(`Project limit reached (${projectCount}/${projectLimit}). Upgrade your plan to create more projects.`);
+      toast.error(`项目数量已达上限 (${projectCount}/${projectLimit})。升级套餐以创建更多项目。`);
       return;
     }
 
@@ -187,14 +187,14 @@ export default function NewProjectPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to create project");
+        toast.error(data.message || "创建项目失败");
         setIsDeploying(false);
         return;
       }
 
-      toast.success("Project created and deployment started!");
+      toast.success("项目创建成功，已开始部署！");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
       setIsDeploying(false);
     }
   };
@@ -203,7 +203,7 @@ export default function NewProjectPage() {
     <div className="max-w-4xl mx-auto p-6 lg:p-8 space-y-6">
       {/* Step indicator */}
       <div className="flex items-center gap-2 text-sm">
-        {["Provider", "Repository", "Configure", "Deploy"].map((label, i) => (
+        {["选择源", "仓库", "配置", "部署"].map((label, i) => (
           <div key={label} className="flex items-center gap-2">
             <div className={`flex items-center justify-center h-7 w-7 rounded-full text-xs font-medium ${
               step > i + 1 ? "bg-green-500 text-white" : step === i + 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
@@ -222,8 +222,8 @@ export default function NewProjectPage() {
       {step === 1 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
           <div>
-            <h2 className="text-2xl font-bold">Choose Git Provider</h2>
-            <p className="text-muted-foreground mt-1">Select where your repository is hosted</p>
+            <h2 className="text-2xl font-bold">选择 Git 源</h2>
+            <p className="text-muted-foreground mt-1">选择你的仓库托管平台</p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {providers.map((provider) => (
@@ -241,7 +241,7 @@ export default function NewProjectPage() {
                   {loadingRepos && selectedProvider === provider.id ? (
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
-                    <Badge variant="success" className="text-xs">Click to connect</Badge>
+                    <Badge variant="success" className="text-xs">点击连接</Badge>
                   )}
                 </CardContent>
               </Card>
@@ -254,8 +254,8 @@ export default function NewProjectPage() {
       {step === 2 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
           <div>
-            <h2 className="text-2xl font-bold">Import Repository</h2>
-            <p className="text-muted-foreground mt-1">Select the repository you want to deploy</p>
+            <h2 className="text-2xl font-bold">导入仓库</h2>
+            <p className="text-muted-foreground mt-1">选择你要部署的仓库</p>
           </div>
           <div className="grid gap-6 lg:grid-cols-5">
             {/* Repository list */}
@@ -263,7 +263,7 @@ export default function NewProjectPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search repositories..."
+                  placeholder="搜索仓库..."
                   value={repoSearch}
                   onChange={(e) => setRepoSearch(e.target.value)}
                   className="pl-9"
@@ -276,7 +276,7 @@ export default function NewProjectPage() {
                   </div>
                 ) : filteredRepos.length === 0 ? (
                   <div className="py-8 text-center text-muted-foreground">
-                    No repositories found
+                    未找到仓库
                   </div>
                 ) : (
                   filteredRepos.map((repo) => (
@@ -294,13 +294,13 @@ export default function NewProjectPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-medium text-sm">{repo.fullName}</span>
-                            {repo.private && <Badge variant="outline" className="text-[10px] py-0">Private</Badge>}
+                            {repo.private && <Badge variant="outline" className="text-[10px] py-0">私有</Badge>}
                           </div>
-                          <span className="text-xs text-muted-foreground">Updated {new Date(repo.updatedAt).toLocaleDateString()}</span>
+                          <span className="text-xs text-muted-foreground">更新于 {new Date(repo.updatedAt).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm" className="text-xs">
-                        Import <ChevronRight className="h-3 w-3 ml-1" />
+                        导入 <ChevronRight className="h-3 w-3 ml-1" />
                       </Button>
                     </div>
                   ))
@@ -311,13 +311,13 @@ export default function NewProjectPage() {
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Configuration Preview</CardTitle>
+                  <CardTitle className="text-sm">配置预览</CardTitle>
                 </CardHeader>
                 <CardContent className="text-xs text-muted-foreground space-y-2">
-                  <p>Select a repository to configure your project settings.</p>
+                  <p>选择一个仓库来配置你的项目设置。</p>
                   <div className="space-y-1">
-                    <div className="flex justify-between"><span>Provider:</span><span className="font-medium text-foreground">{providers.find((p) => p.id === selectedProvider)?.name}</span></div>
-                    <div className="flex justify-between"><span>Auto-detect:</span><span className="font-medium text-foreground">Framework & Build</span></div>
+                    <div className="flex justify-between"><span>源：</span><span className="font-medium text-foreground">{providers.find((p) => p.id === selectedProvider)?.name}</span></div>
+                    <div className="flex justify-between"><span>自动检测：</span><span className="font-medium text-foreground">框架与构建</span></div>
                   </div>
                 </CardContent>
               </Card>
@@ -325,7 +325,7 @@ export default function NewProjectPage() {
           </div>
           <div className="flex justify-between">
             <Button variant="ghost" onClick={() => setStep(1)}>
-              <ChevronLeft className="h-4 w-4 mr-1" /> Back
+              <ChevronLeft className="h-4 w-4 mr-1" /> 返回
             </Button>
           </div>
         </motion.div>
@@ -335,17 +335,17 @@ export default function NewProjectPage() {
       {step === 3 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold">Configure Project</h2>
-            <p className="text-muted-foreground mt-1">Set up your project build settings</p>
+            <h2 className="text-2xl font-bold">配置项目</h2>
+            <p className="text-muted-foreground mt-1">设置你的项目构建配置</p>
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Project Name</Label>
+                <Label>项目名称</Label>
                 <Input value={projectName} onChange={(e) => setProjectName(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Framework Preset</Label>
+                <Label>框架预设</Label>
                 <Select value={framework} onValueChange={(v) => handleFrameworkChange(v as Framework)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -356,41 +356,41 @@ export default function NewProjectPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Root Directory</Label>
+                <Label>根目录</Label>
                 <Input value={rootDir} onChange={(e) => setRootDir(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Build Command</Label>
+                <Label>构建命令</Label>
                 <Input value={buildCmd} onChange={(e) => setBuildCmd(e.target.value)} className="font-mono text-sm" />
               </div>
               <div className="space-y-2">
-                <Label>Output Directory</Label>
+                <Label>输出目录</Label>
                 <Input value={outputDir} onChange={(e) => setOutputDir(e.target.value)} className="font-mono text-sm" />
               </div>
               <div className="space-y-2">
-                <Label>Install Command</Label>
+                <Label>安装命令</Label>
                 <Input value={installCmd} onChange={(e) => setInstallCmd(e.target.value)} className="font-mono text-sm" />
               </div>
             </div>
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <Label>Environment Variables</Label>
+                  <Label>环境变量</Label>
                   <Button variant="ghost" size="sm" onClick={addEnvVar}>
-                    <Plus className="h-3 w-3 mr-1" /> Add
+                    <Plus className="h-3 w-3 mr-1" /> 添加
                   </Button>
                 </div>
                 <div className="space-y-2">
                   {envVars.map((env, i) => (
                     <div key={i} className="flex gap-2">
                       <Input
-                        placeholder="KEY"
+                        placeholder="键名"
                         value={env.key}
                         onChange={(e) => updateEnvVar(i, "key", e.target.value)}
                         className="font-mono text-sm flex-1"
                       />
                       <Input
-                        placeholder="value"
+                        placeholder="值"
                         value={env.value}
                         onChange={(e) => updateEnvVar(i, "value", e.target.value)}
                         className="font-mono text-sm flex-1"
@@ -402,22 +402,22 @@ export default function NewProjectPage() {
                   ))}
                   {envVars.length === 0 && (
                     <p className="text-xs text-muted-foreground py-4 text-center border rounded-lg border-dashed">
-                      No environment variables added yet
+                      暂无环境变量
                     </p>
                   )}
                 </div>
               </div>
               <Card className="bg-muted/50">
                 <CardContent className="p-4 space-y-2 text-sm">
-                  <h4 className="font-medium">Project Summary</h4>
+                  <h4 className="font-medium">项目概要</h4>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <span className="text-muted-foreground">Repository:</span>
+                    <span className="text-muted-foreground">仓库：</span>
                     <span className="font-mono">{selectedRepo?.fullName}</span>
-                    <span className="text-muted-foreground">Framework:</span>
+                    <span className="text-muted-foreground">框架：</span>
                     <span>{FRAMEWORK_CONFIGS[framework].name}</span>
-                    <span className="text-muted-foreground">Build:</span>
+                    <span className="text-muted-foreground">构建：</span>
                     <span className="font-mono">{buildCmd}</span>
-                    <span className="text-muted-foreground">Output:</span>
+                    <span className="text-muted-foreground">输出：</span>
                     <span className="font-mono">{outputDir}</span>
                   </div>
                 </CardContent>
@@ -426,7 +426,7 @@ export default function NewProjectPage() {
           </div>
           <div className="flex justify-between">
             <Button variant="ghost" onClick={() => setStep(2)}>
-              <ChevronLeft className="h-4 w-4 mr-1" /> Back
+              <ChevronLeft className="h-4 w-4 mr-1" /> 返回
             </Button>
             <Button size="lg" onClick={handleDeploy} disabled={isDeploying}>
               {isDeploying ? (
@@ -434,7 +434,7 @@ export default function NewProjectPage() {
               ) : (
                 <Play className="h-4 w-4 mr-2" />
               )}
-              Deploy
+              部署
             </Button>
           </div>
         </motion.div>
@@ -444,8 +444,8 @@ export default function NewProjectPage() {
       {step === 4 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold">Deploying {projectName}</h2>
-            <p className="text-muted-foreground mt-1">Your project is being built and deployed</p>
+            <h2 className="text-2xl font-bold">正在部署 {projectName}</h2>
+            <p className="text-muted-foreground mt-1">你的项目正在构建和部署中</p>
           </div>
           {/* Build stage timeline */}
           <Card>
@@ -471,10 +471,10 @@ export default function NewProjectPage() {
                         {stage.label}
                       </p>
                       {stage.status === "running" && (
-                        <p className="text-xs text-muted-foreground animate-pulse">In progress...</p>
+                        <p className="text-xs text-muted-foreground animate-pulse">进行中...</p>
                       )}
                       {stage.status === "completed" && (
-                        <p className="text-xs text-green-500">Completed</p>
+                        <p className="text-xs text-green-500">已完成</p>
                       )}
                     </div>
                   </div>

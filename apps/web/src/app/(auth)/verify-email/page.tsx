@@ -19,7 +19,7 @@ function VerifyEmailForm() {
   useEffect(() => {
     if (!token) {
       setStatus("error");
-      setMessage("No verification token provided.");
+      setMessage("未提供验证令牌。");
       return;
     }
 
@@ -30,15 +30,15 @@ function VerifyEmailForm() {
 
         if (!res.ok) {
           setStatus("error");
-          setMessage(data.message || "Verification failed. Please try again.");
+          setMessage(data.message || "验证失败，请重试。");
           return;
         }
 
         setStatus("success");
-        setMessage(data.message || "Email verified successfully!");
+        setMessage(data.message || "邮箱验证成功！");
       } catch {
         setStatus("error");
-        setMessage("Something went wrong. Please try again.");
+        setMessage("出了点问题，请重试。");
       }
     };
 
@@ -51,8 +51,8 @@ function VerifyEmailForm() {
         <Card className="w-full max-w-md text-center">
           <CardHeader>
             <Loader2 className="mx-auto h-12 w-12 animate-spin text-muted-foreground" />
-            <CardTitle className="mt-4">Verifying your email</CardTitle>
-            <CardDescription>Please wait while we verify your email address...</CardDescription>
+            <CardTitle className="mt-4">正在验证邮箱</CardTitle>
+            <CardDescription>请稍等，我们正在验证您的邮箱地址...</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -66,12 +66,12 @@ function VerifyEmailForm() {
           {status === "success" ? (
             <>
               <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
-              <CardTitle className="mt-4">Email verified!</CardTitle>
+              <CardTitle className="mt-4">邮箱已验证！</CardTitle>
             </>
           ) : (
             <>
               <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
-              <CardTitle className="mt-4">Verification failed</CardTitle>
+              <CardTitle className="mt-4">验证失败</CardTitle>
             </>
           )}
           <CardDescription>{message}</CardDescription>
@@ -79,15 +79,15 @@ function VerifyEmailForm() {
         <CardFooter className="flex justify-center gap-3">
           {status === "success" ? (
             <Link href="/login">
-              <Button>Sign in</Button>
+              <Button>登录</Button>
             </Link>
           ) : (
             <>
               <Link href="/login">
-                <Button variant="outline">Back to login</Button>
+                <Button variant="outline">返回登录</Button>
               </Link>
               <Link href="/signup">
-                <Button>Create new account</Button>
+                <Button>创建新账号</Button>
               </Link>
             </>
           )}

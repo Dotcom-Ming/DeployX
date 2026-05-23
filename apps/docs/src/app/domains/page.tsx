@@ -4,17 +4,15 @@ import { Callout } from "../../components/callout";
 export default function DomainsPage() {
   return (
     <div>
-      <h1>Domains</h1>
+      <h1>域名</h1>
       <p>
-        DeployX provides automatic subdomains for every project and supports
-        custom domain configuration with automatic SSL certificate provisioning.
+        DeployX 为每个项目提供自动子域名，并支持自定义域名配置以及自动 SSL 证书配置。
       </p>
 
-      <h2>Default Subdomains</h2>
+      <h2>默认子域名</h2>
       <p>
-        Every project receives a free <code>*.deployx.app</code> subdomain
-        upon creation. This domain is immediately available and secured with
-        HTTPS.
+        每个项目在创建时都会获得一个免费的 <code>*.deployx.app</code> 子域名。
+        该域名立即可用并通过 HTTPS 确保安全。
       </p>
       <CodeBlock language="bash">
 {`# View your project's default domain
@@ -24,9 +22,9 @@ dx projects ls --org my-team
 # my-app  │  my-app.deployx.app  │  Ready`}
       </CodeBlock>
 
-      <h2>Adding a Custom Domain</h2>
+      <h2>添加自定义域名</h2>
       <p>
-        Add your own domain to a project using the CLI or the dashboard:
+        使用 CLI 或控制台为项目添加你自己的域名：
       </p>
       <CodeBlock language="bash">
 {`# Add a custom domain
@@ -36,27 +34,24 @@ dx domains add example.com --project my-app
 dx domains add "*..example.com" --project my-app`}
       </CodeBlock>
       <p>
-        After adding a domain, you need to configure DNS records with your
-        domain registrar.
+        添加域名后，你需要在域名注册商处配置 DNS 记录。
       </p>
 
-      <h2>DNS Configuration</h2>
+      <h2>DNS 配置</h2>
       <p>
-        DeployX supports two DNS configuration methods depending on your
-        domain setup:
+        DeployX 支持两种 DNS 配置方法，具体取决于你的域名设置：
       </p>
 
-      <h3>Method 1: CNAME Record (Recommended for Subdomains)</h3>
+      <h3>方法一：CNAME 记录（推荐用于子域名）</h3>
       <p>
-        Use a CNAME record when configuring subdomains like{" "}
-        <code>app.example.com</code>:
+        在配置类似 <code>app.example.com</code> 的子域名时使用 CNAME 记录：
       </p>
       <table>
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Value</th>
+            <th>类型</th>
+            <th>名称</th>
+            <th>值</th>
           </tr>
         </thead>
         <tbody>
@@ -68,17 +63,16 @@ dx domains add "*..example.com" --project my-app`}
         </tbody>
       </table>
 
-      <h3>Method 2: A Record (For Apex Domains)</h3>
+      <h3>方法二：A 记录（适用于根域名）</h3>
       <p>
-        Use an A record when configuring an apex domain like{" "}
-        <code>example.com</code>:
+        在配置类似 <code>example.com</code> 的根域名时使用 A 记录：
       </p>
       <table>
         <thead>
           <tr>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Value</th>
+            <th>类型</th>
+            <th>名称</th>
+            <th>值</th>
           </tr>
         </thead>
         <tbody>
@@ -90,16 +84,14 @@ dx domains add "*..example.com" --project my-app`}
         </tbody>
       </table>
 
-      <Callout variant="warning" title="Apex Domain Limitation">
-        Some DNS providers do not support CNAME flattening at the apex level.
-        In this case, use the A record method. If your provider supports
-        CNAME flattening (Cloudflare, DNSimple), you can use a CNAME record
-        for apex domains as well.
+      <Callout variant="warning" title="根域名限制">
+        某些 DNS 提供商不支持根级别的 CNAME 展平。在这种情况下，请使用 A 记录方法。如果你的提供商支持
+        CNAME 展平（Cloudflare、DNSimple），你也可以在根域名上使用 CNAME 记录。
       </Callout>
 
-      <h2>Verifying a Domain</h2>
+      <h2>验证域名</h2>
       <p>
-        After configuring DNS records, verify the domain to activate it:
+        配置 DNS 记录后，验证域名以激活它：
       </p>
       <CodeBlock language="bash">
 {`# Verify DNS configuration
@@ -109,32 +101,29 @@ dx domains verify example.com --project my-app
 dx domains ls --project my-app`}
       </CodeBlock>
       <p>
-        DNS propagation can take up to 48 hours, though it typically
-        completes within minutes. DeployX automatically provisions an SSL
-        certificate once verification succeeds.
+        DNS 传播可能需要长达 48 小时，但通常只需几分钟即可完成。
+        DeployX 在验证成功后会自动配置 SSL 证书。
       </p>
 
-      <h2>SSL Certificates</h2>
+      <h2>SSL 证书</h2>
       <p>
-        DeployX automatically provisions and renews SSL certificates for all
-        domains via Let&apos;s Encrypt. There is no manual configuration required.
+        DeployX 通过 Let&apos;s Encrypt 自动配置和续期所有域名的 SSL 证书。
+        无需手动配置。
       </p>
       <ul>
-        <li>Automatic certificate provisioning upon domain verification</li>
-        <li>Automatic renewal before expiration</li>
-        <li>Supports wildcard certificates</li>
-        <li>HTTP to HTTPS redirect enabled by default</li>
+        <li>域名验证后自动配置证书</li>
+        <li>到期前自动续期</li>
+        <li>支持通配符证书</li>
+        <li>默认启用 HTTP 到 HTTPS 的重定向</li>
       </ul>
 
-      <h2>Removing a Domain</h2>
+      <h2>移除域名</h2>
       <CodeBlock language="bash">
 {`# Remove a custom domain
 dx domains remove example.com --project my-app`}
       </CodeBlock>
-      <Callout variant="danger" title="Irreversible Action">
-        Removing a domain immediately stops serving traffic on it. Make sure
-        to update your DNS records after removal to avoid stale records
-        pointing to DeployX.
+      <Callout variant="danger" title="不可逆操作">
+        移除域名会立即停止在该域名上的流量服务。请确保在移除后更新你的 DNS 记录，以避免过期的记录仍指向 DeployX。
       </Callout>
     </div>
   );

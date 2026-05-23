@@ -23,8 +23,8 @@ async function fetchApi<T>(path: string, init?: RequestInit): Promise<T> {
     headers: { ...getHeaders(), ...init?.headers },
   });
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
-    throw new Error(error.message || `API error: ${res.status}`);
+    const error = await res.json().catch(() => ({ message: `请求失败: ${res.status}` }));
+    throw new Error(error.message || `API 错误: ${res.status}`);
   }
   return res.json() as Promise<T>;
 }

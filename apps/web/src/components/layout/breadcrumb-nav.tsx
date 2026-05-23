@@ -22,18 +22,18 @@ export function BreadcrumbNav() {
   let accumulatedPath = "";
 
   const labelMap: Record<string, string> = {
-    dashboard: "Dashboard",
-    projects: "Projects",
-    deployments: "Deployments",
-    domains: "Domains",
-    env: "Environment",
-    logs: "Logs",
-    analytics: "Analytics",
-    settings: "Settings",
-    team: "Team",
-    billing: "Billing",
-    "audit-log": "Audit Log",
-    new: "New",
+    dashboard: "仪表盘",
+    projects: "项目",
+    deployments: "部署",
+    domains: "域名",
+    env: "环境变量",
+    logs: "日志",
+    analytics: "分析",
+    settings: "设置",
+    team: "团队",
+    billing: "账单",
+    "audit-log": "审计日志",
+    new: "新建",
   };
 
   for (let i = 0; i < segments.length; i++) {

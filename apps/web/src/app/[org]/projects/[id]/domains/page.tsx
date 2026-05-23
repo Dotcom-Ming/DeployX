@@ -22,10 +22,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const sslStatusConfig: Record<string, { icon: typeof ShieldCheck; color: string; label: string }> = {
-  [SslStatus.ISSUED]: { icon: ShieldCheck, color: "text-green-500", label: "SSL Active" },
-  [SslStatus.PENDING]: { icon: ShieldAlert, color: "text-yellow-500", label: "SSL Pending" },
-  [SslStatus.RENEWING]: { icon: ShieldAlert, color: "text-yellow-500", label: "SSL Renewing" },
-  [SslStatus.ERROR]: { icon: ShieldX, color: "text-red-500", label: "SSL Error" },
+  [SslStatus.ISSUED]: { icon: ShieldCheck, color: "text-green-500", label: "SSL 已激活" },
+  [SslStatus.PENDING]: { icon: ShieldAlert, color: "text-yellow-500", label: "SSL 待处理" },
+  [SslStatus.RENEWING]: { icon: ShieldAlert, color: "text-yellow-500", label: "SSL 续签中" },
+  [SslStatus.ERROR]: { icon: ShieldX, color: "text-red-500", label: "SSL 错误" },
 };
 
 export default function DomainsPage() {
@@ -46,7 +46,7 @@ export default function DomainsPage() {
     mutationFn: (domain: string) => addDomain(orgSlug, projectId, domain),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["domains", orgSlug, projectId] });
-      toast.success(`Domain ${newDomain} added`);
+      toast.success(`域名 ${newDomain} 已添加`);
       setNewDomain("");
       setShowAddDialog(false);
     },
@@ -56,7 +56,7 @@ export default function DomainsPage() {
     mutationFn: (domainId: string) => removeDomain(orgSlug, projectId, domainId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["domains", orgSlug, projectId] });
-      toast.success("Domain removed");
+      toast.success("域名已删除");
     },
   });
 
@@ -71,13 +71,13 @@ export default function DomainsPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard");
+    toast.success("已复制到剪贴板");
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading domains...</p>
+        <p className="text-muted-foreground">加载域名列表...</p>
       </div>
     );
   }
@@ -87,11 +87,11 @@ export default function DomainsPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Domains</h1>
-            <p className="text-muted-foreground mt-1">Manage custom domains for your project</p>
+            <h1 className="text-2xl font-bold">域名</h1>
+            <p className="text-muted-foreground mt-1">管理项目的自定义域名</p>
           </div>
           <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="h-4 w-4 mr-2" /> Add Domain
+            <Plus className="h-4 w-4 mr-2" /> 添加域名
           </Button>
         </div>
       </motion.div>
@@ -125,9 +125,9 @@ export default function DomainsPage() {
                       {/* DNS config */}
                       {domain.sslStatus !== SslStatus.ISSUED && (
                         <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-                          <h4 className="text-sm font-medium">DNS Configuration</h4>
+                          <h4 className="text-sm font-medium">DNS 配置</h4>
                           <p className="text-xs text-muted-foreground">
-                            Add a CNAME record to your DNS provider to verify ownership:
+                            在 DNS 提供商处添加 CNAME 记录以验证所有权：
                           </p>
                           <div className="flex items-center gap-2 text-sm font-mono bg-background rounded border p-2">
                             <span className="text-muted-foreground">CNAME</span>
@@ -144,7 +144,7 @@ export default function DomainsPage() {
                       {/* Verified info */}
                       {domain.verifiedAt && (
                         <p className="text-xs text-muted-foreground">
-                          Verified on {new Date(domain.verifiedAt).toLocaleDateString()}
+                          验证于 {new Date(domain.verifiedAt).toLocaleDateString()}
                         </p>
                       )}
                     </div>
@@ -162,15 +162,15 @@ export default function DomainsPage() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Remove Domain</AlertDialogTitle>
+                            <AlertDialogTitle>删除域名</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to remove <strong className="font-mono">{domain.domain || domain.name}</strong>? This will disconnect the domain from your project and may affect live traffic.
+                              确定要删除 <strong className="font-mono">{domain.domain || domain.name}</strong> 吗？这将断开该域名与项目的连接，可能会影响线上流量。
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel>取消</AlertDialogCancel>
                             <AlertDialogAction onClick={() => removeDomainHandler(domain.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                              Remove
+                              删除
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -184,7 +184,7 @@ export default function DomainsPage() {
         })}
         {(!domains || domains.length === 0) && (
           <div className="py-8 text-center text-muted-foreground">
-            No domains configured yet
+            尚未配置域名
           </div>
         )}
       </div>
@@ -193,8 +193,8 @@ export default function DomainsPage() {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Domain</DialogTitle>
-            <DialogDescription>Enter the domain you want to connect to your project</DialogDescription>
+            <DialogTitle>添加域名</DialogTitle>
+            <DialogDescription>输入您想要连接到项目的域名</DialogDescription>
           </DialogHeader>
           <Input
             placeholder="example.com"
@@ -203,9 +203,9 @@ export default function DomainsPage() {
             onKeyDown={(e) => e.key === "Enter" && addDomainHandler()}
           />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>取消</Button>
             <Button onClick={addDomainHandler} disabled={addMutation.isPending}>
-              {addMutation.isPending ? "Adding..." : "Add Domain"}
+              {addMutation.isPending ? "添加中..." : "添加域名"}
             </Button>
           </DialogFooter>
         </DialogContent>

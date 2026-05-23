@@ -128,12 +128,12 @@ const MOCK_DEPLOYMENTS: Deployment[] = [
 ];
 
 const MOCK_QUICK_LINKS = [
-  { label: "Git Repository", icon: Github, href: "#" },
-  { label: "Documentation", icon: BookOpen, href: "#" },
-  { label: "Monitoring", icon: Monitor, href: "#" },
-  { label: "Error Tracking", icon: Eye, href: "#" },
-  { label: "Analytics", icon: Globe, href: "#" },
-  { label: "API Reference", icon: FileText, href: "#" },
+  { label: "Git 仓库", icon: Github, href: "#" },
+  { label: "文档", icon: BookOpen, href: "#" },
+  { label: "监控", icon: Monitor, href: "#" },
+  { label: "错误追踪", icon: Eye, href: "#" },
+  { label: "分析", icon: Globe, href: "#" },
+  { label: "API 参考", icon: FileText, href: "#" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -179,13 +179,13 @@ export default function ProjectDetailPage() {
           <Button variant="outline" size="sm" asChild>
             <a href={`https://${project.domains[0]}`} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4 mr-1" />
-              Visit
+              访问
             </a>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <a href={`/${org}/projects/${params.id}/settings`}>
               <Settings className="h-4 w-4 mr-1" />
-              Settings
+              设置
             </a>
           </Button>
         </div>
@@ -194,7 +194,7 @@ export default function ProjectDetailPage() {
       {/* ---- Production Deployment card ---- */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Production Deployment</CardTitle>
+          <CardTitle className="text-base">生产环境部署</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 lg:grid-cols-2">
@@ -208,12 +208,12 @@ export default function ProjectDetailPage() {
               {/* Status */}
               <div className="flex items-center gap-2">
                 <StatusBadge status="ready" size="sm" variant="soft" />
-                <span className="text-sm text-muted-foreground">Production</span>
+                <span className="text-sm text-muted-foreground">生产环境</span>
               </div>
 
               {/* Domains */}
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Domains</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">域名</p>
                 {project.domains.map((domain) => (
                   <div key={domain} className="flex items-center gap-2">
                     <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
@@ -232,7 +232,7 @@ export default function ProjectDetailPage() {
 
               {/* Source */}
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Source</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">来源</p>
                 <div className="flex items-center gap-2 text-sm">
                   <GitBranch className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   <span className="font-medium">{project.branch}</span>
@@ -243,7 +243,7 @@ export default function ProjectDetailPage() {
 
               {/* Deployed by */}
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Deployed By</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">部署者</p>
                 <div className="flex items-center gap-2 text-sm">
                   <Avatar fallback={project.lastDeployBy} size="sm" />
                   <span>{project.lastDeployBy}</span>
@@ -253,7 +253,7 @@ export default function ProjectDetailPage() {
 
               {/* Build Duration */}
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Build Duration</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">构建时长</p>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                   <span>{project.buildDuration}</span>
@@ -267,20 +267,20 @@ export default function ProjectDetailPage() {
             <Button size="sm" asChild>
               <a href={`https://${project.domains[0]}`} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-1" />
-                Visit
+                访问
               </a>
             </Button>
             <Button variant="outline" size="sm">
               <Eye className="h-4 w-4 mr-1" />
-              Inspect
+              检查
             </Button>
             <Button variant="outline" size="sm">
               <RotateCcw className="h-4 w-4 mr-1" />
-              Rollback
+              回滚
             </Button>
             <Button variant="outline" size="sm">
               <ArrowUpRight className="h-4 w-4 mr-1" />
-              Promote
+              升级
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -289,10 +289,10 @@ export default function ProjectDetailPage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                <DropdownMenuItem>Redeploy</DropdownMenuItem>
-                <DropdownMenuItem>Share Build Log</DropdownMenuItem>
+                <DropdownMenuItem>重新部署</DropdownMenuItem>
+                <DropdownMenuItem>分享构建日志</DropdownMenuItem>
                 <DropdownMenuItem className="text-destructive focus:text-destructive">
-                  Cancel Deployment
+                  取消部署
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -303,18 +303,18 @@ export default function ProjectDetailPage() {
       {/* ---- Recent Deployments ---- */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Recent Deployments</CardTitle>
+          <CardTitle className="text-base">最近部署</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Status</TableHead>
-                <TableHead>Branch</TableHead>
-                <TableHead>Commit</TableHead>
-                <TableHead>Author</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>分支</TableHead>
+                <TableHead>提交</TableHead>
+                <TableHead>作者</TableHead>
+                <TableHead>时长</TableHead>
+                <TableHead>创建时间</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -357,7 +357,7 @@ export default function ProjectDetailPage() {
       {/* ---- Quick Links ---- */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Quick Links</CardTitle>
+          <CardTitle className="text-base">快捷链接</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

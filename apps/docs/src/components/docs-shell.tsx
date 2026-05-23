@@ -6,31 +6,31 @@ import { usePathname } from "next/navigation";
 
 const navSections = [
   {
-    title: "Getting Started",
+    title: "入门指南",
     items: [
-      { label: "Overview", href: "/" },
-      { label: "Quick Start", href: "/getting-started" },
+      { label: "概览", href: "/" },
+      { label: "快速开始", href: "/getting-started" },
     ],
   },
   {
     title: "CLI",
-    items: [{ label: "CLI Reference", href: "/cli" }],
+    items: [{ label: "CLI 参考", href: "/cli" }],
   },
   {
-    title: "Features",
+    title: "功能",
     items: [
-      { label: "Deployments", href: "/deployments" },
-      { label: "Domains", href: "/domains" },
-      { label: "Environment Variables", href: "/env-variables" },
-      { label: "Billing", href: "/billing" },
+      { label: "部署", href: "/deployments" },
+      { label: "域名", href: "/domains" },
+      { label: "环境变量", href: "/env-variables" },
+      { label: "计费", href: "/billing" },
     ],
   },
   {
-    title: "API Reference",
-    items: [{ label: "Overview", href: "/api-reference" }],
+    title: "API 参考",
+    items: [{ label: "概览", href: "/api-reference" }],
   },
   {
-    title: "Guides",
+    title: "指南",
     items: [
       { label: "Next.js", href: "/guides/nextjs" },
       { label: "Nuxt", href: "/guides/nuxt" },
@@ -109,7 +109,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         >
           <input
             type="text"
-            placeholder="Search documentation..."
+            placeholder="搜索文档..."
             style={{
               width: "100%",
               padding: "0.5rem 0.75rem 0.5rem 2.25rem",
@@ -155,8 +155,8 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           }}
           defaultValue="latest"
         >
-          <option value="latest">v1 (Latest)</option>
-          <option value="v0">v0 (Legacy)</option>
+          <option value="latest">v1 (最新)</option>
+          <option value="v0">v0 (旧版)</option>
         </select>
 
         <button
@@ -171,7 +171,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
             display: "flex",
             alignItems: "center",
           }}
-          aria-label="Toggle theme"
+          aria-label="切换主题"
         >
           {theme === "light" ? (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

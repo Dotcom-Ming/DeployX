@@ -22,35 +22,35 @@ const statusConfig: Record<
   { label: string; icon: React.ElementType; solidClass: string; softClass: string; outlineClass: string }
 > = {
   ready: {
-    label: "Ready",
+    label: "就绪",
     icon: CheckCircle2,
     solidClass: "bg-green-600 text-white hover:bg-green-600 border-green-600",
     softClass: "bg-green-500/10 text-green-600 hover:bg-green-500/10 border-green-500/20",
     outlineClass: "text-green-600 border-green-500/40 hover:text-green-600",
   },
   building: {
-    label: "Building",
+    label: "构建中",
     icon: Loader2,
     solidClass: "bg-blue-600 text-white hover:bg-blue-600 border-blue-600",
     softClass: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/10 border-blue-500/20",
     outlineClass: "text-blue-600 border-blue-500/40 hover:text-blue-600",
   },
   error: {
-    label: "Error",
+    label: "错误",
     icon: XCircle,
     solidClass: "bg-red-600 text-white hover:bg-red-600 border-red-600",
     softClass: "bg-red-500/10 text-red-600 hover:bg-red-500/10 border-red-500/20",
     outlineClass: "text-red-600 border-red-500/40 hover:text-red-600",
   },
   queued: {
-    label: "Queued",
+    label: "排队中",
     icon: Clock,
     solidClass: "bg-yellow-600 text-white hover:bg-yellow-600 border-yellow-600",
     softClass: "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/10 border-yellow-500/20",
     outlineClass: "text-yellow-600 border-yellow-500/40 hover:text-yellow-600",
   },
   canceled: {
-    label: "Canceled",
+    label: "已取消",
     icon: Ban,
     solidClass: "bg-gray-500 text-white hover:bg-gray-500 border-gray-500",
     softClass: "bg-gray-500/10 text-gray-500 hover:bg-gray-500/10 border-gray-500/20",

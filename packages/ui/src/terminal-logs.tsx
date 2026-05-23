@@ -51,7 +51,7 @@ export function TerminalLogs({ logs, streaming, height = 500, className }: Termi
             autoScroll ? 'bg-blue-600/20 text-blue-400' : 'text-zinc-500 hover:bg-zinc-800',
           )}
         >
-          {autoScroll ? 'Auto-scroll' : 'Paused'}
+          {autoScroll ? '自动滚动' : '已暂停'}
         </button>
       </div>
       <div
@@ -79,7 +79,7 @@ export function TerminalLogs({ logs, streaming, height = 500, className }: Termi
         {streaming && (
           <div className="flex items-center gap-2 px-4 py-1 text-zinc-500">
             <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500" />
-            Streaming...
+            流式输出中...
           </div>
         )}
       </div>

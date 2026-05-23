@@ -12,21 +12,21 @@ interface Tab {
 }
 
 const orgTabs: Tab[] = [
-  { label: "Overview", href: "/dashboard", pattern: /\/dashboard$/ },
-  { label: "Projects", href: "/projects", pattern: /\/projects/ },
-  { label: "Deployments", href: "/deployments", pattern: /\/deployments$/ },
-  { label: "Activity", href: "/activity", pattern: /\/activity/ },
-  { label: "Usage", href: "/usage", pattern: /\/usage/ },
-  { label: "Settings", href: "/settings", pattern: /\/settings$/ },
+  { label: "概览", href: "/dashboard", pattern: /\/dashboard$/ },
+  { label: "项目", href: "/projects", pattern: /\/projects/ },
+  { label: "部署", href: "/deployments", pattern: /\/deployments$/ },
+  { label: "动态", href: "/activity", pattern: /\/activity/ },
+  { label: "用量", href: "/usage", pattern: /\/usage/ },
+  { label: "设置", href: "/settings", pattern: /\/settings$/ },
 ];
 
 const projectTabs: Tab[] = [
-  { label: "Project", href: "", pattern: /\/projects\/[^/]+$/ },
-  { label: "Deployments", href: "/deployments", pattern: /\/deployments/ },
-  { label: "Analytics", href: "/analytics", pattern: /\/analytics/ },
-  { label: "Logs", href: "/logs", pattern: /\/logs/ },
-  { label: "Storage", href: "/storage", pattern: /\/storage/ },
-  { label: "Settings", href: "/settings", pattern: /\/settings/ },
+  { label: "项目", href: "", pattern: /\/projects\/[^/]+$/ },
+  { label: "部署", href: "/deployments", pattern: /\/deployments/ },
+  { label: "分析", href: "/analytics", pattern: /\/analytics/ },
+  { label: "日志", href: "/logs", pattern: /\/logs/ },
+  { label: "存储", href: "/storage", pattern: /\/storage/ },
+  { label: "设置", href: "/settings", pattern: /\/settings/ },
 ];
 
 export function TabNavigation({ orgSlug, projectId }: { orgSlug: string; projectId?: string }) {

@@ -6,8 +6,8 @@ import { Sidebar } from "@/components/sidebar";
 const inter = Inter({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export const metadata: Metadata = {
-  title: "DeployX Admin",
-  description: "DeployX Administration Panel",
+  title: "DeployX 管理后台",
+  description: "DeployX 管理面板",
 };
 
 export default function AdminLayout({
@@ -16,7 +16,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="zh-CN" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
         <div className="flex h-screen overflow-hidden">
           <Sidebar />

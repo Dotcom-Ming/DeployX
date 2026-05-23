@@ -50,7 +50,7 @@ export default function EnvPage() {
       createEnvVariable(orgSlug, projectId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["env-vars", orgSlug, projectId] });
-      toast.success("Variable added");
+      toast.success("变量已添加");
     },
   });
 
@@ -59,7 +59,7 @@ export default function EnvPage() {
       updateEnvVariable(orgSlug, projectId, varId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["env-vars", orgSlug, projectId] });
-      toast.success("Variable updated");
+      toast.success("变量已更新");
     },
   });
 
@@ -68,7 +68,7 @@ export default function EnvPage() {
       deleteEnvVariable(orgSlug, projectId, varId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["env-vars", orgSlug, projectId] });
-      toast.success("Variable deleted");
+      toast.success("变量已删除");
     },
   });
 
@@ -100,7 +100,7 @@ export default function EnvPage() {
 
   const addVariable = () => {
     if (!newKey.trim()) {
-      toast.error("Key is required");
+      toast.error("键名不能为空");
       return;
     }
     createMutation.mutate({
@@ -141,7 +141,7 @@ export default function EnvPage() {
       }
     }
     if (promises.length === 0) {
-      toast.error("No valid KEY=VALUE pairs found");
+      toast.error("未找到有效的 KEY=VALUE 对");
       return;
     }
     Promise.all(promises)
@@ -149,15 +149,15 @@ export default function EnvPage() {
         queryClient.invalidateQueries({ queryKey: ["env-vars", orgSlug, projectId] });
         setImportText("");
         setShowImportDialog(false);
-        toast.success(`${promises.length} variables imported`);
+        toast.success(`已导入 ${promises.length} 个变量`);
       })
-      .catch(() => toast.error("Failed to import variables"));
+      .catch(() => toast.error("导入变量失败"));
   };
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading environment variables...</p>
+        <p className="text-muted-foreground">加载环境变量...</p>
       </div>
     );
   }
@@ -167,15 +167,15 @@ export default function EnvPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Environment Variables</h1>
-            <p className="text-muted-foreground mt-1">Manage environment variables for your project</p>
+            <h1 className="text-2xl font-bold">环境变量</h1>
+            <p className="text-muted-foreground mt-1">管理项目的环境变量</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-              <Upload className="h-4 w-4 mr-2" /> Import
+              <Upload className="h-4 w-4 mr-2" /> 导入
             </Button>
             <Button onClick={() => setShowAddDialog(true)}>
-              <Plus className="h-4 w-4 mr-2" /> Add Variable
+              <Plus className="h-4 w-4 mr-2" /> 添加变量
             </Button>
           </div>
         </div>
@@ -184,15 +184,15 @@ export default function EnvPage() {
       {/* Encryption badge */}
       <div className="flex items-center gap-2">
         <Lock className="h-4 w-4 text-green-500" />
-        <span className="text-xs text-muted-foreground">All values are encrypted at rest</span>
+        <span className="text-xs text-muted-foreground">所有值在存储时均已加密</span>
       </div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as EnvTab)}>
         <TabsList>
-          <TabsTrigger value="production">Production</TabsTrigger>
-          <TabsTrigger value="preview">Preview</TabsTrigger>
-          <TabsTrigger value="development">Development</TabsTrigger>
+          <TabsTrigger value="production">生产环境</TabsTrigger>
+          <TabsTrigger value="preview">预览环境</TabsTrigger>
+          <TabsTrigger value="development">开发环境</TabsTrigger>
         </TabsList>
 
         {(["production", "preview", "development"] as EnvTab[]).map((tab) => (
@@ -203,9 +203,9 @@ export default function EnvPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b text-muted-foreground">
-                        <th className="text-left p-4 font-medium w-[35%]">Key</th>
-                        <th className="text-left p-4 font-medium">Value</th>
-                        <th className="text-right p-4 font-medium w-[120px]">Actions</th>
+                        <th className="text-left p-4 font-medium w-[35%]">键名</th>
+                        <th className="text-left p-4 font-medium">值</th>
+                        <th className="text-right p-4 font-medium w-[120px]">操作</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -224,8 +224,8 @@ export default function EnvPage() {
                                   autoFocus
                                   onKeyDown={(e) => e.key === "Enter" && saveEdit(envVar.id)}
                                 />
-                                <Button size="sm" onClick={() => saveEdit(envVar.id)}>Save</Button>
-                                <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                                <Button size="sm" onClick={() => saveEdit(envVar.id)}>保存</Button>
+                                <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>取消</Button>
                               </div>
                             ) : (
                               <div className="flex items-center gap-2">
@@ -253,7 +253,7 @@ export default function EnvPage() {
                       {groupedVars[tab].length === 0 && (
                         <tr>
                           <td colSpan={3} className="p-8 text-center text-muted-foreground">
-                            No environment variables for this environment
+                            该环境暂无变量
                           </td>
                         </tr>
                       )}
@@ -270,12 +270,12 @@ export default function EnvPage() {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Environment Variable</DialogTitle>
-            <DialogDescription>Add a new environment variable to your project</DialogDescription>
+            <DialogTitle>添加环境变量</DialogTitle>
+            <DialogDescription>向项目添加新的环境变量</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Key</Label>
+                <Label>键名</Label>
               <Input
                 placeholder="API_KEY"
                 value={newKey}
@@ -284,7 +284,7 @@ export default function EnvPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Value</Label>
+                <Label>值</Label>
               <Input
                 placeholder="value"
                 value={newValue}
@@ -293,23 +293,23 @@ export default function EnvPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Target</Label>
+                <Label>目标环境</Label>
               <Select value={newTarget} onValueChange={setNewTarget}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="production">Production</SelectItem>
-                  <SelectItem value="preview">Preview</SelectItem>
-                  <SelectItem value="development">Development</SelectItem>
+                    <SelectItem value="production">生产环境</SelectItem>
+                    <SelectItem value="preview">预览环境</SelectItem>
+                    <SelectItem value="development">开发环境</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setShowAddDialog(false)}>取消</Button>
             <Button onClick={addVariable} disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Adding..." : "Add"}
+              {createMutation.isPending ? "添加中..." : "添加"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -319,8 +319,8 @@ export default function EnvPage() {
       <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Bulk Import</DialogTitle>
-            <DialogDescription>Paste your .env file content below</DialogDescription>
+            <DialogTitle>批量导入</DialogTitle>
+            <DialogDescription>在下方粘贴您的 .env 文件内容</DialogDescription>
           </DialogHeader>
           <textarea
             value={importText}
@@ -329,8 +329,8 @@ export default function EnvPage() {
             className="w-full h-48 rounded-md border bg-background px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowImportDialog(false)}>Cancel</Button>
-            <Button onClick={bulkImport}>Import</Button>
+            <Button variant="outline" onClick={() => setShowImportDialog(false)}>取消</Button>
+            <Button onClick={bulkImport}>导入</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

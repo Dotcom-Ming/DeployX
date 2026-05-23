@@ -4,24 +4,24 @@ import { Callout } from "../../../components/callout";
 export default function NextjsGuidePage() {
   return (
     <div>
-      <h1>Deploying Next.js</h1>
+      <h1>部署 Next.js</h1>
       <p>
-        DeployX has first-class support for Next.js, including App Router,
-        Pages Router, Server Actions, and middleware. This guide walks you
-        through configuring and deploying a Next.js application.
+        DeployX 对 Next.js 提供一流支持，包括 App Router、
+        Pages Router、Server Actions 和中间件。本指南将引导您
+        配置和部署 Next.js 应用程序。
       </p>
 
-      <h2>Prerequisites</h2>
+      <h2>前提条件</h2>
       <ul>
-        <li>A Next.js project (13+ recommended)</li>
-        <li>The DeployX CLI installed (<code>npm install -g @deployx/cli</code>)</li>
-        <li>A DeployX account</li>
+        <li>一个 Next.js 项目（推荐 13+）</li>
+        <li>已安装 DeployX CLI（<code>npm install -g @deployx/cli</code>）</li>
+        <li>一个 DeployX 账户</li>
       </ul>
 
-      <h2>1. Framework Detection</h2>
+      <h2>1. 框架检测</h2>
       <p>
-        DeployX automatically detects Next.js from your <code>package.json</code>{" "}
-        dependencies. No configuration is required for standard projects.
+        DeployX 会自动从您的 <code>package.json</code>{" "}
+        依赖中检测 Next.js。标准项目无需额外配置。
       </p>
       <CodeBlock language="bash">
 {`dx deploy
@@ -32,10 +32,10 @@ export default function NextjsGuidePage() {
 # ▸ Output directory: .next`}
       </CodeBlock>
 
-      <h2>2. Custom Configuration</h2>
+      <h2>2. 自定义配置</h2>
       <p>
-        For projects that need custom build settings, create a{" "}
-        <code>deployx.json</code> file:
+        对于需要自定义构建设置的项目，请创建一个{" "}
+        <code>deployx.json</code> 文件：
       </p>
       <CodeBlock language="json" filename="deployx.json">
 {`{
@@ -47,11 +47,10 @@ export default function NextjsGuidePage() {
 }`}
       </CodeBlock>
 
-      <h2>3. Environment Variables</h2>
+      <h2>3. 环境变量</h2>
       <p>
-        Configure environment variables for your Next.js application. Make
-        sure to use the <code>NEXT_PUBLIC_</code> prefix for client-side
-        variables:
+        为您的 Next.js 应用程序配置环境变量。请确保对客户端变量使用{" "}
+        <code>NEXT_PUBLIC_</code> 前缀：
       </p>
       <CodeBlock language="bash">
 {`# Server-side only variables
@@ -61,28 +60,25 @@ dx env add DATABASE_URL=postgres://host/db --project my-app --production
 dx env add NEXT_PUBLIC_API_URL=https://api.example.com --project my-app`}
       </CodeBlock>
 
-      <Callout variant="info" title="Next.js Environment Variables">
-        Variables prefixed with <code>NEXT_PUBLIC_</code> are inlined at
-        build time and exposed to the browser. All other variables are only
-        available in API routes, Server Actions, and middleware.
+      <Callout variant="info" title="Next.js 环境变量">
+        以 <code>NEXT_PUBLIC_</code> 为前缀的变量会在构建时内联并暴露给浏览器。所有其他变量仅在 API 路由、服务器操作和中间件中可用。
       </Callout>
 
-      <h2>4. App Router Support</h2>
+      <h2>4. App Router 支持</h2>
       <p>
-        DeployX fully supports the Next.js App Router, including:
+        DeployX 完全支持 Next.js App Router，包括：
       </p>
       <ul>
-        <li>Server Components and Client Components</li>
-        <li>Server Actions</li>
-        <li>Streaming and Suspense</li>
-        <li>Route Handlers</li>
-        <li>Middleware</li>
+        <li>服务器组件和客户端组件</li>
+        <li>服务器操作</li>
+        <li>流式渲染和 Suspense</li>
+        <li>路由处理器</li>
+        <li>中间件</li>
       </ul>
 
-      <h2>5. Image Optimization</h2>
+      <h2>5. 图片优化</h2>
       <p>
-        Next.js Image Optimization works out of the box on DeployX. No
-        additional configuration is needed.
+        Next.js 图片优化在 DeployX 上开箱即用，无需额外配置。
       </p>
       <CodeBlock language="typescript" filename="next.config.mjs">
 {`const nextConfig = {
@@ -99,10 +95,9 @@ dx env add NEXT_PUBLIC_API_URL=https://api.example.com --project my-app`}
 export default nextConfig;`}
       </CodeBlock>
 
-      <h2>6. ISR and Caching</h2>
+      <h2>6. ISR 与缓存</h2>
       <p>
-        Incremental Static Regeneration (ISR) is fully supported. DeployX
-        respects your revalidation settings:
+        完全支持增量静态再生成（ISR）。DeployX 会遵循您的重新验证设置：
       </p>
       <CodeBlock language="typescript" filename="app/page.tsx">
 {`export const revalidate = 3600; // Revalidate every hour
@@ -113,10 +108,9 @@ export default async function Page() {
 }`}
       </CodeBlock>
 
-      <h2>7. Edge and Node.js Runtimes</h2>
+      <h2>7. Edge 和 Node.js 运行时</h2>
       <p>
-        DeployX supports both the Node.js and Edge runtimes for Route
-        Handlers and Middleware:
+        DeployX 同时支持 Node.js 和 Edge 运行时用于路由处理器和中间件：
       </p>
       <CodeBlock language="typescript" filename="app/api/route.ts">
 {`export const runtime = "edge"; // or "nodejs"
@@ -126,35 +120,31 @@ export async function GET() {
 }`}
       </CodeBlock>
 
-      <Callout variant="tip" title="Performance Tip">
-        Use the Edge runtime for latency-sensitive Route Handlers and
-        Middleware. The Node.js runtime is better suited for heavy
-        computation and database access.
+      <Callout variant="tip" title="性能提示">
+        对于延迟敏感的路由处理器和中间件，请使用 Edge 运行时。Node.js 运行时更适合重计算和数据库访问。
       </Callout>
 
-      <h2>8. Custom Server</h2>
+      <h2>8. 自定义服务器</h2>
       <p>
-        DeployX does <strong>not</strong> support custom servers (e.g.,{" "}
-        <code>server.js</code>). Use the built-in Next.js server with{" "}
-        <code>next start</code> instead. If you need custom server logic,
-        use Route Handlers or Server Actions.
+        DeployX <strong>不</strong>支持自定义服务器（例如{" "}
+        <code>server.js</code>）。请改用内置的 Next.js 服务器，使用{" "}
+        <code>next start</code>。如果您需要自定义服务器逻辑，请使用路由处理器或服务器操作。
       </p>
 
-      <h2>Troubleshooting</h2>
-      <h3>Build Errors</h3>
+      <h2>故障排除</h2>
+      <h3>构建错误</h3>
       <p>
-        If your build fails, check the build logs with:
+        如果构建失败，请使用以下命令检查构建日志：
       </p>
       <CodeBlock language="bash">
 {`dx logs --project my-app --type build`}
       </CodeBlock>
 
-      <h3>Hydration Mismatch</h3>
+      <h3>水合不匹配</h3>
       <p>
-        Hydration mismatches often occur from using browser-only APIs in
-        Server Components. Make sure to use <code>&quot;use client&quot;</code>{" "}
-        directives correctly and avoid accessing <code>window</code> or{" "}
-        <code>document</code> during server rendering.
+        水合不匹配通常是由于在服务器组件中使用了仅浏览器端的 API。请确保正确使用 <code>&quot;use client&quot;</code>{" "}
+        指令，并避免在服务器渲染期间访问 <code>window</code> 或{" "}
+        <code>document</code>。
       </p>
     </div>
   );

@@ -79,11 +79,11 @@ export function OrgSwitcher() {
       </PopoverTrigger>
       <PopoverContent className="w-[280px] p-0" align="start">
         <Command>
-          <CommandInput placeholder="Search organizations..." />
+          <CommandInput placeholder="搜索组织..." />
           <CommandList>
-            <CommandEmpty>No organizations found.</CommandEmpty>
+            <CommandEmpty>未找到组织。</CommandEmpty>
             {personalOrgs.length > 0 && (
-              <CommandGroup heading="Personal Account">
+              <CommandGroup heading="个人账号">
                 {personalOrgs.map((org) => (
                   <CommandItem
                     key={org.id}
@@ -109,7 +109,7 @@ export function OrgSwitcher() {
             {teamOrgs.length > 0 && (
               <>
                 {personalOrgs.length > 0 && <CommandSeparator />}
-                <CommandGroup heading="Teams">
+                <CommandGroup heading="团队">
                   {teamOrgs
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((org) => (
@@ -148,7 +148,7 @@ export function OrgSwitcher() {
               }}
             >
               <Plus className="h-4 w-4" />
-              Create Team
+              创建团队
             </Button>
           </div>
         </Command>

@@ -23,11 +23,11 @@ import { Settings, Building2, Key, Webhook, Shield, Trash2, Loader2, Plus, Copy,
 import { toast } from "sonner";
 
 const NAV_ITEMS = [
-  { id: "general", label: "General", icon: Building2 },
-  { id: "tokens", label: "API Tokens", icon: Key },
+  { id: "general", label: "常规", icon: Building2 },
+  { id: "tokens", label: "API 令牌", icon: Key },
   { id: "webhooks", label: "Webhooks", icon: Webhook },
-  { id: "security", label: "Security", icon: Shield },
-  { id: "danger", label: "Danger Zone", icon: Trash2 },
+  { id: "security", label: "安全", icon: Shield },
+  { id: "danger", label: "危险操作", icon: Trash2 },
 ];
 
 interface Token {
@@ -111,13 +111,13 @@ export default function OrgSettingsPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to update organization");
+        toast.error("更新组织失败");
         return;
       }
 
-      toast.success("Settings saved");
+      toast.success("设置已保存");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     } finally {
       setSaving(false);
     }
@@ -136,16 +136,16 @@ export default function OrgSettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to create token");
+        toast.error(data.message || "创建令牌失败");
         return;
       }
 
       setCreatedToken(data.token || data.plainText);
       setTokens((prev) => [...prev, data]);
       setNewTokenName("");
-      toast.success("Token created. Copy it now, you won't see it again!");
+      toast.success("令牌已创建。请立即复制，之后将无法再次查看！");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -156,14 +156,14 @@ export default function OrgSettingsPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to revoke token");
+        toast.error("撤销令牌失败");
         return;
       }
 
       setTokens((prev) => prev.filter((t) => t.id !== tokenId));
-      toast.success("Token revoked");
+      toast.success("令牌已撤销");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -180,15 +180,15 @@ export default function OrgSettingsPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to create webhook");
+        toast.error(data.message || "创建 Webhook 失败");
         return;
       }
 
       setWebhooks((prev) => [...prev, data]);
       setNewWebhookUrl("");
-      toast.success("Webhook created");
+      toast.success("Webhook 已创建");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -201,7 +201,7 @@ export default function OrgSettingsPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to update webhook");
+        toast.error("更新 Webhook 失败");
         return;
       }
 
@@ -209,13 +209,13 @@ export default function OrgSettingsPage() {
         prev.map((w) => (w.id === webhookId ? { ...w, active } : w))
       );
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
   const handleDeleteOrg = async () => {
     if (deleteConfirm !== orgData?.name) {
-      toast.error("Organization name does not match");
+      toast.error("组织名称不匹配");
       return;
     }
 
@@ -227,14 +227,14 @@ export default function OrgSettingsPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to delete organization");
+        toast.error("删除组织失败");
         return;
       }
 
-      toast.success("Organization deleted");
+      toast.success("组织已删除");
       window.location.href = "/";
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     } finally {
       setDeleting(false);
     }
@@ -251,9 +251,9 @@ export default function OrgSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <h1 className="text-2xl font-semibold">设置</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Manage your organization settings
+          管理组织设置
         </p>
       </div>
 
@@ -284,12 +284,12 @@ export default function OrgSettingsPage() {
           {activeTab === "general" && (
             <Card>
               <CardHeader>
-                <CardTitle>General</CardTitle>
-                <CardDescription>Update your organization details</CardDescription>
+                <CardTitle>常规</CardTitle>
+                <CardDescription>更新组织详情</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="orgName">Organization Name</Label>
+                  <Label htmlFor="orgName">组织名称</Label>
                   <Input
                     id="orgName"
                     value={orgData?.name || ""}
@@ -299,11 +299,11 @@ export default function OrgSettingsPage() {
                 <div className="space-y-2">
                   <Label htmlFor="slug">Slug</Label>
                   <Input id="slug" value={orgData?.slug || ""} disabled className="font-mono" />
-                  <p className="text-xs text-muted-foreground">The slug cannot be changed</p>
+                  <p className="text-xs text-muted-foreground">Slug 不可更改</p>
                 </div>
                 <Button onClick={handleSaveGeneral} disabled={saving}>
                   {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Save Changes
+                  保存更改
                 </Button>
               </CardContent>
             </Card>
@@ -313,35 +313,35 @@ export default function OrgSettingsPage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Create API Token</CardTitle>
-                  <CardDescription>Generate a token to authenticate API requests</CardDescription>
+                  <CardTitle>创建 API 令牌</CardTitle>
+                  <CardDescription>生成令牌以验证 API 请求</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="tokenName">Token Name</Label>
+                    <Label htmlFor="tokenName">令牌名称</Label>
                     <Input
                       id="tokenName"
-                      placeholder="e.g., CI/CD Pipeline"
+                      placeholder="例如：CI/CD Pipeline"
                       value={newTokenName}
                       onChange={(e) => setNewTokenName(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="tokenScopes">Scopes</Label>
+                    <Label htmlFor="tokenScopes">权限范围</Label>
                     <select
                       id="tokenScopes"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       value={newTokenScopes}
                       onChange={(e) => setNewTokenScopes(e.target.value)}
                     >
-                      <option value="read">Read only</option>
-                      <option value="read:write">Read & Write</option>
-                      <option value="read:write:delete">Full access</option>
+                      <option value="read">只读</option>
+                      <option value="read:write">读写</option>
+                      <option value="read:write:delete">完全访问</option>
                     </select>
                   </div>
                   <Button onClick={handleCreateToken} disabled={!newTokenName}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Token
+                    创建令牌
                   </Button>
                 </CardContent>
               </Card>
@@ -349,9 +349,9 @@ export default function OrgSettingsPage() {
               {createdToken && (
                 <Card className="border-yellow-500/50">
                   <CardHeader>
-                    <CardTitle className="text-yellow-600">Copy your token</CardTitle>
+                    <CardTitle className="text-yellow-600">复制您的令牌</CardTitle>
                     <CardDescription>
-                      This token will only be shown once. Make sure to copy it now.
+                      此令牌仅会显示一次，请立即复制。
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -362,7 +362,7 @@ export default function OrgSettingsPage() {
                         size="sm"
                         onClick={() => {
                           navigator.clipboard.writeText(createdToken);
-                          toast.success("Copied to clipboard");
+                          toast.success("已复制到剪贴板");
                         }}
                       >
                         <Copy className="h-4 w-4" />
@@ -374,28 +374,28 @@ export default function OrgSettingsPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Your Tokens</CardTitle>
+                  <CardTitle>我的令牌</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {tokens.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No tokens created yet</p>
+                    <p className="text-sm text-muted-foreground">暂未创建令牌</p>
                   ) : (
                     <div className="space-y-3">
                       {tokens.map((token) => (
                         <div key={token.id} className="flex items-center justify-between rounded-lg border p-3">
                           <div>
                             <p className="font-medium">{token.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Scopes: {token.scopes}
-                              {token.lastUsedAt ? ` • Last used: ${new Date(token.lastUsedAt).toLocaleDateString()}` : " • Never used"}
-                            </p>
+                              <p className="text-xs text-muted-foreground">
+                                权限: {token.scopes}
+                                {token.lastUsedAt ? ` • 最后使用: ${new Date(token.lastUsedAt).toLocaleDateString()}` : " • 从未使用"}
+                              </p>
                           </div>
                           <Button
                             variant="destructive"
                             size="sm"
                             onClick={() => handleRevokeToken(token.id)}
                           >
-                            Revoke
+                            撤销
                           </Button>
                         </div>
                       ))}
@@ -410,8 +410,8 @@ export default function OrgSettingsPage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Add Webhook</CardTitle>
-                  <CardDescription>Receive HTTP notifications for events</CardDescription>
+                  <CardTitle>添加 Webhook</CardTitle>
+                  <CardDescription>接收事件的 HTTP 通知</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -424,7 +424,7 @@ export default function OrgSettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Events</Label>
+                    <Label>事件</Label>
                     <div className="flex flex-wrap gap-2">
                       {["deployment.created", "deployment.completed", "deployment.failed", "domain.verified"].map((event) => (
                         <Badge
@@ -446,7 +446,7 @@ export default function OrgSettingsPage() {
                   </div>
                   <Button onClick={handleCreateWebhook} disabled={!newWebhookUrl}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Add Webhook
+                    添加 Webhook
                   </Button>
                 </CardContent>
               </Card>
@@ -457,7 +457,7 @@ export default function OrgSettingsPage() {
                 </CardHeader>
                 <CardContent>
                   {webhooks.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No webhooks configured</p>
+                    <p className="text-sm text-muted-foreground">未配置 Webhook</p>
                   ) : (
                     <div className="space-y-3">
                       {webhooks.map((webhook) => (
@@ -486,24 +486,24 @@ export default function OrgSettingsPage() {
           {activeTab === "security" && (
             <Card>
               <CardHeader>
-                <CardTitle>Security</CardTitle>
-                <CardDescription>Manage security settings for your organization</CardDescription>
+                <CardTitle>安全</CardTitle>
+                <CardDescription>管理组织安全设置</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Two-factor authentication</p>
-                    <p className="text-sm text-muted-foreground">Require 2FA for all organization members</p>
+                    <p className="font-medium">双因素认证</p>
+                    <p className="text-sm text-muted-foreground">要求所有组织成员启用 2FA</p>
                   </div>
                   <Switch />
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Session management</p>
-                    <p className="text-sm text-muted-foreground">View and revoke active sessions</p>
+                    <p className="font-medium">会话管理</p>
+                    <p className="text-sm text-muted-foreground">查看和撤销活跃会话</p>
                   </div>
-                  <Button variant="outline" size="sm">Manage</Button>
+                  <Button variant="outline" size="sm">管理</Button>
                 </div>
               </CardContent>
             </Card>
@@ -512,19 +512,19 @@ export default function OrgSettingsPage() {
           {activeTab === "danger" && (
             <Card className="border-destructive/50">
               <CardHeader>
-                <CardTitle className="text-destructive">Danger Zone</CardTitle>
-                <CardDescription>Irreversible and destructive actions</CardDescription>
+                <CardTitle className="text-destructive">危险操作</CardTitle>
+                <CardDescription>不可逆的破坏性操作</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between rounded-lg border border-destructive/20 p-4">
                   <div>
-                    <p className="font-medium">Delete Organization</p>
+                    <p className="font-medium">删除组织</p>
                     <p className="text-sm text-muted-foreground">
-                      Permanently delete this organization and all associated data.
+                      永久删除此组织及所有相关数据。
                     </p>
                   </div>
                   <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-                    Delete Organization
+                    删除组织
                   </Button>
                 </div>
               </CardContent>
@@ -537,21 +537,21 @@ export default function OrgSettingsPage() {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete organization</DialogTitle>
+            <DialogTitle>删除组织</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. Type <strong>{orgData?.name}</strong> to confirm.
+              此操作无法撤销。请输入 <strong>{orgData?.name}</strong> 确认。
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Input
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
-              placeholder={`Type "${orgData?.name}" to confirm`}
+              placeholder={`输入 "${orgData?.name}" 确认`}
             />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-              Cancel
+              取消
             </Button>
             <Button
               variant="destructive"
@@ -559,7 +559,7 @@ export default function OrgSettingsPage() {
               disabled={deleteConfirm !== orgData?.name || deleting}
             >
               {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Delete Organization
+              删除组织
             </Button>
           </DialogFooter>
         </DialogContent>

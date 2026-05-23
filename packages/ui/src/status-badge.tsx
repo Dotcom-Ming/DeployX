@@ -17,35 +17,35 @@ const statusConfig: Record<
   { label: string; icon: string; solid: string; soft: string; outline: string }
 > = {
   ready: {
-    label: 'Ready',
+    label: '就绪',
     icon: '●',
     solid: 'bg-emerald-600 text-white border-emerald-600',
     soft: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
     outline: 'text-emerald-600 border-emerald-500/40',
   },
   building: {
-    label: 'Building',
+    label: '构建中',
     icon: '◌',
     solid: 'bg-blue-600 text-white border-blue-600',
     soft: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
     outline: 'text-blue-600 border-blue-500/40',
   },
   error: {
-    label: 'Error',
+    label: '错误',
     icon: '✕',
     solid: 'bg-red-600 text-white border-red-600',
     soft: 'bg-red-500/10 text-red-600 border-red-500/20',
     outline: 'text-red-600 border-red-500/40',
   },
   queued: {
-    label: 'Queued',
+    label: '排队中',
     icon: '◷',
     solid: 'bg-amber-600 text-white border-amber-600',
     soft: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     outline: 'text-amber-600 border-amber-500/40',
   },
   canceled: {
-    label: 'Canceled',
+    label: '已取消',
     icon: '—',
     solid: 'bg-zinc-600 text-white border-zinc-600',
     soft: 'bg-zinc-500/10 text-zinc-600 border-zinc-500/20',

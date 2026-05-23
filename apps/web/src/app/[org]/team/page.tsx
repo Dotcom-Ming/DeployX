@@ -79,16 +79,16 @@ export default function TeamPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to invite member");
+        toast.error(data.message || "邀请成员失败");
         return;
       }
 
-      toast.success(`Invitation sent to ${inviteEmail}`);
+      toast.success(`邀请已发送至 ${inviteEmail}`);
       setInviteOpen(false);
       setInviteEmail("");
       setMembers((prev) => [...prev, data]);
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     } finally {
       setInviting(false);
     }
@@ -103,16 +103,16 @@ export default function TeamPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to update role");
+        toast.error("更新角色失败");
         return;
       }
 
       setMembers((prev) =>
         prev.map((m) => (m.id === memberId ? { ...m, role: newRole } : m))
       );
-      toast.success("Role updated");
+      toast.success("角色已更新");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -123,14 +123,14 @@ export default function TeamPage() {
       });
 
       if (!res.ok) {
-        toast.error("Failed to remove member");
+        toast.error("移除成员失败");
         return;
       }
 
       setMembers((prev) => prev.filter((m) => m.id !== memberId));
-      toast.success("Member removed");
+      toast.success("成员已移除");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("出了点问题");
     }
   };
 
@@ -146,14 +146,14 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Team</h1>
+          <h1 className="text-2xl font-semibold">团队</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Manage team members and their roles
+            管理团队成员及其角色
           </p>
         </div>
         <Button onClick={() => setInviteOpen(true)}>
           <UserPlus className="h-4 w-4 mr-1" />
-          Invite Member
+          邀请成员
         </Button>
       </div>
 
@@ -162,24 +162,24 @@ export default function TeamPage() {
           {members.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">No team members</h3>
+              <h3 className="text-lg font-medium">暂无团队成员</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Invite team members to collaborate on your projects
+                邀请团队成员协作您的项目
               </p>
               <Button className="mt-4" onClick={() => setInviteOpen(true)}>
                 <UserPlus className="h-4 w-4 mr-1" />
-                Invite Member
+                邀请成员
               </Button>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Joined</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>姓名</TableHead>
+                  <TableHead>邮箱</TableHead>
+                  <TableHead>角色</TableHead>
+                  <TableHead>加入时间</TableHead>
+                  <TableHead className="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -211,7 +211,7 @@ export default function TeamPage() {
                         size="sm"
                         onClick={() => handleRemove(member.id)}
                       >
-                        Remove
+                        移除
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -225,24 +225,24 @@ export default function TeamPage() {
       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Invite team member</DialogTitle>
+            <DialogTitle>邀请成员</DialogTitle>
             <DialogDescription>
-              Send an invitation to join your organization.
+              发送邀请加入您的组织。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">邮箱</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="colleague@company.com"
+                placeholder="colleague@example.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">角色</Label>
               <Select value={inviteRole} onValueChange={setInviteRole}>
                 <SelectTrigger id="role">
                   <SelectValue />
@@ -259,11 +259,11 @@ export default function TeamPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setInviteOpen(false)}>
-              Cancel
+              取消
             </Button>
             <Button onClick={handleInvite} disabled={inviting || !inviteEmail}>
               {inviting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Send Invitation
+              发送邀请
             </Button>
           </DialogFooter>
         </DialogContent>

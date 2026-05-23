@@ -235,7 +235,7 @@ export function TerminalLogs({
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search logs..."
+                placeholder="搜索日志..."
                 className="w-full bg-zinc-800 border border-zinc-700 rounded pl-8 pr-3 py-1 text-xs text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600"
               />
             </div>
@@ -268,7 +268,7 @@ export function TerminalLogs({
               </Button>
               <div className="flex items-center gap-1 ml-2">
                 <div className={cn("h-2 w-2 rounded-full", wsConnected ? "bg-green-500" : "bg-zinc-600")} />
-                <span className="text-[11px] text-zinc-500">{wsConnected ? "Live" : "Disconnected"}</span>
+                <span className="text-[11px] text-zinc-500">{wsConnected ? "实时" : "已断开"}</span>
               </div>
             </div>
           )}
@@ -280,7 +280,7 @@ export function TerminalLogs({
             {filteredLogs.map((log, i) => renderLogLine(log, i))}
             {filteredLogs.length === 0 && (
               <div className="flex items-center justify-center py-12 text-zinc-600 text-sm">
-                No logs matching your search
+                没有匹配的日志
               </div>
             )}
           </div>

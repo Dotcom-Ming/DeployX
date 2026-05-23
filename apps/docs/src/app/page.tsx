@@ -2,26 +2,26 @@ import Link from "next/link";
 
 const quickLinks = [
   {
-    title: "Getting Started",
-    description: "Set up your account, install the CLI, and deploy your first project in minutes.",
+    title: "入门指南",
+    description: "在几分钟内设置账户、安装 CLI 并部署你的第一个项目。",
     href: "/getting-started",
     icon: "🚀",
   },
   {
-    title: "CLI Reference",
-    description: "Complete reference for the DeployX command-line interface and all available commands.",
+    title: "CLI 参考",
+    description: "DeployX 命令行界面及所有可用命令的完整参考。",
     href: "/cli",
     icon: "💻",
   },
   {
-    title: "API Reference",
-    description: "REST API documentation for integrating DeployX into your existing workflows.",
+    title: "API 参考",
+    description: "将 DeployX 集成到现有工作流程中的 REST API 文档。",
     href: "/api-reference",
     icon: "⚡",
   },
   {
-    title: "Deployment Guide",
-    description: "Learn about preview deployments, production releases, and deployment strategies.",
+    title: "部署指南",
+    description: "了解预览部署、生产发布和部署策略。",
     href: "/deployments",
     icon: "📦",
   },
@@ -32,7 +32,7 @@ export default function DocsHome() {
     <div>
       <div style={{ textAlign: "center", padding: "3rem 0 2rem" }}>
         <h1 style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>
-          DeployX Documentation
+          DeployX 文档
         </h1>
         <p
           style={{
@@ -42,8 +42,7 @@ export default function DocsHome() {
             margin: "0 auto 2rem",
           }}
         >
-          Everything you need to deploy, scale, and manage your web applications
-          with DeployX&apos;s powerful platform.
+          部署、扩展和管理你的应用所需的一切
         </p>
         <div
           style={{
@@ -67,7 +66,7 @@ export default function DocsHome() {
               fontSize: "0.9375rem",
             }}
           >
-            Get Started
+            开始使用
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
@@ -88,7 +87,7 @@ export default function DocsHome() {
               border: "1px solid var(--color-border)",
             }}
           >
-            API Reference
+            API 参考
           </Link>
         </div>
       </div>
@@ -158,8 +157,7 @@ export default function DocsHome() {
             marginBottom: "0.75rem",
           }}
         >
-          Looking for something? Use the search bar above or browse the sidebar
-          navigation.
+          想找什么？使用搜索栏浏览文档
         </p>
         <div
           style={{
@@ -195,7 +193,7 @@ export default function DocsHome() {
           >
             K
           </kbd>
-          to search
+          搜索
         </div>
       </div>
     </div>

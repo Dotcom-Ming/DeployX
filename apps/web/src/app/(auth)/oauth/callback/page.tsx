@@ -45,7 +45,7 @@ export default function OAuthCallbackPage() {
       fallback={
         <div className="min-h-screen flex flex-col items-center justify-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Completing authentication...</p>
+      <p className="text-sm text-muted-foreground">正在完成身份验证...</p>
         </div>
       }
     >

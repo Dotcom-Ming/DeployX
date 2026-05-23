@@ -46,31 +46,31 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{user?.name ?? "User"}</p>
+            <p className="text-sm font-medium">{user?.name ?? "用户"}</p>
             <p className="text-xs text-muted-foreground">{user?.email ?? ""}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/account")}>
           <User className="mr-2 h-4 w-4" />
-          Account
+          账号
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings")}>
           <Settings className="mr-2 h-4 w-4" />
-          Settings
+          设置
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/tokens")}>
           <KeyRound className="mr-2 h-4 w-4" />
-          API Tokens
+          API 令牌
         </DropdownMenuItem>
         <DropdownMenuItem>
           <BookOpen className="mr-2 h-4 w-4" />
-          Documentation
+          文档
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
-          Sign out
+          退出登录
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -100,16 +100,16 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">加载中...</p>
       </div>
     );
   }
 
   const statCards = [
-    { title: "Total Projects", value: String(projects.length), trend: "+2", trendUp: true, icon: FolderKanban },
-    { title: "Deployments (7d)", value: String(deployments.length), trend: "+8", trendUp: true, icon: Rocket },
+    { title: "总项目数", value: String(projects.length), trend: "+2", trendUp: true, icon: FolderKanban },
+    { title: "部署（7天）", value: String(deployments.length), trend: "+8", trendUp: true, icon: Rocket },
     {
-      title: "Bandwidth Used",
+      title: "已用带宽",
       value: "456 GB",
       trend: "+12%",
       trendUp: false,
@@ -117,8 +117,8 @@ export default function DashboardPage() {
       progress: 45.6,
     },
     {
-      title: "Build Minutes Used",
-      value: "15,200 min",
+      title: "已用构建时长",
+      value: "15,200 分钟",
       trend: "+5%",
       trendUp: false,
       icon: Clock,
@@ -132,7 +132,7 @@ export default function DashboardPage() {
       <motion.div {...fadeIn} transition={{ duration: 0.3 }}>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back</h1>
+            <h1 className="text-3xl font-bold">欢迎回来</h1>
             <div className="flex items-center gap-2 mt-1 text-muted-foreground">
               <span>{org?.name || orgSlug}</span>
               <Badge variant="secondary">{PLAN_DISPLAY_NAMES[org?.plan ? Plan[org.plan as keyof typeof Plan] : Plan.PRO]}</Badge>
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                   <span className={`text-xs ${stat.trendUp ? "text-green-500" : "text-yellow-500"}`}>
                     {stat.trend}
                   </span>
-                  <span className="text-xs text-muted-foreground">from last period</span>
+                  <span className="text-xs text-muted-foreground">较上期</span>
                 </div>
                 {stat.progress !== undefined && (
                   <Progress value={stat.progress} className="mt-3 h-2" />
@@ -183,19 +183,19 @@ export default function DashboardPage() {
       <motion.div {...fadeIn} transition={{ duration: 0.3, delay: 0.2 }}>
         <Card>
           <CardHeader>
-            <CardTitle>Recent Deployments</CardTitle>
+            <CardTitle>最近部署</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-muted-foreground">
-                    <th className="text-left pb-3 font-medium">Status</th>
-                    <th className="text-left pb-3 font-medium">Project</th>
-                    <th className="text-left pb-3 font-medium">Commit</th>
-                    <th className="text-left pb-3 font-medium">Branch</th>
-                    <th className="text-left pb-3 font-medium">Duration</th>
-                    <th className="text-left pb-3 font-medium">Time</th>
+                    <th className="text-left pb-3 font-medium">状态</th>
+                    <th className="text-left pb-3 font-medium">项目</th>
+                    <th className="text-left pb-3 font-medium">提交</th>
+                    <th className="text-left pb-3 font-medium">分支</th>
+                    <th className="text-left pb-3 font-medium">时长</th>
+                    <th className="text-left pb-3 font-medium">时间</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -232,7 +232,7 @@ export default function DashboardPage() {
                   {deployments.length === 0 && (
                     <tr>
                       <td colSpan={6} className="py-8 text-center text-muted-foreground">
-                        No deployments yet
+                        暂无部署
                       </td>
                     </tr>
                   )}
@@ -245,7 +245,7 @@ export default function DashboardPage() {
 
       {/* Quick Access Projects */}
       <motion.div {...fadeIn} transition={{ duration: 0.3, delay: 0.3 }}>
-        <h2 className="text-lg font-semibold mb-4">Quick Access</h2>
+        <h2 className="text-lg font-semibold mb-4">快捷访问</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projects.slice(0, 6).map((project: any, i: number) => (
             <motion.div
@@ -272,13 +272,13 @@ export default function DashboardPage() {
                   {/* Hover actions */}
                   <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform bg-muted/95 backdrop-blur border-t p-2 flex gap-2">
                     <Button variant="ghost" size="sm" className="flex-1 text-xs">
-                      <RotateCcw className="h-3 w-3 mr-1" /> Redeploy
+                      <RotateCcw className="h-3 w-3 mr-1" /> 重新部署
                     </Button>
                     <Button variant="ghost" size="sm" className="flex-1 text-xs">
-                      <FileText className="h-3 w-3 mr-1" /> Logs
+                      <FileText className="h-3 w-3 mr-1" /> 日志
                     </Button>
                     <Button variant="ghost" size="sm" className="flex-1 text-xs">
-                      <ExternalLink className="h-3 w-3 mr-1" /> Visit
+                      <ExternalLink className="h-3 w-3 mr-1" /> 访问
                     </Button>
                   </div>
                 </CardContent>
@@ -287,7 +287,7 @@ export default function DashboardPage() {
           ))}
           {projects.length === 0 && (
             <div className="col-span-full py-8 text-center text-muted-foreground">
-              No projects yet
+              暂无项目
             </div>
           )}
         </div>
@@ -297,7 +297,7 @@ export default function DashboardPage() {
       <motion.div {...fadeIn} transition={{ duration: 0.3, delay: 0.4 }}>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Usage Trends</CardTitle>
+            <CardTitle>用量趋势</CardTitle>
             <div className="flex gap-1">
               <Button
                 variant={chartRange === "7d" ? "default" : "ghost"}
@@ -340,8 +340,8 @@ export default function DashboardPage() {
                     fontSize: "12px",
                   }}
                 />
-                <Area yAxisId="left" type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#bandwidthGrad)" name="Bandwidth (GB)" />
-                <Area yAxisId="right" type="monotone" dataKey="requests" stroke="hsl(142, 76%, 36%)" fill="url(#requestsGrad)" name="Requests" />
+                <Area yAxisId="left" type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#bandwidthGrad)" name="带宽 (GB)" />
+                <Area yAxisId="right" type="monotone" dataKey="requests" stroke="hsl(142, 76%, 36%)" fill="url(#requestsGrad)" name="请求数" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>

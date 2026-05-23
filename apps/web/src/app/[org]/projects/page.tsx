@@ -215,9 +215,9 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Projects</h1>
+          <h1 className="text-2xl font-semibold">项目</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Manage your deployments and projects
+            管理您的部署和项目
           </p>
         </div>
       </div>
@@ -228,7 +228,7 @@ export default function ProjectsPage() {
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search projects..."
+            placeholder="搜索项目..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9 h-9"
@@ -241,10 +241,10 @@ export default function ProjectsPage() {
         {/* Filter: Framework */}
         <Select value={filterFramework} onValueChange={setFilterFramework}>
           <SelectTrigger className="w-[140px] h-9">
-            <SelectValue placeholder="Framework" />
+            <SelectValue placeholder="框架" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Frameworks</SelectItem>
+                <SelectItem value="all">全部框架</SelectItem>
             {Object.values(Framework).map((fw) => (
               <SelectItem key={fw} value={fw}>
                 {FRAMEWORK_CONFIGS[fw]?.name || fw}
@@ -256,15 +256,15 @@ export default function ProjectsPage() {
         {/* Filter: Status */}
         <Select value={filterStatus} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-[130px] h-9">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder="状态" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="ready">Ready</SelectItem>
-            <SelectItem value="building">Building</SelectItem>
-            <SelectItem value="error">Error</SelectItem>
-            <SelectItem value="queued">Queued</SelectItem>
-            <SelectItem value="none">No Deploy</SelectItem>
+            <SelectItem value="all">全部状态</SelectItem>
+            <SelectItem value="ready">就绪</SelectItem>
+            <SelectItem value="building">构建中</SelectItem>
+            <SelectItem value="error">错误</SelectItem>
+            <SelectItem value="queued">排队中</SelectItem>
+            <SelectItem value="none">未部署</SelectItem>
           </SelectContent>
         </Select>
 
@@ -295,9 +295,9 @@ export default function ProjectsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="name">Name</SelectItem>
-            <SelectItem value="created">Newest</SelectItem>
-            <SelectItem value="updated">Recently Updated</SelectItem>
+            <SelectItem value="name">名称</SelectItem>
+            <SelectItem value="created">最新创建</SelectItem>
+            <SelectItem value="updated">最近更新</SelectItem>
           </SelectContent>
         </Select>
 
@@ -305,7 +305,7 @@ export default function ProjectsPage() {
         <Button size="sm" asChild>
           <Link href={`/${org}/projects/new`}>
             <Plus className="h-4 w-4 mr-1" />
-            Add New
+            添加项目
           </Link>
         </Button>
       </div>
@@ -315,18 +315,18 @@ export default function ProjectsPage() {
         projects.length === 0 ? (
           <EmptyState
             icon={FolderOpen}
-            title="No projects yet"
-            description="Import your first project to get started with DeployX"
+            title="暂无项目"
+            description="导入您的第一个项目，开始使用 DeployX"
             action={{
-              label: "Import Project",
+              label: "导入项目",
               href: `/${org}/projects/new`,
             }}
           />
         ) : (
           <EmptyState
             icon={Search}
-            title="No projects found"
-            description="Try adjusting your search or filters"
+            title="未找到项目"
+            description="请尝试调整搜索或筛选条件"
           />
         )
       ) : view === "grid" ? (
@@ -380,12 +380,12 @@ export default function ProjectsPage() {
                         <DropdownMenuItem asChild>
                           <Link href={`/${org}/projects/${project.id}/settings`}>
                             <Settings className="h-4 w-4 mr-2" />
-                            Settings
+                            设置
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive focus:text-destructive">
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                          删除
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -420,7 +420,7 @@ export default function ProjectsPage() {
                       <span className="truncate">{new Date(lastDeploy.createdAt).toLocaleDateString()}</span>
                     </div>
                   ) : (
-                    <p className="text-xs text-muted-foreground">No deployments yet</p>
+                    <p className="text-xs text-muted-foreground">暂无部署</p>
                   )}
                 </CardContent>
               </Card>
@@ -433,12 +433,12 @@ export default function ProjectsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Framework</TableHead>
-                <TableHead>Domain</TableHead>
-                <TableHead>Last Deploy</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>名称</TableHead>
+                <TableHead>框架</TableHead>
+                <TableHead>域名</TableHead>
+                <TableHead>最近部署</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>创建时间</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

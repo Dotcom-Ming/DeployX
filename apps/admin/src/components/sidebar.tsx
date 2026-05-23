@@ -5,12 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
-  { href: "/users", label: "Users", icon: UsersIcon },
-  { href: "/organizations", label: "Organizations", icon: OrgIcon },
-  { href: "/deployments", label: "Deployments", icon: DeployIcon },
-  { href: "/billing", label: "Billing", icon: BillingIcon },
-  { href: "/system", label: "System", icon: SystemIcon },
+  { href: "/dashboard", label: "控制台", icon: DashboardIcon },
+  { href: "/users", label: "用户管理", icon: UsersIcon },
+  { href: "/organizations", label: "组织管理", icon: OrgIcon },
+  { href: "/deployments", label: "部署管理", icon: DeployIcon },
+  { href: "/billing", label: "账单", icon: BillingIcon },
+  { href: "/system", label: "系统", icon: SystemIcon },
 ];
 
 function DashboardIcon() {
@@ -130,7 +130,7 @@ export function Sidebar() {
               AD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Admin User</p>
+              <p className="text-sm font-medium text-foreground truncate">管理员</p>
               <p className="text-xs text-muted-foreground truncate">admin@deployx.io</p>
             </div>
           </div>

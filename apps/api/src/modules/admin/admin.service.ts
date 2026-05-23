@@ -108,6 +108,7 @@ export class AdminService {
   }
 
   async deleteUser(userId: string) {
+    await prisma.organization.deleteMany({ where: { ownerId: userId } });
     await prisma.membership.deleteMany({ where: { userId } });
     await prisma.apiToken.deleteMany({ where: { userId } });
     await prisma.deployment.updateMany({ where: { triggeredById: userId }, data: { triggeredById: null } });

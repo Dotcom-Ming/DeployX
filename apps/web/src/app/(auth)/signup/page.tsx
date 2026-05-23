@@ -16,11 +16,11 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 const signupSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  name: z.string().min(2, "姓名至少需要2个字符"),
+  email: z.string().email("请输入有效的邮箱地址"),
+  password: z.string().min(8, "密码至少需要8个字符"),
   terms: z.boolean().refine((value) => value, {
-    message: "You must accept the terms of service",
+    message: "您必须接受服务条款",
   }),
 });
 
@@ -60,7 +60,7 @@ export default function SignupPage() {
       const payload = result?.data ?? result;
 
       if (!res.ok) {
-        toast.error(result.message || "Something went wrong");
+        toast.error(result.message || "出了点问题");
         return;
       }
 
@@ -68,10 +68,10 @@ export default function SignupPage() {
       document.cookie = `refreshToken=${payload.refreshToken}; path=/; max-age=604800`;
       document.cookie = `token=${payload.accessToken}; path=/; max-age=900`;
 
-      toast.success("Account created! Please check your email to verify your account.");
+      toast.success("账号创建成功！请查看邮箱验证您的账号。");
       window.location.href = `/${payload.user?.orgSlug || payload.user?.orgId || "dashboard"}/dashboard`;
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("出了点问题，请重试。");
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +95,7 @@ export default function SignupPage() {
       >
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-2xl font-bold">Create your account</CardTitle>
+            <CardTitle className="text-2xl font-bold">创建账号</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* OAuth Buttons */}
@@ -106,7 +106,7 @@ export default function SignupPage() {
                 onClick={() => handleOAuth("GitHub")}
               >
                 <Github className="h-5 w-5" />
-                Continue with GitHub
+                使用 GitHub 注册
               </Button>
               <Button
                 variant="outline"
@@ -116,7 +116,7 @@ export default function SignupPage() {
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 01-.3-.94l1.22-3.78 2.44-7.51a.42.42 0 01.8 0l2.44 7.51h8.1l2.44-7.51a.42.42 0 01.8 0l2.44 7.51 1.22 3.78a.84.84 0 01-.3.94z" />
                 </svg>
-                Continue with GitLab
+                使用 GitLab 注册
               </Button>
               <Button
                 variant="outline"
@@ -129,7 +129,7 @@ export default function SignupPage() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
-                Continue with Google
+                使用 Google 注册
               </Button>
             </div>
 
@@ -137,17 +137,17 @@ export default function SignupPage() {
             <div className="relative">
               <Separator />
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
-                Or continue with email
+                或使用邮箱注册
               </span>
             </div>
 
             {/* Signup Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">姓名</Label>
                 <Input
                   id="name"
-                  placeholder="Alex Chen"
+                  placeholder="张三"
                   {...register("name")}
                 />
                 {errors.name && (
@@ -155,11 +155,11 @@ export default function SignupPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">邮箱</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@company.com"
+                  placeholder="you@example.com"
                   {...register("email")}
                 />
                 {errors.email && (
@@ -167,12 +167,12 @@ export default function SignupPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">密码</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a password"
+                    placeholder="创建密码"
                     {...register("password")}
                   />
                   <button
@@ -198,10 +198,10 @@ export default function SignupPage() {
                   onCheckedChange={(checked) => setValue("terms", checked === true)}
                 />
                 <label htmlFor="terms" className="text-sm text-muted-foreground leading-none pt-0.5">
-                  I agree to the{" "}
-                  <Link href="#" className="text-foreground hover:underline">Terms of Service</Link>{" "}
-                  and{" "}
-                  <Link href="#" className="text-foreground hover:underline">Privacy Policy</Link>
+                  我同意{" "}
+                  <Link href="#" className="text-foreground hover:underline">服务条款</Link>{" "}
+                  和{" "}
+                  <Link href="#" className="text-foreground hover:underline">隐私政策</Link>
                 </label>
               </div>
               {errors.terms && (
@@ -211,12 +211,12 @@ export default function SignupPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
+                    创建账号中...
                   </>
                 ) : (
                   <>
                     <Mail className="mr-2 h-4 w-4" />
-                    Sign up with Email
+                    邮箱注册
                   </>
                 )}
               </Button>
@@ -224,9 +224,9 @@ export default function SignupPage() {
           </CardContent>
           <CardFooter className="justify-center pb-6">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              已有账号？{" "}
               <Link href="/login" className="text-foreground font-medium hover:underline">
-                Log in
+                登录
               </Link>
             </p>
           </CardFooter>

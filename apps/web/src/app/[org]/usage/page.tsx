@@ -16,10 +16,10 @@ import { Wifi, Clock, Database, Activity, Loader2 } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
 const METRICS = [
-  { key: UsageMetric.BANDWIDTH, label: "Bandwidth", unit: "GB", icon: Wifi, color: "hsl(199, 89%, 48%)" },
-  { key: UsageMetric.BUILD_MINUTES, label: "Build Minutes", unit: "min", icon: Clock, color: "hsl(142, 76%, 36%)" },
-  { key: UsageMetric.INVOCATIONS, label: "Invocations", unit: "", icon: Activity, color: "hsl(271, 81%, 56%)" },
-  { key: UsageMetric.STORAGE, label: "Storage", unit: "GB", icon: Database, color: "hsl(24, 94%, 53%)" },
+  { key: UsageMetric.BANDWIDTH, label: "带宽", unit: "GB", icon: Wifi, color: "hsl(199, 89%, 48%)" },
+  { key: UsageMetric.BUILD_MINUTES, label: "构建时长", unit: "分钟", icon: Clock, color: "hsl(142, 76%, 36%)" },
+  { key: UsageMetric.INVOCATIONS, label: "调用次数", unit: "", icon: Activity, color: "hsl(271, 81%, 56%)" },
+  { key: UsageMetric.STORAGE, label: "存储", unit: "GB", icon: Database, color: "hsl(24, 94%, 53%)" },
 ];
 
 const chartData = {
@@ -94,9 +94,9 @@ export default function UsagePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Usage</h1>
+        <h1 className="text-2xl font-semibold">用量</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Bandwidth, builds, and resource usage for {PLAN_DISPLAY_NAMES[currentPlan as keyof typeof PLAN_DISPLAY_NAMES]} plan
+          {PLAN_DISPLAY_NAMES[currentPlan as keyof typeof PLAN_DISPLAY_NAMES]} 方案的带宽、构建和资源使用情况
         </p>
       </div>
 
@@ -126,7 +126,7 @@ export default function UsagePage() {
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xs text-muted-foreground">
-                      {isUnlimited ? "Unlimited" : `of ${limit.toLocaleString()} ${metric.unit}`}
+                      {isUnlimited ? "无限" : ` / ${limit.toLocaleString()} ${metric.unit}`}
                     </span>
                     {!isUnlimited && (
                       <span className="text-xs font-medium">{pct}%</span>
@@ -144,18 +144,18 @@ export default function UsagePage() {
 
       <Tabs defaultValue="bandwidth">
         <TabsList>
-          <TabsTrigger value="bandwidth">Bandwidth</TabsTrigger>
-          <TabsTrigger value="buildMinutes">Build Minutes</TabsTrigger>
-          <TabsTrigger value="invocations">Invocations</TabsTrigger>
-          <TabsTrigger value="all">All Metrics</TabsTrigger>
+          <TabsTrigger value="bandwidth">带宽</TabsTrigger>
+          <TabsTrigger value="buildMinutes">构建时长</TabsTrigger>
+          <TabsTrigger value="invocations">调用次数</TabsTrigger>
+          <TabsTrigger value="all">全部指标</TabsTrigger>
         </TabsList>
 
         <TabsContent value="bandwidth" className="mt-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Bandwidth Usage</CardTitle>
-                <CardDescription>Data transfer over the selected period</CardDescription>
+                <CardTitle>带宽使用</CardTitle>
+                <CardDescription>所选时间段内的数据传输量</CardDescription>
               </div>
               <div className="flex gap-1">
                 <Button variant={chartRange === "7d" ? "default" : "ghost"} size="sm" onClick={() => setChartRange("7d")}>7d</Button>
@@ -182,7 +182,7 @@ export default function UsagePage() {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#bandwidthGrad)" name="Bandwidth (GB)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#bandwidthGrad)" name="带宽 (GB)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -193,8 +193,8 @@ export default function UsagePage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Build Minutes</CardTitle>
-                <CardDescription>Build time usage over the selected period</CardDescription>
+                <CardTitle>构建时长</CardTitle>
+                <CardDescription>所选时间段内的构建时间使用</CardDescription>
               </div>
               <div className="flex gap-1">
                 <Button variant={chartRange === "7d" ? "default" : "ghost"} size="sm" onClick={() => setChartRange("7d")}>7d</Button>
@@ -221,7 +221,7 @@ export default function UsagePage() {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="buildMinutes" stroke="hsl(142, 76%, 36%)" fill="url(#buildGrad)" name="Build Minutes" strokeWidth={2} />
+                  <Area type="monotone" dataKey="buildMinutes" stroke="hsl(142, 76%, 36%)" fill="url(#buildGrad)" name="构建时长" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -232,8 +232,8 @@ export default function UsagePage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Invocations</CardTitle>
-                <CardDescription>Function invocation count over the selected period</CardDescription>
+                <CardTitle>调用次数</CardTitle>
+                <CardDescription>所选时间段内的函数调用次数</CardDescription>
               </div>
               <div className="flex gap-1">
                 <Button variant={chartRange === "7d" ? "default" : "ghost"} size="sm" onClick={() => setChartRange("7d")}>7d</Button>
@@ -260,7 +260,7 @@ export default function UsagePage() {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="invocations" stroke="hsl(271, 81%, 56%)" fill="url(#invocationsGrad)" name="Invocations" strokeWidth={2} />
+                  <Area type="monotone" dataKey="invocations" stroke="hsl(271, 81%, 56%)" fill="url(#invocationsGrad)" name="调用次数" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -271,8 +271,8 @@ export default function UsagePage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>All Metrics</CardTitle>
-                <CardDescription>Combined usage overview over the selected period</CardDescription>
+                <CardTitle>全部指标</CardTitle>
+                <CardDescription>所选时间段内的综合用量概览</CardDescription>
               </div>
               <div className="flex gap-1">
                 <Button variant={chartRange === "7d" ? "default" : "ghost"} size="sm" onClick={() => setChartRange("7d")}>7d</Button>
@@ -307,9 +307,9 @@ export default function UsagePage() {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#allBandwidth)" name="Bandwidth (GB)" strokeWidth={2} />
-                  <Area type="monotone" dataKey="buildMinutes" stroke="hsl(142, 76%, 36%)" fill="url(#allBuild)" name="Build Minutes" strokeWidth={2} />
-                  <Area type="monotone" dataKey="invocations" stroke="hsl(271, 81%, 56%)" fill="url(#allInvocations)" name="Invocations" strokeWidth={2} />
+                  <Area type="monotone" dataKey="bandwidth" stroke="hsl(199, 89%, 48%)" fill="url(#allBandwidth)" name="带宽 (GB)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="buildMinutes" stroke="hsl(142, 76%, 36%)" fill="url(#allBuild)" name="构建时长" strokeWidth={2} />
+                  <Area type="monotone" dataKey="invocations" stroke="hsl(271, 81%, 56%)" fill="url(#allInvocations)" name="调用次数" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>

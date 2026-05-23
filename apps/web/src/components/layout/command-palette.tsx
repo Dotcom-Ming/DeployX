@@ -56,19 +56,19 @@ export function CommandPalette() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="overflow-hidden p-0 shadow-2xl max-w-lg">
-        <DialogTitle className="sr-only">Command Palette</DialogTitle>
+        <DialogTitle className="sr-only">命令面板</DialogTitle>
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
-          <CommandInput placeholder="Type a command or search..." />
+          <CommandInput placeholder="输入命令或搜索..." />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Pages">
+            <CommandEmpty>未找到结果。</CommandEmpty>
+            <CommandGroup heading="页面">
               <CommandItem
                 onSelect={() =>
                   runCommand(() => router.push(`/${orgSlug}/dashboard`))
                 }
               >
                 <LayoutDashboard className="mr-2" />
-                Dashboard
+                仪表盘
               </CommandItem>
               <CommandItem
                 onSelect={() =>
@@ -76,7 +76,7 @@ export function CommandPalette() {
                 }
               >
                 <FolderKanban className="mr-2" />
-                Projects
+                项目
               </CommandItem>
               <CommandItem
                 onSelect={() =>
@@ -84,17 +84,17 @@ export function CommandPalette() {
                 }
               >
                 <Plus className="mr-2" />
-                Create Project
+                创建项目
               </CommandItem>
             </CommandGroup>
-            <CommandGroup heading="Actions">
+            <CommandGroup heading="操作">
               <CommandItem
                 onSelect={() =>
                   runCommand(() => router.push(`/${orgSlug}/projects/new`))
                 }
               >
                 <Rocket className="mr-2" />
-                New Deployment
+                新建部署
               </CommandItem>
               <CommandItem
                 onSelect={() =>
@@ -109,21 +109,21 @@ export function CommandPalette() {
                 }
               >
                 <Building2 className="mr-2" />
-                Switch Organization
+                切换组织
               </CommandItem>
             </CommandGroup>
-            <CommandGroup heading="Theme">
+            <CommandGroup heading="主题">
               <CommandItem onSelect={() => runCommand(() => setTheme("light"))}>
                 <Sun className="mr-2" />
-                Light
+                浅色
               </CommandItem>
               <CommandItem onSelect={() => runCommand(() => setTheme("dark"))}>
                 <Moon className="mr-2" />
-                Dark
+                深色
               </CommandItem>
               <CommandItem onSelect={() => runCommand(() => setTheme("system"))}>
                 <Monitor className="mr-2" />
-                System
+                系统
               </CommandItem>
             </CommandGroup>
           </CommandList>

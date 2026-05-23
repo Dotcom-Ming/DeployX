@@ -4,13 +4,13 @@ import { Callout } from "../../components/callout";
 const commands = [
   {
     name: "dx deploy",
-    description: "Deploy your project to DeployX. Automatically detects the framework, builds the project, and creates a deployment.",
+    description: "将你的项目部署到 DeployX。自动检测框架、构建项目并创建部署。",
     flags: [
-      { flag: "--project <name>", description: "Target project name or ID" },
-      { flag: "--env <KEY=VALUE>", description: "Set environment variables for the deployment" },
-      { flag: "--branch <name>", description: "Deploy a specific Git branch (default: current branch)" },
-      { flag: "--no-cache", description: "Force a clean build without cache" },
-      { flag: "--production", description: "Deploy to production environment" },
+      { flag: "--project <name>", description: "目标项目名称或 ID" },
+      { flag: "--env <KEY=VALUE>", description: "为部署设置环境变量" },
+      { flag: "--branch <name>", description: "部署指定的 Git 分支（默认：当前分支）" },
+      { flag: "--no-cache", description: "强制进行无缓存的干净构建" },
+      { flag: "--production", description: "部署到生产环境" },
     ],
     examples: [
       "dx deploy",
@@ -21,13 +21,13 @@ const commands = [
   },
   {
     name: "dx logs",
-    description: "View real-time logs for your deployments. Supports filtering by deployment, type, and time range.",
+    description: "查看部署的实时日志。支持按部署、类型和时间范围进行筛选。",
     flags: [
-      { flag: "--project <name>", description: "Project name or ID" },
-      { flag: "--deployment <id>", description: "Specific deployment ID" },
-      { flag: "--type <type>", description: "Log type: build, runtime, or all (default: all)" },
-      { flag: "--follow, -f", description: "Follow log output in real-time" },
-      { flag: "--since <duration>", description: "Show logs since duration (e.g., 30m, 2h)" },
+      { flag: "--project <name>", description: "项目名称或 ID" },
+      { flag: "--deployment <id>", description: "特定部署 ID" },
+      { flag: "--type <type>", description: "日志类型：build、runtime 或 all（默认：all）" },
+      { flag: "--follow, -f", description: "实时跟踪日志输出" },
+      { flag: "--since <duration>", description: "显示自指定时长以来的日志（例如 30m、2h）" },
     ],
     examples: [
       "dx logs --project my-app",
@@ -37,12 +37,12 @@ const commands = [
   },
   {
     name: "dx domains",
-    description: "Manage custom domains for your projects. Add, remove, and verify domain configurations.",
+    description: "管理项目的自定义域名。添加、移除和验证域名配置。",
     flags: [
-      { flag: "add <domain>", description: "Add a custom domain to a project" },
-      { flag: "remove <domain>", description: "Remove a domain from a project" },
-      { flag: "verify <domain>", description: "Verify DNS configuration for a domain" },
-      { flag: "--project <name>", description: "Target project name or ID" },
+      { flag: "add <domain>", description: "为项目添加自定义域名" },
+      { flag: "remove <domain>", description: "从项目中移除域名" },
+      { flag: "verify <domain>", description: "验证域名的 DNS 配置" },
+      { flag: "--project <name>", description: "目标项目名称或 ID" },
     ],
     examples: [
       "dx domains add example.com --project my-app",
@@ -52,14 +52,14 @@ const commands = [
   },
   {
     name: "dx env",
-    description: "Manage environment variables for your projects. Variables are encrypted at rest and can be scoped to preview or production.",
+    description: "管理项目的环境变量。变量在静态存储时加密，并可限定在预览或生产环境中。",
     flags: [
-      { flag: "ls", description: "List all environment variables" },
-      { flag: "add <KEY=VALUE>", description: "Add or update an environment variable" },
-      { flag: "remove <KEY>", description: "Remove an environment variable" },
-      { flag: "--project <name>", description: "Target project name or ID" },
-      { flag: "--preview", description: "Scope variable to preview deployments only" },
-      { flag: "--production", description: "Scope variable to production deployments only" },
+      { flag: "ls", description: "列出所有环境变量" },
+      { flag: "add <KEY=VALUE>", description: "添加或更新环境变量" },
+      { flag: "remove <KEY>", description: "移除环境变量" },
+      { flag: "--project <name>", description: "目标项目名称或 ID" },
+      { flag: "--preview", description: "将变量限定为仅预览部署可用" },
+      { flag: "--production", description: "将变量限定为仅生产部署可用" },
     ],
     examples: [
       "dx env ls --project my-app",
@@ -70,13 +70,13 @@ const commands = [
   },
   {
     name: "dx projects",
-    description: "Create, list, and manage your DeployX projects.",
+    description: "创建、列出和管理你的 DeployX 项目。",
     flags: [
-      { flag: "ls", description: "List all projects in the current organization" },
-      { flag: "create <name>", description: "Create a new project" },
-      { flag: "delete <name>", description: "Delete a project" },
-      { flag: "--org <slug>", description: "Target organization" },
-      { flag: "--region <code>", description: "Deployment region (e.g., us-east, eu-west)" },
+      { flag: "ls", description: "列出当前组织中的所有项目" },
+      { flag: "create <name>", description: "创建新项目" },
+      { flag: "delete <name>", description: "删除项目" },
+      { flag: "--org <slug>", description: "目标组织" },
+      { flag: "--region <code>", description: "部署区域（例如 us-east、eu-west）" },
     ],
     examples: [
       "dx projects ls --org my-team",
@@ -86,14 +86,14 @@ const commands = [
   },
   {
     name: "dx orgs",
-    description: "Manage your organizations and team members.",
+    description: "管理你的组织和团队成员。",
     flags: [
-      { flag: "ls", description: "List all organizations you belong to" },
-      { flag: "create <name>", description: "Create a new organization" },
-      { flag: "members", description: "List organization members" },
-      { flag: "invite <email>", description: "Invite a member to the organization" },
-      { flag: "--org <slug>", description: "Target organization slug" },
-      { flag: "--role <role>", description: "Role for invited member (admin, developer, viewer)" },
+      { flag: "ls", description: "列出你所属的所有组织" },
+      { flag: "create <name>", description: "创建新组织" },
+      { flag: "members", description: "列出组织成员" },
+      { flag: "invite <email>", description: "邀请成员加入组织" },
+      { flag: "--org <slug>", description: "目标组织标识" },
+      { flag: "--role <role>", description: "被邀请成员的角色（admin、developer、viewer）" },
     ],
     examples: [
       "dx orgs ls",
@@ -107,17 +107,15 @@ const commands = [
 export default function CLIPage() {
   return (
     <div>
-      <h1>CLI Reference</h1>
+      <h1>CLI 参考</h1>
       <p>
-        The DeployX CLI (<code>dx</code>) is the primary way to interact with
-        the platform from your terminal. Install it globally and manage
-        deployments, domains, environment variables, and more.
+        DeployX CLI（<code>dx</code>）是从终端与平台交互的主要方式。
+        全局安装后即可管理部署、域名、环境变量等更多功能。
       </p>
 
-      <Callout variant="info" title="Installation">
-        Install the CLI with <code>npm install -g @deployx/cli</code>. See the{" "}
-        <a href="/getting-started">Getting Started</a> guide for detailed setup
-        instructions.
+      <Callout variant="info" title="安装">
+        使用 <code>npm install -g @deployx/cli</code> 安装 CLI。有关详细的设置说明，请参阅{" "}
+        <a href="/getting-started">入门指南</a>。
       </Callout>
 
       {commands.map((cmd) => (
@@ -127,12 +125,12 @@ export default function CLIPage() {
           </h2>
           <p>{cmd.description}</p>
 
-          <h3>Flags</h3>
+          <h3>标志</h3>
           <table>
             <thead>
               <tr>
-                <th>Flag</th>
-                <th>Description</th>
+                <th>标志</th>
+                <th>说明</th>
               </tr>
             </thead>
             <tbody>
@@ -147,7 +145,7 @@ export default function CLIPage() {
             </tbody>
           </table>
 
-          <h3>Examples</h3>
+          <h3>示例</h3>
           {cmd.examples.map((example) => (
             <CodeBlock key={example} language="bash">
               {example}
@@ -156,31 +154,31 @@ export default function CLIPage() {
         </div>
       ))}
 
-      <h2>Global Flags</h2>
-      <p>These flags are available on all commands:</p>
+      <h2>全局标志</h2>
+      <p>以下标志适用于所有命令：</p>
       <table>
         <thead>
           <tr>
-            <th>Flag</th>
-            <th>Description</th>
+            <th>标志</th>
+            <th>说明</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>--help</code></td>
-            <td>Show help for the command</td>
+            <td>显示命令的帮助信息</td>
           </tr>
           <tr>
             <td><code>--version</code></td>
-            <td>Print the CLI version</td>
+            <td>打印 CLI 版本号</td>
           </tr>
           <tr>
             <td><code>--debug</code></td>
-            <td>Enable verbose debug output</td>
+            <td>启用详细的调试输出</td>
           </tr>
           <tr>
             <td><code>--config &lt;path&gt;</code></td>
-            <td>Path to a custom config file</td>
+            <td>自定义配置文件的路径</td>
           </tr>
         </tbody>
       </table>

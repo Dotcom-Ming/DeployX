@@ -56,17 +56,17 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold">Analytics</h1>
+          <h1 className="text-2xl font-semibold">分析</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Traffic and performance metrics for your project
+            项目的流量和性能指标
           </p>
         </div>
         <Card>
           <CardContent className="py-12 text-center">
             <Activity className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium">No analytics data available</h3>
+            <h3 className="text-lg font-medium">暂无分析数据</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Analytics data will appear once your deployment starts receiving traffic.
+              部署开始接收流量后，分析数据将会显示。
             </p>
           </CardContent>
         </Card>
@@ -79,16 +79,16 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Analytics</h1>
+        <h1 className="text-2xl font-semibold">分析</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Traffic and performance metrics for your project
+          项目的流量和性能指标
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">总请求数</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -98,27 +98,27 @@ export default function AnalyticsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
+            <CardTitle className="text-sm font-medium">平均响应时间</CardTitle>
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.avgResponseTime}ms</div>
-            <p className="text-xs text-muted-foreground">p50 latency</p>
+            <p className="text-xs text-muted-foreground">p50 延迟</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Error Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">错误率</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.errorRate}%</div>
-            <p className="text-xs text-muted-foreground">4xx + 5xx responses</p>
+            <p className="text-xs text-muted-foreground">4xx + 5xx 响应</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Bandwidth</CardTitle>
+            <CardTitle className="text-sm font-medium">带宽</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.bandwidth.toFixed(1)} MB</div>
@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Request Volume</CardTitle>
+            <CardTitle>请求量</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-end gap-1 h-[200px]">
@@ -149,11 +149,11 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Top Pages</CardTitle>
+            <CardTitle>热门页面</CardTitle>
           </CardHeader>
           <CardContent>
             {data.topPages.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No page data available</p>
+              <p className="text-sm text-muted-foreground">暂无页面数据</p>
             ) : (
               <div className="space-y-3">
                 {data.topPages.map((page, i) => (
@@ -175,11 +175,11 @@ export default function AnalyticsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Top Referrers</CardTitle>
+          <CardTitle>热门来源</CardTitle>
         </CardHeader>
         <CardContent>
           {data.topReferrers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No referrer data available</p>
+            <p className="text-sm text-muted-foreground">暂无来源数据</p>
           ) : (
             <div className="space-y-3">
               {data.topReferrers.map((ref, i) => (

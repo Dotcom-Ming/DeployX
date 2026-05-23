@@ -9,7 +9,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "DeployX",
-  description: "Deploy your apps to the edge in seconds",
+  description: "在几秒内将您的应用部署到边缘节点",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" translate="no" suppressHydrationWarning>
+    <html lang="zh-CN" translate="no" suppressHydrationWarning>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}
         style={

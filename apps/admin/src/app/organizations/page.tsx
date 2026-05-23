@@ -86,16 +86,16 @@ export default function OrganizationsPage() {
               setOrgs([]);
               setTotal(0);
               setHasNextPage(false);
-              setError("Unexpected API response format for organizations");
+              setError("组织API响应格式异常");
             }
           } else {
-            setError(`API error: ${res.status}`);
+            setError(`API错误：${res.status}`);
           }
           setLoading(false);
         }
       } catch {
         if (!cancelled) {
-          setError("Failed to connect to API");
+          setError("无法连接到API服务器");
           setLoading(false);
         }
       }
@@ -114,12 +114,12 @@ export default function OrganizationsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Organizations</h1>
-          <p className="text-sm text-muted-foreground">Manage organizations on the platform</p>
+          <h1 className="text-2xl font-bold text-foreground">组织管理</h1>
+          <p className="text-sm text-muted-foreground">管理平台组织</p>
         </div>
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       </div>
     );
@@ -128,8 +128,8 @@ export default function OrganizationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Organizations</h1>
-        <p className="text-sm text-muted-foreground">Manage organizations on the platform</p>
+        <h1 className="text-2xl font-bold text-foreground">组织管理</h1>
+        <p className="text-sm text-muted-foreground">管理平台组织</p>
       </div>
 
       <form onSubmit={handleSearch} className="flex items-center gap-3">
@@ -138,7 +138,7 @@ export default function OrganizationsPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search organizations..."
+            placeholder="搜索组织..."
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -147,13 +147,13 @@ export default function OrganizationsPage() {
           onChange={(e) => { setPlanFilter(e.target.value); setPage(1); }}
           className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value="all">All Plans</option>
-          <option value="HOBBY">Hobby</option>
-          <option value="PRO">Pro</option>
-          <option value="ENTERPRISE">Enterprise</option>
+          <option value="all">全部方案</option>
+          <option value="HOBBY">免费版</option>
+          <option value="PRO">专业版</option>
+          <option value="ENTERPRISE">企业版</option>
         </select>
         <button type="submit" className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          Search
+          搜索
         </button>
       </form>
 
@@ -168,18 +168,18 @@ export default function OrganizationsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Name</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Slug</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Plan</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Members</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Projects</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Created</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">名称</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">标识</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">方案</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">成员</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">项目</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">创建时间</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orgs.length === 0 ? (
-                    <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No organizations found</td></tr>
+                    <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">未找到组织</td></tr>
                   ) : (
                     orgs.map((org) => (
                       <tr key={org.id} className="border-b border-border/50 last:border-0 hover:bg-muted/50">
@@ -195,8 +195,8 @@ export default function OrganizationsPage() {
                         <td className="px-4 py-3 text-muted-foreground">{org.created}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <button className="rounded px-2 py-1 text-xs font-medium text-info hover:bg-info/10">View</button>
-                            <button className="rounded px-2 py-1 text-xs font-medium text-warning hover:bg-warning/10">Suspend</button>
+                            <button className="rounded px-2 py-1 text-xs font-medium text-info hover:bg-info/10">查看</button>
+                            <button className="rounded px-2 py-1 text-xs font-medium text-warning hover:bg-warning/10">暂停</button>
                           </div>
                         </td>
                       </tr>
@@ -209,7 +209,7 @@ export default function OrganizationsPage() {
             {orgs.length > 0 && (
               <div className="flex items-center justify-between border-t border-border px-4 py-3">
                 <p className="text-sm text-muted-foreground">
-                  Showing {(page - 1) * 20 + 1}-{Math.min(page * 20, total)} of {total}
+                  显示 {(page - 1) * 20 + 1}-{Math.min(page * 20, total)}，共 {total}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -217,16 +217,16 @@ export default function OrganizationsPage() {
                     disabled={page === 1}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Previous
-                  </button>
-                  <span className="text-sm text-muted-foreground">Page {page}</span>
+                    上一页
+                    </button>
+                    <span className="text-sm text-muted-foreground">第 {page} 页</span>
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={!hasNextPage}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Next
-                  </button>
+                    下一页
+                    </button>
                 </div>
               </div>
             )}

@@ -96,11 +96,11 @@ export default function DeploymentsPage() {
           setHasNextPage(false);
         }
       } else {
-        setError(`API error: ${res.status}`);
+        setError(`API错误：${res.status}`);
         setDeployments([]);
       }
     } catch {
-      setError("Failed to connect to API");
+      setError("无法连接到API服务器");
       setDeployments([]);
     } finally {
       setLoading(false);
@@ -120,8 +120,8 @@ export default function DeploymentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Deployments</h1>
-        <p className="text-sm text-muted-foreground">View all deployments across the platform</p>
+        <h1 className="text-2xl font-bold text-foreground">部署管理</h1>
+        <p className="text-sm text-muted-foreground">查看平台所有部署</p>
       </div>
 
       {/* Filters */}
@@ -131,7 +131,7 @@ export default function DeploymentsPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search deployments..."
+            placeholder="搜索部署..."
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -143,25 +143,25 @@ export default function DeploymentsPage() {
           }}
           className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value="all">All Status</option>
-          <option value="READY">Ready</option>
-          <option value="BUILDING">Building</option>
-          <option value="ERROR">Error</option>
-          <option value="CANCELLED">Cancelled</option>
-          <option value="QUEUED">Queued</option>
+          <option value="all">全部状态</option>
+          <option value="READY">就绪</option>
+          <option value="BUILDING">构建中</option>
+          <option value="ERROR">错误</option>
+          <option value="CANCELLED">已取消</option>
+          <option value="QUEUED">排队中</option>
         </select>
         <button
           type="submit"
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
-          Search
+          搜索
         </button>
       </form>
 
       {error && (
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       )}
 
@@ -177,20 +177,20 @@ export default function DeploymentsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Project</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Org</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Branch</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Commit</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Duration</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Created</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">状态</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">项目</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">组织</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">分支</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">提交</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">耗时</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">创建时间</th>
                   </tr>
                 </thead>
                 <tbody>
                   {deployments.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
-                        No deployments found
+                        未找到部署
                       </td>
                     </tr>
                   ) : (
@@ -222,7 +222,7 @@ export default function DeploymentsPage() {
             {deployments.length > 0 && (
               <div className="flex items-center justify-between border-t border-border px-4 py-3">
                 <p className="text-sm text-muted-foreground">
-                  Showing {(page - 1) * 20 + 1}-{Math.min(page * 20, total)} of {total}
+                  显示 {(page - 1) * 20 + 1}-{Math.min(page * 20, total)}，共 {total}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -230,16 +230,16 @@ export default function DeploymentsPage() {
                     disabled={page === 1}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Previous
-                  </button>
-                  <span className="text-sm text-muted-foreground">Page {page}</span>
+                    上一页
+                    </button>
+                    <span className="text-sm text-muted-foreground">第 {page} 页</span>
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={!hasNextPage}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Next
-                  </button>
+                    下一页
+                    </button>
                 </div>
               </div>
             )}

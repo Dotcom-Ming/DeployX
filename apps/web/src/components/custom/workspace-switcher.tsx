@@ -123,13 +123,13 @@ export function WorkspaceSwitcher() {
 
       <PopoverContent className="w-[280px] p-0" align="start">
         <Command>
-          <CommandInput placeholder="Search workspaces..." />
+          <CommandInput placeholder="搜索工作区..." />
           <CommandList>
-            <CommandEmpty>No workspaces found.</CommandEmpty>
+            <CommandEmpty>未找到工作区。</CommandEmpty>
 
             {/* Personal Account */}
             {personalOrgs.length > 0 && (
-              <CommandGroup heading="Personal Account">
+              <CommandGroup heading="个人账号">
                 {personalOrgs.map((org) => (
                   <CommandItem
                     key={org.id}
@@ -154,7 +154,7 @@ export function WorkspaceSwitcher() {
             {teamOrgs.length > 0 && (
               <>
                 {personalOrgs.length > 0 && <CommandSeparator />}
-                <CommandGroup heading="Teams">
+                <CommandGroup heading="团队">
                   {teamOrgs.map((org) => (
                     <CommandItem
                       key={org.id}
@@ -193,7 +193,7 @@ export function WorkspaceSwitcher() {
               }}
             >
               <Plus className="h-4 w-4" />
-              Create Team
+              创建团队
             </Button>
           </div>
         </Command>

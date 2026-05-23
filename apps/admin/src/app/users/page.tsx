@@ -74,17 +74,17 @@ export default function UsersPage() {
           setTotal(normalized.length);
           setHasNextPage(false);
         } else {
-          setError("Unexpected API response format for users");
+          setError("用户API响应格式异常");
           setUsers([]);
           setTotal(0);
           setHasNextPage(false);
         }
       } else {
-        setError(`API error: ${res.status}`);
+        setError(`API错误：${res.status}`);
         setUsers([]);
       }
     } catch {
-      setError("Failed to connect to API");
+      setError("无法连接到API服务器");
       setUsers([]);
     } finally {
       setLoading(false);
@@ -103,24 +103,28 @@ export default function UsersPage() {
 
   const handleSuspend = async (userId: string) => {
     setActionLoading(userId);
+    setError(null);
     try {
-      await fetch(`${API_URL}/admin/users/${userId}/suspend`, { method: "POST" });
+      const res = await fetch(`${API_URL}/admin/users/${userId}/suspend`, { method: "POST" });
+      if (!res.ok) { setError(`暂停用户失败：${res.status}`); return; }
       fetchUsers(page, search, statusFilter);
     } catch {
-      console.error("Failed to suspend user");
+      setError("暂停用户时无法连接到API服务器");
     } finally {
       setActionLoading(null);
     }
   };
 
   const handleDelete = async (userId: string) => {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+    if (!confirm("确定要删除此用户吗？")) return;
     setActionLoading(userId);
+    setError(null);
     try {
-      await fetch(`${API_URL}/admin/users/${userId}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/admin/users/${userId}`, { method: "DELETE" });
+      if (!res.ok) { setError(`删除用户失败：${res.status}`); return; }
       fetchUsers(page, search, statusFilter);
     } catch {
-      console.error("Failed to delete user");
+      setError("删除用户时无法连接到API服务器");
     } finally {
       setActionLoading(null);
     }
@@ -135,12 +139,12 @@ export default function UsersPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Users</h1>
-          <p className="text-sm text-muted-foreground">Manage platform users</p>
+          <h1 className="text-2xl font-bold text-foreground">用户管理</h1>
+          <p className="text-sm text-muted-foreground">管理平台用户</p>
         </div>
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       </div>
     );
@@ -150,11 +154,17 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Users</h1>
-          <p className="text-sm text-muted-foreground">Manage platform users</p>
+          <h1 className="text-2xl font-bold text-foreground">用户管理</h1>
+          <p className="text-sm text-muted-foreground">管理平台用户</p>
         </div>
-        <p className="text-sm text-muted-foreground">{total} total users</p>
+        <p className="text-sm text-muted-foreground">共 {total} 个用户</p>
       </div>
+
+      {error && (
+        <div className="rounded-lg border border-error/30 bg-error/5 p-3 text-sm text-error">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSearch} className="flex items-center gap-3">
         <div className="flex-1">
@@ -162,7 +172,7 @@ export default function UsersPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search users by name or email..."
+            placeholder="按用户名或邮箱搜索..."
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -171,12 +181,12 @@ export default function UsersPage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
+          <option value="all">全部状态</option>
+          <option value="active">活跃</option>
+          <option value="suspended">已暂停</option>
         </select>
         <button type="submit" className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          Search
+          搜索
         </button>
       </form>
 
@@ -191,18 +201,18 @@ export default function UsersPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">User</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Orgs</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Deployments</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Created</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">用户</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">邮箱</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">组织</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">部署</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">创建时间</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">状态</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
-                    <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No users found</td></tr>
+                    <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">未找到用户</td></tr>
                   ) : (
                     users.map((user) => (
                       <tr key={user.id} className="border-b border-border/50 last:border-0 hover:bg-muted/50">
@@ -225,20 +235,20 @@ export default function UsersPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <button className="rounded px-2 py-1 text-xs font-medium text-info hover:bg-info/10">View</button>
+                            <button className="rounded px-2 py-1 text-xs font-medium text-info hover:bg-info/10">查看</button>
                             <button
                               onClick={() => handleSuspend(user.id)}
                               disabled={actionLoading === user.id}
                               className="rounded px-2 py-1 text-xs font-medium text-warning hover:bg-warning/10 disabled:opacity-50"
                             >
-                              {actionLoading === user.id ? "..." : "Suspend"}
+                              {actionLoading === user.id ? "..." : "暂停"}
                             </button>
                             <button
                               onClick={() => handleDelete(user.id)}
                               disabled={actionLoading === user.id}
                               className="rounded px-2 py-1 text-xs font-medium text-error hover:bg-error/10 disabled:opacity-50"
                             >
-                              {actionLoading === user.id ? "..." : "Delete"}
+                              {actionLoading === user.id ? "..." : "删除"}
                             </button>
                           </div>
                         </td>
@@ -252,7 +262,7 @@ export default function UsersPage() {
             {users.length > 0 && (
               <div className="flex items-center justify-between border-t border-border px-4 py-3">
                 <p className="text-sm text-muted-foreground">
-                  Showing {(page - 1) * 20 + 1}-{Math.min(page * 20, total)} of {total}
+                  显示 {(page - 1) * 20 + 1}-{Math.min(page * 20, total)}，共 {total}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -260,16 +270,16 @@ export default function UsersPage() {
                     disabled={page === 1}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Previous
-                  </button>
-                  <span className="text-sm text-muted-foreground">Page {page}</span>
+                    上一页
+                    </button>
+                    <span className="text-sm text-muted-foreground">第 {page} 页</span>
                   <button
                     onClick={() => handlePageChange(page + 1)}
                     disabled={!hasNextPage}
                     className="rounded px-3 py-1 text-sm font-medium border border-border disabled:opacity-50 hover:bg-muted"
                   >
-                    Next
-                  </button>
+                    下一页
+                    </button>
                 </div>
               </div>
             )}

@@ -38,7 +38,7 @@ class ApiClient {
     });
 
     if (!res.ok) {
-      let message = `Request failed: ${res.status}`;
+      let message = `请求失败: ${res.status}`;
       try {
         const errorBody = await res.json();
         message = errorBody.message ?? errorBody.error ?? message;
@@ -50,7 +50,7 @@ class ApiClient {
         localStorage.removeItem("deployx_token");
         localStorage.removeItem("deployx_refresh_token");
         window.location.href = "/login";
-        return Promise.reject(new Error("Unauthorized"));
+        return Promise.reject(new Error("未授权"));
       }
 
       if (process.env.NEXT_PUBLIC_SENTRY_DSN_WEB) {

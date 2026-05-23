@@ -25,15 +25,15 @@ export function TopBar() {
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">Feedback</span>
+            <span className="sr-only">反馈</span>
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <FileText className="h-4 w-4" />
-            <span className="sr-only">Changelog</span>
+            <span className="sr-only">更新日志</span>
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <HelpCircle className="h-4 w-4" />
-            <span className="sr-only">Help</span>
+            <span className="sr-only">帮助</span>
           </Button>
           <NotificationBell />
           <ThemeToggle />

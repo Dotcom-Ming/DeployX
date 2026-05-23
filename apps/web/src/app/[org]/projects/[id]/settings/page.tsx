@@ -17,20 +17,20 @@ export default function ProjectSettingsPage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-semibold">Project Settings</h1>
+        <h1 className="text-2xl font-semibold">项目设置</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Configure your project build and deployment settings
+          配置项目的构建和部署设置
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>General</CardTitle>
-          <CardDescription>Basic project information</CardDescription>
+          <CardTitle>常规</CardTitle>
+          <CardDescription>基本项目信息</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="projectName">Project Name</Label>
+            <Label htmlFor="projectName">项目名称</Label>
             <Input
               id="projectName"
               value={projectName}
@@ -43,12 +43,12 @@ export default function ProjectSettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Build Settings</CardTitle>
-          <CardDescription>Customize how your project is built</CardDescription>
+          <CardTitle>构建设置</CardTitle>
+          <CardDescription>自定义项目的构建方式</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="buildCommand">Build Command</Label>
+            <Label htmlFor="buildCommand">构建命令</Label>
             <Input
               id="buildCommand"
               placeholder="npm run build"
@@ -57,7 +57,7 @@ export default function ProjectSettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="outputDirectory">Output Directory</Label>
+            <Label htmlFor="outputDirectory">输出目录</Label>
             <Input
               id="outputDirectory"
               placeholder=".next"
@@ -66,7 +66,7 @@ export default function ProjectSettingsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="installCommand">Install Command</Label>
+            <Label htmlFor="installCommand">安装命令</Label>
             <Input
               id="installCommand"
               placeholder="npm install"
@@ -74,7 +74,7 @@ export default function ProjectSettingsPage() {
               onChange={(e) => setInstallCommand(e.target.value)}
             />
           </div>
-          <Button>Save Changes</Button>
+          <Button>保存更改</Button>
         </CardContent>
       </Card>
 
@@ -82,22 +82,22 @@ export default function ProjectSettingsPage() {
 
       <Card className="border-destructive/50">
         <CardHeader>
-          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardTitle className="text-destructive">危险操作</CardTitle>
           <CardDescription>
-            Irreversible and destructive actions
+            不可逆的破坏性操作
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Delete Project</p>
+              <p className="font-medium">删除项目</p>
               <p className="text-sm text-muted-foreground">
-                Once deleted, there is no going back. All deployments and data will be permanently removed.
+                一旦删除，无法恢复。所有部署和数据将被永久清除。
               </p>
             </div>
             <Button variant="destructive">
               <Trash2 className="h-4 w-4 mr-1" />
-              Delete
+              删除
             </Button>
           </div>
         </CardContent>

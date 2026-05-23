@@ -29,14 +29,14 @@ function getActivityType(dep: any): string {
 
 function getActivityDescription(dep: any): string {
   const action: Record<string, string> = {
-    [DeploymentStatus.READY]: "Deployment succeeded",
-    [DeploymentStatus.BUILDING]: "Deployment started building",
-    [DeploymentStatus.ERROR]: "Deployment failed",
-    [DeploymentStatus.QUEUED]: "Deployment queued",
-    [DeploymentStatus.PENDING]: "Deployment pending",
-    [DeploymentStatus.CANCELLED]: "Deployment cancelled",
+    [DeploymentStatus.READY]: "部署成功",
+    [DeploymentStatus.BUILDING]: "部署开始构建",
+    [DeploymentStatus.ERROR]: "部署失败",
+    [DeploymentStatus.QUEUED]: "部署已排队",
+    [DeploymentStatus.PENDING]: "部署待处理",
+    [DeploymentStatus.CANCELLED]: "部署已取消",
   };
-  return action[dep.status] || "Deployment updated";
+  return action[dep.status] || "部署已更新";
 }
 
 function groupByDate(items: any[]): Map<string, any[]> {
@@ -100,17 +100,17 @@ export default function ActivityPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold">Activity</h1>
+          <h1 className="text-2xl font-semibold">动态</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Audit log and recent activity for your organization
+            组织的审计日志和最近活动
           </p>
         </div>
         <Card>
           <CardContent className="py-8">
             <EmptyState
               icon={Activity}
-              title="No activity yet"
-              description="Actions performed in your organization will appear here"
+              title="暂无动态"
+              description="在组织中执行的操作将显示在此处"
             />
           </CardContent>
         </Card>
@@ -121,9 +121,9 @@ export default function ActivityPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Activity</h1>
+        <h1 className="text-2xl font-semibold">动态</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Audit log and recent activity for your organization
+          组织的审计日志和最近活动
         </p>
       </div>
 

@@ -85,16 +85,16 @@ export default function DashboardPage() {
               setError(null);
             } else {
               setData(null);
-              setError("Unexpected API response format for dashboard");
+              setError("仪表盘API响应格式异常");
             }
           } else {
-            setError(`API error: ${res.status}`);
+            setError(`API错误：${res.status}`);
           }
           setLoading(false);
         }
       } catch {
         if (!cancelled) {
-          setError("Failed to connect to API");
+          setError("无法连接到API服务器");
           setLoading(false);
         }
       }
@@ -116,12 +116,12 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Platform overview and key metrics</p>
+          <h1 className="text-2xl font-bold text-foreground">控制台</h1>
+          <p className="text-sm text-muted-foreground">平台概览和关键指标</p>
         </div>
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       </div>
     );
@@ -130,10 +130,10 @@ export default function DashboardPage() {
   if (!data) return null;
 
   const stats = [
-    { label: "Total Users", value: data.stats.totalUsers.toLocaleString(), change: `+${data.stats.usersThisWeek} this week`, trend: "up" as const },
-    { label: "Total Orgs", value: data.stats.totalOrgs.toLocaleString(), change: `+${data.stats.orgsThisWeek} this week`, trend: "up" as const },
-    { label: "Deployments (7d)", value: data.stats.deploymentsThisWeek.toLocaleString(), change: `${data.stats.deploymentChange} vs last week`, trend: "up" as const },
-    { label: "Total Deployments", value: data.stats.totalDeployments.toLocaleString(), change: "All time", trend: "up" as const },
+    { label: "用户总数", value: data.stats.totalUsers.toLocaleString(), change: `+${data.stats.usersThisWeek} 本周`, trend: "up" as const },
+    { label: "组织总数", value: data.stats.totalOrgs.toLocaleString(), change: `+${data.stats.orgsThisWeek} 本周`, trend: "up" as const },
+    { label: "部署（7天）", value: data.stats.deploymentsThisWeek.toLocaleString(), change: `${data.stats.deploymentChange} 较上周`, trend: "up" as const },
+    { label: "部署总数", value: data.stats.totalDeployments.toLocaleString(), change: "全部", trend: "up" as const },
   ];
 
   const maxSignups = Math.max(...data.signupsByDay.map((d) => d.value), 1);
@@ -160,17 +160,17 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Signups This Week</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">本周注册</h2>
           <MiniBarChart data={data.signupsByDay} maxVal={maxSignups} />
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Deployments This Week</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">本周部署</h2>
           <MiniBarChart data={data.deploymentsByDay} maxVal={maxDeployments} />
         </div>
       </div>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">System Health</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">系统健康</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {data.systemHealth.map((service) => (
             <div key={service.name} className="flex items-center gap-3 rounded-md border border-border p-3">
@@ -185,21 +185,21 @@ export default function DashboardPage() {
       </div>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Recent Activity</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">最近活动</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="pb-2 text-left font-medium text-muted-foreground">User</th>
-                <th className="pb-2 text-left font-medium text-muted-foreground">Action</th>
-                <th className="pb-2 text-left font-medium text-muted-foreground">Target</th>
-                <th className="pb-2 text-left font-medium text-muted-foreground">Time</th>
-                <th className="pb-2 text-left font-medium text-muted-foreground">Status</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">用户</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">操作</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">目标</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">时间</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">状态</th>
               </tr>
             </thead>
             <tbody>
               {data.recentActivity.length === 0 ? (
-                <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">No recent activity</td></tr>
+                <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">暂无最近活动</td></tr>
               ) : (
                 data.recentActivity.map((activity) => (
                   <tr key={activity.id} className="border-b border-border/50 last:border-0">

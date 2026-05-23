@@ -9,19 +9,19 @@ export default function LogsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Logs</h1>
+          <h1 className="text-2xl font-semibold">日志</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Real-time runtime logs for your project
+            项目的实时运行时日志
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-1" />
-            Filter
+            筛选
           </Button>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-1" />
-            Export
+            导出
           </Button>
         </div>
       </div>

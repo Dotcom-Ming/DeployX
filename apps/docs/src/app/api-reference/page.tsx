@@ -3,58 +3,58 @@ import { Callout } from "../../components/callout";
 
 const endpointCategories = [
   {
-    name: "Projects",
+    name: "项目",
     basePath: "/v1/projects",
     endpoints: [
-      { method: "GET", path: "/orgs/{orgSlug}/projects", description: "List projects" },
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}", description: "Get a project" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects", description: "Create a project" },
-      { method: "PATCH", path: "/orgs/{orgSlug}/projects/{projectId}", description: "Update a project" },
-      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}", description: "Delete a project" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects", description: "列出项目" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}", description: "获取项目" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects", description: "创建项目" },
+      { method: "PATCH", path: "/orgs/{orgSlug}/projects/{projectId}", description: "更新项目" },
+      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}", description: "删除项目" },
     ],
   },
   {
-    name: "Deployments",
+    name: "部署",
     basePath: "/v1/deployments",
     endpoints: [
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments", description: "List deployments" },
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}", description: "Get a deployment" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments", description: "Trigger a deployment" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/cancel", description: "Cancel a deployment" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/redeploy", description: "Redeploy" },
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/logs", description: "Get deployment logs" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments", description: "列出部署" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}", description: "获取部署" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments", description: "触发部署" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/cancel", description: "取消部署" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/redeploy", description: "重新部署" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/deployments/{deploymentId}/logs", description: "获取部署日志" },
     ],
   },
   {
-    name: "Domains",
+    name: "域名",
     basePath: "/v1/domains",
     endpoints: [
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/domains", description: "List domains" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/domains", description: "Add a domain" },
-      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}/domains/{domainId}", description: "Remove a domain" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/domains/{domainId}/verify", description: "Verify a domain" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/domains", description: "列出域名" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/domains", description: "添加域名" },
+      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}/domains/{domainId}", description: "移除域名" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/domains/{domainId}/verify", description: "验证域名" },
     ],
   },
   {
-    name: "Environment Variables",
+    name: "环境变量",
     basePath: "/v1/env",
     endpoints: [
-      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/env", description: "List environment variables" },
-      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/env", description: "Create an environment variable" },
-      { method: "PATCH", path: "/orgs/{orgSlug}/projects/{projectId}/env/{varId}", description: "Update an environment variable" },
-      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}/env/{varId}", description: "Remove an environment variable" },
+      { method: "GET", path: "/orgs/{orgSlug}/projects/{projectId}/env", description: "列出环境变量" },
+      { method: "POST", path: "/orgs/{orgSlug}/projects/{projectId}/env", description: "创建环境变量" },
+      { method: "PATCH", path: "/orgs/{orgSlug}/projects/{projectId}/env/{varId}", description: "更新环境变量" },
+      { method: "DELETE", path: "/orgs/{orgSlug}/projects/{projectId}/env/{varId}", description: "删除环境变量" },
     ],
   },
   {
-    name: "Organizations",
+    name: "组织",
     basePath: "/v1/orgs",
     endpoints: [
-      { method: "GET", path: "/orgs", description: "List organizations" },
-      { method: "GET", path: "/orgs/{orgSlug}", description: "Get an organization" },
-      { method: "POST", path: "/orgs", description: "Create an organization" },
-      { method: "PATCH", path: "/orgs/{orgSlug}", description: "Update an organization" },
-      { method: "GET", path: "/orgs/{orgSlug}/members", description: "List members" },
-      { method: "POST", path: "/orgs/{orgSlug}/members/invite", description: "Invite a member" },
+      { method: "GET", path: "/orgs", description: "列出组织" },
+      { method: "GET", path: "/orgs/{orgSlug}", description: "获取组织" },
+      { method: "POST", path: "/orgs", description: "创建组织" },
+      { method: "PATCH", path: "/orgs/{orgSlug}", description: "更新组织" },
+      { method: "GET", path: "/orgs/{orgSlug}/members", description: "列出成员" },
+      { method: "POST", path: "/orgs/{orgSlug}/members/invite", description: "邀请成员" },
     ],
   },
 ];
@@ -69,21 +69,20 @@ const methodColors: Record<string, string> = {
 export default function APIReferencePage() {
   return (
     <div>
-      <h1>API Reference</h1>
+      <h1>API 参考</h1>
       <p>
-        The DeployX REST API enables programmatic access to the platform.
-        Use it to integrate DeployX into your CI/CD pipelines, build custom
-        dashboards, or automate workflows.
+        DeployX REST API 提供对平台的编程访问。使用它可以将 DeployX 集成到你的 CI/CD 流水线中、
+        构建自定义仪表板或自动化工作流程。
       </p>
 
-      <h2>Base URL</h2>
+      <h2>基础 URL</h2>
       <CodeBlock language="text">https://api.deployx.com/v1</CodeBlock>
 
-      <h2>Authentication</h2>
+      <h2>身份验证</h2>
       <p>
-        All API requests require authentication via a Bearer token in the{" "}
-        <code>Authorization</code> header. Generate API tokens from your
-        DeployX dashboard under Settings → API Tokens.
+        所有 API 请求都需要通过{" "}
+        <code>Authorization</code> 标头中的 Bearer 令牌进行身份验证。在
+        DeployX 仪表板的设置 → API 令牌中生成 API 令牌。
       </p>
       <CodeBlock language="bash">
 {`# Example authenticated request
@@ -91,15 +90,14 @@ curl -H "Authorization: Bearer dx_live_abc123def456" \\
   https://api.deployx.com/v1/orgs`}
       </CodeBlock>
 
-      <Callout variant="warning" title="Token Security">
-        API tokens carry the same permissions as your account. Never expose
-        them in client-side code or commit them to version control. Use
-        environment variables or secrets management in CI/CD.
+      <Callout variant="warning" title="令牌安全">
+        API 令牌拥有与你的账户相同的权限。切勿将它们暴露在客户端代码中或提交到版本控制。
+        在 CI/CD 中使用环境变量或密钥管理。
       </Callout>
 
-      <h2>Response Format</h2>
+      <h2>响应格式</h2>
       <p>
-        The API returns JSON responses with a consistent structure:
+        API 返回具有一致结构的 JSON 响应：
       </p>
       <CodeBlock language="json">
 {`{
@@ -112,9 +110,9 @@ curl -H "Authorization: Bearer dx_live_abc123def456" \\
 }`}
       </CodeBlock>
 
-      <h2>Error Handling</h2>
+      <h2>错误处理</h2>
       <p>
-        Errors follow RFC 7807 problem detail format:
+        错误遵循 RFC 7807 问题详情格式：
       </p>
       <CodeBlock language="json">
 {`{
@@ -128,31 +126,31 @@ curl -H "Authorization: Bearer dx_live_abc123def456" \\
       <table>
         <thead>
           <tr>
-            <th>Status Code</th>
-            <th>Meaning</th>
+            <th>状态码</th>
+            <th>含义</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>400</td><td>Bad Request — Invalid parameters</td></tr>
-          <tr><td>401</td><td>Unauthorized — Missing or invalid token</td></tr>
-          <tr><td>403</td><td>Forbidden — Insufficient permissions</td></tr>
-          <tr><td>404</td><td>Not Found — Resource does not exist</td></tr>
-          <tr><td>429</td><td>Rate Limited — Too many requests</td></tr>
-          <tr><td>500</td><td>Internal Server Error</td></tr>
+          <tr><td>400</td><td>错误请求 — 无效参数</td></tr>
+          <tr><td>401</td><td>未授权 — 缺少或无效的令牌</td></tr>
+          <tr><td>403</td><td>禁止访问 — 权限不足</td></tr>
+          <tr><td>404</td><td>未找到 — 资源不存在</td></tr>
+          <tr><td>429</td><td>请求过多 — 请求频率过高</td></tr>
+          <tr><td>500</td><td>服务器内部错误</td></tr>
         </tbody>
       </table>
 
-      <h2>Rate Limits</h2>
+      <h2>速率限制</h2>
       <p>
-        API requests are rate-limited to ensure platform stability:
+        API 请求受到速率限制，以确保平台稳定性：
       </p>
       <ul>
-        <li>Hobby: 60 requests / minute</li>
-        <li>Pro: 300 requests / minute</li>
-        <li>Business: 1,000 requests / minute</li>
+        <li>Hobby: 每分钟 60 次</li>
+        <li>Pro: 每分钟 300 次</li>
+        <li>Business: 每分钟 1,000 次</li>
       </ul>
       <p>
-        Rate limit headers are included in every response:
+        每个响应中都包含速率限制标头：
       </p>
       <CodeBlock language="text">
 {`X-RateLimit-Limit: 300
@@ -160,16 +158,16 @@ X-RateLimit-Remaining: 298
 X-RateLimit-Reset: 1700000000`}
       </CodeBlock>
 
-      <h2>Endpoints</h2>
+      <h2>接口列表</h2>
       {endpointCategories.map((category) => (
         <div key={category.name}>
           <h3>{category.name}</h3>
           <table>
             <thead>
               <tr>
-                <th>Method</th>
-                <th>Endpoint</th>
-                <th>Description</th>
+                <th>方法</th>
+                <th>接口</th>
+                <th>描述</th>
               </tr>
             </thead>
             <tbody>
@@ -202,7 +200,7 @@ X-RateLimit-Reset: 1700000000`}
 
       <h2>SDK</h2>
       <p>
-        For a better developer experience, use the official DeployX SDK:
+        为了获得更好的开发体验，请使用官方 DeployX SDK：
       </p>
       <CodeBlock language="typescript">
 {`import { DeployXClient } from "@deployx/sdk";

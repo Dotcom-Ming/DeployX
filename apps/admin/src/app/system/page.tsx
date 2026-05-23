@@ -84,13 +84,13 @@ export default function SystemPage() {
             setData(isSystemData(normalized) ? normalized : null);
             setError(null);
           } else {
-            setError(`API error: ${res.status}`);
+            setError(`API错误：${res.status}`);
           }
           setLoading(false);
         }
       } catch {
         if (!cancelled) {
-          setError("Failed to connect to API");
+          setError("无法连接到API服务器");
           setLoading(false);
         }
       }
@@ -113,12 +113,12 @@ export default function SystemPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">System</h1>
-          <p className="text-sm text-muted-foreground">Platform health and infrastructure monitoring</p>
+          <h1 className="text-2xl font-bold text-foreground">系统</h1>
+          <p className="text-sm text-muted-foreground">平台健康与基础设施监控</p>
         </div>
         <div className="rounded-lg border border-error/30 bg-error/5 p-6 text-center">
           <p className="text-error">{error}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Make sure the API server is running on {API_URL}</p>
+          <p className="mt-2 text-sm text-muted-foreground">请确保API服务器运行在 {API_URL}</p>
         </div>
       </div>
     );
@@ -155,7 +155,7 @@ export default function SystemPage() {
             </div>
             <p className="text-xs text-muted-foreground">{service.details}</p>
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Uptime: {service.uptime}</span>
+              <span>运行时长：{service.uptime}</span>
               <span>{service.lastCheck}</span>
             </div>
           </div>
@@ -165,13 +165,13 @@ export default function SystemPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Database Stats */}
         <div className="rounded-lg border border-border bg-card p-4">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Database</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">数据库</h2>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Connections</span>
+              <span className="text-sm text-muted-foreground">连接数</span>
               <span className="text-sm font-mono text-foreground">
                 {data.dbStats.connections.current} / {data.dbStats.connections.max}
-                <span className="text-muted-foreground"> ({data.dbStats.connections.idle} idle)</span>
+                <span className="text-muted-foreground"> ({data.dbStats.connections.idle} 空闲)</span>
               </span>
             </div>
             <div className="h-2 w-full rounded-full bg-muted">
@@ -183,15 +183,15 @@ export default function SystemPage() {
               />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Queries/s</span>
+              <span className="text-sm text-muted-foreground">查询/秒</span>
               <span className="text-sm font-mono text-foreground">{data.dbStats.queriesPerSecond}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Replication Lag</span>
+              <span className="text-sm text-muted-foreground">复制延迟</span>
               <span className="text-sm font-mono text-foreground">{data.dbStats.replicationLag}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Disk Usage</span>
+              <span className="text-sm text-muted-foreground">磁盘使用</span>
               <span className="text-sm font-mono text-foreground">{data.dbStats.diskUsage}</span>
             </div>
           </div>
@@ -202,19 +202,19 @@ export default function SystemPage() {
           <h2 className="text-sm font-semibold text-foreground mb-4">Redis</h2>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Connected Clients</span>
+              <span className="text-sm text-muted-foreground">已连接客户端</span>
               <span className="text-sm font-mono text-foreground">{data.redisStats.connectedClients}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Used Memory</span>
+              <span className="text-sm text-muted-foreground">已用内存</span>
               <span className="text-sm font-mono text-foreground">{data.redisStats.usedMemory}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Hit Rate</span>
+              <span className="text-sm text-muted-foreground">命中率</span>
               <span className="text-sm font-mono text-foreground">{data.redisStats.hitRate}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Ops/s</span>
+              <span className="text-sm text-muted-foreground">操作/秒</span>
               <span className="text-sm font-mono text-foreground">{data.redisStats.opsPerSecond}</span>
             </div>
           </div>
@@ -223,16 +223,16 @@ export default function SystemPage() {
 
       {/* Queue Stats */}
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Job Queues</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">任务队列</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="pb-2 text-left font-medium text-muted-foreground">Queue</th>
-                <th className="pb-2 text-right font-medium text-muted-foreground">Pending</th>
-                <th className="pb-2 text-right font-medium text-muted-foreground">Active</th>
-                <th className="pb-2 text-right font-medium text-muted-foreground">Completed</th>
-                <th className="pb-2 text-right font-medium text-muted-foreground">Failed</th>
+                <th className="pb-2 text-left font-medium text-muted-foreground">队列</th>
+                <th className="pb-2 text-right font-medium text-muted-foreground">等待中</th>
+                <th className="pb-2 text-right font-medium text-muted-foreground">进行中</th>
+                <th className="pb-2 text-right font-medium text-muted-foreground">已完成</th>
+                <th className="pb-2 text-right font-medium text-muted-foreground">失败</th>
               </tr>
             </thead>
             <tbody>
@@ -272,10 +272,10 @@ export default function SystemPage() {
 
       {/* Recent Errors */}
       <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Recent Errors</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">最近错误</h2>
         <div className="space-y-2">
           {data.recentErrors.length === 0 ? (
-            <div className="py-4 text-center text-muted-foreground">No recent errors</div>
+            <div className="py-4 text-center text-muted-foreground">暂无最近错误</div>
           ) : (
             data.recentErrors.map((err) => (
               <div key={err.id} className="flex items-start gap-3 rounded-md border border-border/50 p-3">

@@ -12,22 +12,22 @@ const calloutStyles: Record<CalloutVariant, { container: string; icon: string; l
   info: {
     container: "border-info/30 bg-info/5",
     icon: "text-info",
-    label: "Info",
+    label: "提示",
   },
   warning: {
     container: "border-warning/30 bg-warning/5",
     icon: "text-warning",
-    label: "Warning",
+    label: "警告",
   },
   tip: {
     container: "border-success/30 bg-success/5",
     icon: "text-success",
-    label: "Tip",
+    label: "技巧",
   },
   danger: {
     container: "border-error/30 bg-error/5",
     icon: "text-error",
-    label: "Danger",
+    label: "危险",
   },
 };
 

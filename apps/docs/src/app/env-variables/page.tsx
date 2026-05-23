@@ -4,26 +4,24 @@ import { Callout } from "../../components/callout";
 export default function EnvVariablesPage() {
   return (
     <div>
-      <h1>Environment Variables</h1>
+      <h1>环境变量</h1>
       <p>
-        DeployX allows you to manage environment variables for your
-        projects. Variables are encrypted at rest and can be scoped to
-        specific deployment environments.
+        DeployX 允许你管理项目中的环境变量。
+        变量在静态存储时经过加密，并可以限定在特定的部署环境范围内。
       </p>
 
-      <h2>Managing Variables</h2>
+      <h2>管理变量</h2>
 
-      <h3>List Variables</h3>
+      <h3>列出变量</h3>
       <CodeBlock language="bash">
 {`# List all environment variables for a project
 dx env ls --project my-app`}
       </CodeBlock>
       <p>
-        The output shows variable names, scopes, and creation dates. Values
-        are never displayed in the CLI output for security.
+        输出结果显示变量名称、作用域和创建日期。出于安全考虑，值永远不会显示在 CLI 输出中。
       </p>
 
-      <h3>Add a Variable</h3>
+      <h3>添加变量</h3>
       <CodeBlock language="bash">
 {`# Add a production variable
 dx env add DATABASE_URL=postgres://user:pass@host:5432/db --project my-app --production
@@ -35,69 +33,63 @@ dx env add DEBUG=true --project my-app --preview
 dx env add API_VERSION=v2 --project my-app`}
       </CodeBlock>
 
-      <h3>Remove a Variable</h3>
+      <h3>移除变量</h3>
       <CodeBlock language="bash">
 {`# Remove a specific variable
 dx env remove OLD_API_KEY --project my-app`}
       </CodeBlock>
 
-      <h2>Scoping</h2>
+      <h2>作用域</h2>
       <p>
-        Environment variables can be scoped to specific deployment
-        environments:
+        环境变量可以限定在特定的部署环境中：
       </p>
       <table>
         <thead>
           <tr>
-            <th>Scope</th>
-            <th>Flag</th>
-            <th>Description</th>
+            <th>作用域</th>
+            <th>标志</th>
+            <th>说明</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Production</td>
+            <td>生产</td>
             <td><code>--production</code></td>
-            <td>Available in production deployments only</td>
+            <td>仅在生产部署中可用</td>
           </tr>
           <tr>
-            <td>Preview</td>
+            <td>预览</td>
             <td><code>--preview</code></td>
-            <td>Available in preview deployments only</td>
+            <td>仅在预览部署中可用</td>
           </tr>
           <tr>
-            <td>All</td>
-            <td>(default)</td>
-            <td>Available in all deployment environments</td>
+            <td>全部</td>
+            <td>（默认）</td>
+            <td>在所有部署环境中可用</td>
           </tr>
         </tbody>
       </table>
 
-      <h2>Encryption</h2>
+      <h2>加密</h2>
       <p>
-        All environment variables are encrypted at rest using AES-256-GCM
-        encryption. DeployX never stores or displays variable values in
-        plaintext after creation.
+        所有环境变量在静态存储时均使用 AES-256-GCM 加密。
+        DeployX 在创建后绝不会以明文形式存储或显示变量值。
       </p>
       <ul>
-        <li>AES-256-GCM encryption for all stored values</li>
-        <li>Values are decrypted only at build time and runtime</li>
-        <li>Encrypted in transit via TLS 1.3</li>
-        <li>Access logs track all reads of sensitive variables</li>
+        <li>所有存储的值均采用 AES-256-GCM 加密</li>
+        <li>值仅在构建时和运行时解密</li>
+        <li>通过 TLS 1.3 在传输过程中加密</li>
+        <li>访问日志记录所有对敏感变量的读取操作</li>
       </ul>
 
-      <Callout variant="info" title="Encryption Details">
-        DeployX uses a per-project encryption key derived from a
-        hardware security module (HSM). Keys are rotated automatically and
-        never stored alongside encrypted values. This ensures that even if
-        the database is compromised, variable values remain protected.
+      <Callout variant="info" title="加密详情">
+        DeployX 使用从硬件安全模块（HSM）派生出的每个项目专属加密密钥。
+        密钥会自动轮换，并且绝不会与加密值一起存储。这确保了即使数据库被入侵，变量值仍然受到保护。
       </Callout>
 
-      <h2>Using Variables in Your App</h2>
+      <h2>在应用中使用变量</h2>
       <p>
-        Environment variables are automatically available in your application
-        via <code>process.env</code> (Node.js) or the appropriate runtime
-        mechanism:
+        环境变量通过 <code>process.env</code>（Node.js）或相应的运行时机制自动在你的应用程序中可用：
       </p>
       <CodeBlock language="javascript" filename="app.js">
 {`// Access environment variables in Node.js
@@ -108,34 +100,30 @@ const apiKey = process.env.API_KEY;
 const publicVar = process.env.NEXT_PUBLIC_API_URL;`}
       </CodeBlock>
 
-      <h2>Framework-Specific Notes</h2>
+      <h2>框架特定说明</h2>
       <h3>Next.js</h3>
       <p>
-        Variables prefixed with <code>NEXT_PUBLIC_</code> are exposed to the
-        browser. All other variables are only available in API routes and
-        server-side code.
+        以 <code>NEXT_PUBLIC_</code> 为前缀的变量会暴露给浏览器。
+        所有其他变量仅在 API 路由和服务器端代码中可用。
       </p>
       <h3>Nuxt</h3>
       <p>
-        Use the <code>RUNTIME_CONFIG</code> key in <code>nuxt.config</code>{" "}
-        to map environment variables to your application.
+        在 <code>nuxt.config</code> 中使用 <code>RUNTIME_CONFIG</code> 键来将环境变量映射到你的应用程序。
       </p>
       <h3>Vite</h3>
       <p>
-        Variables prefixed with <code>VITE_</code> are exposed to the
-        browser. All other variables are only available during the build.
+        以 <code>VITE_</code> 为前缀的变量会暴露给浏览器。
+        所有其他变量仅在构建过程中可用。
       </p>
 
-      <Callout variant="warning" title="Sensitive Data">
-        Never expose sensitive credentials (API keys, database passwords,
-        secrets) to the client side. Only use framework-specific public
-        prefixes for non-sensitive configuration values.
+      <Callout variant="warning" title="敏感数据">
+        切勿将敏感凭据（API 密钥、数据库密码、机密信息）暴露给客户端。
+        仅对非敏感的配置值使用框架特定的公共前缀。
       </Callout>
 
-      <h2>CI/CD Integration</h2>
+      <h2>CI/CD 集成</h2>
       <p>
-        For CI/CD pipelines, use an API token to manage environment
-        variables:
+        对于 CI/CD 流水线，请使用 API 令牌来管理环境变量：
       </p>
       <CodeBlock language="yaml" filename=".github/workflows/deploy.yml">
 {`name: Deploy

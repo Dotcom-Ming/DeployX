@@ -62,7 +62,7 @@ export default function DeploymentsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading deployments...</p>
+        <p className="text-muted-foreground">加载部署列表...</p>
       </div>
     );
   }
@@ -70,17 +70,17 @@ export default function DeploymentsPage() {
   return (
     <div className="space-y-6 p-6 lg:p-8 max-w-7xl">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold">Deployments</h1>
+        <h1 className="text-2xl font-bold">部署</h1>
       </motion.div>
 
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder="状态" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="all">全部状态</SelectItem>
             {Object.values(DeploymentStatus).map((s) => (
               <SelectItem key={s} value={s} className="capitalize">{s.toLowerCase()}</SelectItem>
             ))}
@@ -88,10 +88,10 @@ export default function DeploymentsPage() {
         </Select>
         <Select value={branchFilter} onValueChange={setBranchFilter}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Branch" />
+            <SelectValue placeholder="分支" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Branches</SelectItem>
+            <SelectItem value="all">全部分支</SelectItem>
             {branches.map((b: string) => (
               <SelectItem key={b} value={b}>{b}</SelectItem>
             ))}
@@ -99,12 +99,12 @@ export default function DeploymentsPage() {
         </Select>
         <Select value={envFilter} onValueChange={setEnvFilter}>
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Environment" />
+            <SelectValue placeholder="环境" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Environments</SelectItem>
-            <SelectItem value={DeploymentType.PRODUCTION}>Production</SelectItem>
-            <SelectItem value={DeploymentType.PREVIEW}>Preview</SelectItem>
+            <SelectItem value="all">全部环境</SelectItem>
+            <SelectItem value={DeploymentType.PRODUCTION}>生产环境</SelectItem>
+            <SelectItem value={DeploymentType.PREVIEW}>预览环境</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -117,11 +117,11 @@ export default function DeploymentsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-muted-foreground">
-                    <th className="text-left p-4 font-medium">Status</th>
-                    <th className="text-left p-4 font-medium">Environment</th>
-                    <th className="text-left p-4 font-medium">Source</th>
-                    <th className="text-left p-4 font-medium">Duration</th>
-                    <th className="text-left p-4 font-medium">Created</th>
+                    <th className="text-left p-4 font-medium">状态</th>
+                    <th className="text-left p-4 font-medium">环境</th>
+                    <th className="text-left p-4 font-medium">来源</th>
+                    <th className="text-left p-4 font-medium">时长</th>
+                    <th className="text-left p-4 font-medium">创建时间</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -138,7 +138,7 @@ export default function DeploymentsPage() {
                       </td>
                       <td className="p-4">
                         <Badge variant={dep.type === DeploymentType.PRODUCTION ? "default" : "secondary"}>
-                          {dep.type === DeploymentType.PRODUCTION ? "Production" : "Preview"}
+                          {dep.type === DeploymentType.PRODUCTION ? "生产环境" : "预览环境"}
                         </Badge>
                       </td>
                       <td className="p-4">
@@ -154,7 +154,7 @@ export default function DeploymentsPage() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   navigator.clipboard.writeText(dep.commitSha);
-                                  toast.success("Copied commit SHA");
+                                  toast.success("已复制提交 SHA");
                                 }}
                               >
                                 <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />
@@ -177,7 +177,7 @@ export default function DeploymentsPage() {
                   {filtered.length === 0 && (
                     <tr>
                       <td colSpan={5} className="p-8 text-center text-muted-foreground">
-                        No deployments found
+                        未找到部署
                       </td>
                     </tr>
                   )}

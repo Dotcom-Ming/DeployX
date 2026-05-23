@@ -23,7 +23,7 @@ export function Sidebar({ sections }: { sections: SidebarSection[] }) {
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
             <span className="text-xs font-bold text-primary-foreground">D</span>
           </div>
-          <span className="font-semibold text-foreground">DeployX Docs</span>
+          <span className="font-semibold text-foreground">DeployX 文档</span>
         </Link>
       </div>
       <nav className="p-4 space-y-6">

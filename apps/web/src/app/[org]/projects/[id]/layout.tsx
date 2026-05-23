@@ -12,12 +12,12 @@ interface Tab {
 }
 
 const tabs: Tab[] = [
-  { label: "Project", href: "", pattern: /\/projects\/[^/]+$/ },
-  { label: "Deployments", href: "/deployments", pattern: /\/deployments/ },
-  { label: "Analytics", href: "/analytics", pattern: /\/analytics/ },
-  { label: "Logs", href: "/logs", pattern: /\/logs/ },
-  { label: "Storage", href: "/storage", pattern: /\/storage/ },
-  { label: "Settings", href: "/settings", pattern: /\/settings/ },
+  { label: "项目", href: "", pattern: /\/projects\/[^/]+$/ },
+  { label: "部署", href: "/deployments", pattern: /\/deployments/ },
+  { label: "分析", href: "/analytics", pattern: /\/analytics/ },
+  { label: "日志", href: "/logs", pattern: /\/logs/ },
+  { label: "存储", href: "/storage", pattern: /\/storage/ },
+  { label: "设置", href: "/settings", pattern: /\/settings/ },
 ];
 
 export default function ProjectLayout({
