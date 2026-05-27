@@ -1,4 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { SslStatus } from '@deployx/shared';
 
@@ -18,9 +17,7 @@ export interface TraefikRouteConfig {
   middlewares?: string[];
 }
 
-@Injectable()
 export class TraefikDynamicRoutingService {
-  private readonly logger = new Logger(TraefikDynamicRoutingService.name);
   private readonly defaultDomain = process.env.DEFAULT_DOMAIN || 'deployx.app';
   private readonly namespace = process.env.K8S_NAMESPACE || 'deployx-gateway';
 
@@ -30,7 +27,7 @@ export class TraefikDynamicRoutingService {
     });
 
     if (!domainRecord || !domainRecord.verified) {
-      this.logger.warn(`Domain ${domain} is not verified`);
+      console.warn(`Domain ${domain} is not verified`);
       return null;
     }
 
@@ -44,7 +41,7 @@ export class TraefikDynamicRoutingService {
     });
 
     if (!deployment) {
-      this.logger.warn(`No ready production deployment found for project ${projectId}`);
+      console.warn(`No ready production deployment found for project ${projectId}`);
       return null;
     }
 
@@ -181,9 +178,9 @@ ${route.tls ? `  tls:
 
       fs.unlinkSync(tempFile);
 
-      this.logger.log(`Applied Traefik route ${route.name}`);
+      console.log(`Applied Traefik route ${route.name}`);
     } catch (error: any) {
-      this.logger.error(`Failed to apply Traefik route ${route.name}: ${error.message}`);
+      console.error(`Failed to apply Traefik route ${route.name}: ${error.message}`);
       throw error;
     }
   }
@@ -197,14 +194,14 @@ ${route.tls ? `  tls:
         { encoding: 'utf-8', stdio: 'pipe' },
       );
 
-      this.logger.log(`Removed Traefik route ${routeName}`);
+      console.log(`Removed Traefik route ${routeName}`);
     } catch (error: any) {
-      this.logger.error(`Failed to remove Traefik route ${routeName}: ${error.message}`);
+      console.error(`Failed to remove Traefik route ${routeName}: ${error.message}`);
     }
   }
 
   async syncAllRoutes(): Promise<void> {
-    this.logger.log('Syncing all Traefik routes...');
+    console.log('Syncing all Traefik routes...');
 
     const domains = await prisma.domain.findMany({
       where: { verified: true },
@@ -222,13 +219,13 @@ ${route.tls ? `  tls:
           await this.applyRoute(route);
         }
       } catch (error: any) {
-        this.logger.error(
+        console.error(
           `Failed to sync route for ${domain.domain}: ${error.message}`,
         );
       }
     }
 
-    this.logger.log('Traefik routes synced successfully');
+    console.log('Traefik routes synced successfully');
   }
 
   private generateRouteName(domain: string): string {

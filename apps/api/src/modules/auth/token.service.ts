@@ -1,10 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { signAccessToken, signRefreshToken, verifyRefreshToken, AccessTokenPayload, RefreshTokenPayload } from '@deployx/auth';
+import { UnauthorizedError } from '../../common/errors';
 
-@Injectable()
 export class TokenService {
-  constructor(private readonly jwtService: JwtService) {}
 
   generateAccessToken(user: { id: string; email: string; name?: string | null }, orgId: string, role: string): string {
     const payload: AccessTokenPayload = {
@@ -35,7 +32,7 @@ export class TokenService {
         tokenVersion: decoded.tokenVersion,
       };
     } catch {
-      throw new UnauthorizedException('Invalid or expired refresh token');
+      throw UnauthorizedError('Invalid or expired refresh token');
     }
   }
 }

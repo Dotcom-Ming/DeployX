@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z.string().email("请输入有效的邮箱地址"),
@@ -24,7 +24,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
   const {
     register,
@@ -37,7 +37,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
+      const res = await fetch(`${apiBaseUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -70,7 +70,7 @@ export default function LoginPage() {
   };
 
   const handleOAuth = (provider: string) => {
-    window.location.href = `${apiBaseUrl}/api/auth/oauth/${provider.toLowerCase()}`;
+    window.location.href = `${apiBaseUrl}/auth/oauth/${provider.toLowerCase()}`;
   };
 
   return (
@@ -151,7 +151,7 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">密码</Label>
                   <Link
-                    href="/forgot-password"
+                    to="/forgot-password"
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     忘记密码？
@@ -198,7 +198,7 @@ export default function LoginPage() {
           <CardFooter className="justify-center pb-6">
             <p className="text-sm text-muted-foreground">
               还没有账号？{" "}
-              <Link href="/signup" className="text-foreground font-medium hover:underline">
+               <Link to="/signup" className="text-foreground font-medium hover:underline">
                 注册
               </Link>
             </p>

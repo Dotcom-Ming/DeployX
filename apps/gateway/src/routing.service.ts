@@ -1,4 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { DeploymentStatus } from '@deployx/shared';
 import Redis from 'ioredis';
@@ -9,9 +8,7 @@ export interface ResolvedRoute {
   deploymentId: string;
 }
 
-@Injectable()
 export class RoutingService {
-  private readonly logger = new Logger(RoutingService.name);
   private readonly prisma = new PrismaClient();
   private readonly redis: Redis | null = null;
   private readonly defaultDomain: string;
@@ -29,13 +26,12 @@ export class RoutingService {
           retryStrategy: () => null,
         });
       } catch {
-        this.logger.warn('Redis connection failed, running without cache');
+        console.warn('Redis connection failed, running without cache');
       }
     }
   }
 
   async resolveDomain(domain: string): Promise<ResolvedRoute | null> {
-    // Check cache first
     if (this.redis) {
       try {
         const cacheKey = `deployx:route:${domain}`;
@@ -44,7 +40,7 @@ export class RoutingService {
           return JSON.parse(cached);
         }
       } catch {
-        this.logger.warn('Redis cache read failed, falling back to DB');
+        console.warn('Redis cache read failed, falling back to DB');
       }
     }
 
@@ -57,12 +53,11 @@ export class RoutingService {
     }
 
     if (route && this.redis) {
-      // Cache for 60 seconds
       try {
         const cacheKey = `deployx:route:${domain}`;
         await this.redis.set(cacheKey, JSON.stringify(route), 'EX', 60);
       } catch {
-        this.logger.warn('Redis cache write failed');
+        console.warn('Redis cache write failed');
       }
     }
 
@@ -72,19 +67,17 @@ export class RoutingService {
   private async resolveDefaultDomain(
     domain: string,
   ): Promise<ResolvedRoute | null> {
-    // Pattern: <project-slug>-<hash>.deployx.app
     const prefix = domain.slice(0, domain.length - this.defaultDomain.length - 1);
     const lastDashIndex = prefix.lastIndexOf('-');
 
     if (lastDashIndex === -1) {
-      this.logger.warn(`Invalid default domain format: ${domain}`);
+      console.warn(`Invalid default domain format: ${domain}`);
       return null;
     }
 
     const projectSlug = prefix.slice(0, lastDashIndex);
     const deploymentHash = prefix.slice(lastDashIndex + 1);
 
-    // Try to find by deployment hash (last 8 chars of deployment ID)
     const deployment = await this.prisma.deployment.findFirst({
       where: {
         status: DeploymentStatus.READY,
@@ -101,13 +94,12 @@ export class RoutingService {
       };
     }
 
-    // Fallback: find by project slug and latest ready deployment
     const project = await this.prisma.project.findFirst({
       where: { slug: projectSlug },
     });
 
     if (!project) {
-      this.logger.warn(`Project not found for slug: ${projectSlug}`);
+      console.warn(`Project not found for slug: ${projectSlug}`);
       return null;
     }
 
@@ -120,7 +112,7 @@ export class RoutingService {
     });
 
     if (!latestDeployment) {
-      this.logger.warn(`No ready deployment found for project: ${projectSlug}`);
+      console.warn(`No ready deployment found for project: ${projectSlug}`);
       return null;
     }
 
@@ -140,11 +132,10 @@ export class RoutingService {
     });
 
     if (!domainRecord || !domainRecord.verified) {
-      this.logger.warn(`Domain not found or not verified: ${domain}`);
+      console.warn(`Domain not found or not verified: ${domain}`);
       return null;
     }
 
-    // Find the latest production deployment for this project
     const deployment = await this.prisma.deployment.findFirst({
       where: {
         projectId: domainRecord.projectId,
@@ -155,7 +146,7 @@ export class RoutingService {
     });
 
     if (!deployment) {
-      this.logger.warn(
+      console.warn(
         `No production deployment found for domain: ${domain}`,
       );
       return null;
@@ -173,9 +164,9 @@ export class RoutingService {
       try {
         const cacheKey = `deployx:route:${domain}`;
         await this.redis.del(cacheKey);
-        this.logger.log(`Invalidated route cache for ${domain}`);
+        console.log(`Invalidated route cache for ${domain}`);
       } catch {
-        this.logger.warn('Redis cache invalidation failed');
+        console.warn('Redis cache invalidation failed');
       }
     }
   }

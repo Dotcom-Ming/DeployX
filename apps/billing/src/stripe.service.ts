@@ -1,9 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 
-@Injectable()
 export class StripeService {
-  private readonly logger = new Logger(StripeService.name);
   private readonly stripe: Stripe;
 
   constructor() {
@@ -17,7 +14,7 @@ export class StripeService {
     name: string,
     email?: string,
   ): Promise<Stripe.Customer> {
-    this.logger.log(`Creating Stripe customer: ${name}`);
+    console.log(`Creating Stripe customer: ${name}`);
 
     const customer = await this.stripe.customers.create({
       name,
@@ -34,7 +31,7 @@ export class StripeService {
     customerId: string,
     priceId: string,
   ): Promise<Stripe.Subscription> {
-    this.logger.log(`Creating Stripe subscription for customer ${customerId}`);
+    console.log(`Creating Stripe subscription for customer ${customerId}`);
 
     const subscription = await this.stripe.subscriptions.create({
       customer: customerId,
@@ -50,7 +47,7 @@ export class StripeService {
   async cancelSubscription(
     subscriptionId: string,
   ): Promise<Stripe.Subscription> {
-    this.logger.log(`Canceling Stripe subscription ${subscriptionId}`);
+    console.log(`Canceling Stripe subscription ${subscriptionId}`);
 
     const subscription = await this.stripe.subscriptions.update(
       subscriptionId,
@@ -66,7 +63,7 @@ export class StripeService {
     subscriptionId: string,
     newPriceId: string,
   ): Promise<Stripe.Subscription> {
-    this.logger.log(`Updating Stripe subscription ${subscriptionId} to price ${newPriceId}`);
+    console.log(`Updating Stripe subscription ${subscriptionId} to price ${newPriceId}`);
 
     const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
 
@@ -92,7 +89,7 @@ export class StripeService {
     successUrl: string,
     cancelUrl: string,
   ): Promise<Stripe.Checkout.Session> {
-    this.logger.log(`Creating checkout session for customer ${customerId}`);
+    console.log(`Creating checkout session for customer ${customerId}`);
 
     const session = await this.stripe.checkout.sessions.create({
       customer: customerId,

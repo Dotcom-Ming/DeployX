@@ -2,21 +2,27 @@
   "name": "@deployx/admin",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start -p 3001",
-    "lint": "next lint"
+    "dev": "vite --port 3001",
+    "build": "tsc && vite build",
+    "preview": "vite preview --port 3001",
+    "lint": "eslint src --ext .ts,.tsx --fix"
   },
   "dependencies": {
-    "next": "^16.2.6",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "typescript": "^5.4.5"
+    "@vitejs/plugin-react": "^4.4.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.4.5",
+    "vite": "^6.3.0"
   }
 }

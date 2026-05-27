@@ -1,8 +1,8 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface Tab {
@@ -30,7 +30,7 @@ const projectTabs: Tab[] = [
 ];
 
 export function TabNavigation({ orgSlug, projectId }: { orgSlug: string; projectId?: string }) {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
 
   const isProjectContext = pathname.includes(`/projects/${projectId ?? ""}`);
   const tabs = isProjectContext ? projectTabs : orgTabs;
@@ -51,7 +51,7 @@ export function TabNavigation({ orgSlug, projectId }: { orgSlug: string; project
           return (
             <Link
               key={tab.label}
-              href={href}
+              to={href}
               className={cn(
                 "relative px-4 py-2 text-sm font-medium transition-colors",
                 isActive

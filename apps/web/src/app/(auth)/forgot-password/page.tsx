@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${apiBaseUrl}/api/auth/forgot-password`, {
+      const res = await fetch(`${apiBaseUrl}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
             <p className="mt-2">没有收到邮件？请检查垃圾邮件文件夹。</p>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Link href="/login">
+            <Link to="/login">
               <Button variant="link">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 返回登录
@@ -103,7 +103,7 @@ export default function ForgotPasswordPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "发送中..." : "发送重置链接"}
             </Button>
-            <Link href="/login" className="text-sm text-muted-foreground hover:underline">
+            <Link to="/login" className="text-sm text-muted-foreground hover:underline">
               返回登录
             </Link>
           </CardFooter>

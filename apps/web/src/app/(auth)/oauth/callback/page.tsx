@@ -1,19 +1,19 @@
 "use client";
 
 import { Suspense, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 function OAuthCallbackContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const code = searchParams.get("code");
     const state = searchParams.get("state");
 
     if (!code) {
-      router.push("/login");
+      navigate("/login");
       return;
     }
 
@@ -22,14 +22,14 @@ function OAuthCallbackContent() {
       try {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        router.push("/deployx/dashboard");
+        navigate("/deployx/dashboard");
       } catch {
-        router.push("/login?error=oauth_failed");
+        navigate("/login?error=oauth_failed");
       }
     };
 
     handleCallback();
-  }, [searchParams, router]);
+  }, [searchParams, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4">

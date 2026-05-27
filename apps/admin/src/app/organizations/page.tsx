@@ -34,7 +34,7 @@ const unwrapApiData = <T,>(value: unknown): T | null => {
   return maybe.data === undefined ? null : maybe.data;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3006/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3006/api";
 
 const planStyles: Record<string, string> = {
   HOBBY: "bg-muted text-muted-foreground",

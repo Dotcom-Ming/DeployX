@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FolderKanban, Rocket, Wifi, Clock, TrendingUp, TrendingDown,
@@ -60,8 +60,7 @@ const usageChartData: Record<string, { date: string; bandwidth: number; requests
 };
 
 export default function DashboardPage() {
-  const params = useParams<{ org: string }>();
-  const orgSlug = params.org;
+  const { org: orgSlug = '' } = useParams<{ org: string }>();
   const [chartRange, setChartRange] = useState<"7d" | "30d">("7d");
   const chartData = usageChartData[chartRange];
 

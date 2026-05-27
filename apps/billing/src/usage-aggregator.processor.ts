@@ -1,19 +1,13 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { UsageMetric } from '@deployx/shared';
 import Stripe from 'stripe';
 
-@Injectable()
-@Processor('usage-aggregation')
-export class UsageAggregatorProcessor extends WorkerHost {
-  private readonly logger = new Logger(UsageAggregatorProcessor.name);
+export class UsageAggregatorProcessor {
   private readonly prisma = new PrismaClient();
   private readonly stripe: Stripe;
 
   constructor() {
-    super();
     const secretKey = process.env.STRIPE_SECRET_KEY || '';
     this.stripe = new Stripe(secretKey, {
       apiVersion: '2024-04-10' as any,
@@ -21,7 +15,7 @@ export class UsageAggregatorProcessor extends WorkerHost {
   }
 
   async process(job: Job): Promise<void> {
-    this.logger.log('Running usage aggregation job');
+    console.log('Running usage aggregation job');
 
     // Get all active subscriptions
     const subscriptions = await this.prisma.subscription.findMany({
@@ -33,13 +27,13 @@ export class UsageAggregatorProcessor extends WorkerHost {
       try {
         await this.aggregateForSubscription(subscription);
       } catch (error) {
-        this.logger.error(
+        console.error(
           `Failed to aggregate usage for subscription ${subscription.id}: ${(error as Error).message}`,
         );
       }
     }
 
-    this.logger.log('Usage aggregation completed');
+    console.log('Usage aggregation completed');
   }
 
   private async aggregateForSubscription(subscription: any): Promise<void> {
@@ -86,12 +80,12 @@ export class UsageAggregatorProcessor extends WorkerHost {
               action: 'set',
             });
 
-            this.logger.log(
+            console.log(
               `Reported ${aggregated[metric]} ${metric} usage to Stripe for org ${orgId}`,
             );
           }
         } catch (error) {
-          this.logger.error(
+          console.error(
             `Failed to report usage to Stripe: ${(error as Error).message}`,
           );
         }

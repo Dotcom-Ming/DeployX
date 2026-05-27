@@ -105,6 +105,7 @@ model Deployment {
   type          String   @default("PRODUCTION")
   url           String?
   buildDuration Int?
+  buildLogsUrl  String?
   triggeredById String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -159,6 +160,19 @@ model ApiToken {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("api_tokens")
+}
+
+model Admin {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String
+  passwordHash    String
+  role            String   @default("super_admin")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([email])
+  @@map("admins")
 }
 
 model Subscription {

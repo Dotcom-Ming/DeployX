@@ -1,8 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
-
-@Injectable()
 export class BitbucketService {
-  private readonly logger = new Logger(BitbucketService.name);
 
   parsePushEvent(body: any): {
     branch: string;
@@ -32,7 +28,7 @@ export class BitbucketService {
         repo: body.repository?.full_name || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse Bitbucket push event', error);
+      console.error('Failed to parse Bitbucket push event', error);
       return null;
     }
   }
@@ -58,7 +54,7 @@ export class BitbucketService {
         action: body.eventKey?.replace('pullrequest:', '') || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse Bitbucket pull request event', error);
+      console.error('Failed to parse Bitbucket pull request event', error);
       return null;
     }
   }

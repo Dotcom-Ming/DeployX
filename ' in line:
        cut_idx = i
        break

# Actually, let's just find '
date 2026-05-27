@@ -1,0 +1,12 @@
+import os
+
+TARGET = "/Users/appapp/Desktop/DeployX/apps/web/src/app/[org]/settings/page.tsx"
+
+content = open(TARGET, "r").read()
+
+# Find the last complete line before the incomplete general tab JSX
+# We'll replace everything from line 362 onwards
+lines = content.split("\n")
+cut_idx = None
+for i, line in enumerate(lines):
+    if '

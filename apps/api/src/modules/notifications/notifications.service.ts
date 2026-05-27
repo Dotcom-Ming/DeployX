@@ -1,13 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { EmailService } from '../email/email.service';
 import { PLAN_LIMITS, Plan } from '@deployx/shared';
 
-@Injectable()
 export class NotificationsService {
-  private readonly logger = new Logger(NotificationsService.name);
-
-  constructor(private readonly emailService: EmailService) {}
+  private emailService = new EmailService();
 
   async createNotification(data: {
     orgId: string;
@@ -198,7 +194,7 @@ export class NotificationsService {
     });
 
     if (existingAlert) {
-      this.logger.debug(`Alert ${type} already sent within 24 hours for org ${orgId}`);
+      console.debug(`Alert ${type} already sent within 24 hours for org ${orgId}`);
       return;
     }
 
@@ -238,7 +234,7 @@ export class NotificationsService {
         `,
       );
 
-      this.logger.log(`Limit alert email sent to ${org.owner.email} for org ${orgId}`);
+      console.log(`Limit alert email sent to ${org.owner.email} for org ${orgId}`);
     }
   }
 }

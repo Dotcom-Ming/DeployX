@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,8 +10,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 function ResetPasswordForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
@@ -19,7 +19,7 @@ function ResetPasswordForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
   if (!token) {
     return (
@@ -33,7 +33,7 @@ function ResetPasswordForm() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-center">
-            <Link href="/forgot-password">
+            <Link to="/forgot-password">
               <Button>申请新链接</Button>
             </Link>
           </CardFooter>
@@ -59,7 +59,7 @@ function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${apiBaseUrl}/api/auth/reset-password`, {
+      const res = await fetch(`${apiBaseUrl}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
@@ -90,7 +90,7 @@ function ResetPasswordForm() {
             <CardDescription>您的密码已成功重置。</CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-center">
-            <Link href="/login">
+            <Link to="/login">
               <Button>登录</Button>
             </Link>
           </CardFooter>
@@ -141,7 +141,7 @@ function ResetPasswordForm() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "重置中..." : "重置密码"}
             </Button>
-            <Link href="/login" className="text-sm text-muted-foreground hover:underline">
+            <Link to="/login" className="text-sm text-muted-foreground hover:underline">
               返回登录
             </Link>
           </CardFooter>

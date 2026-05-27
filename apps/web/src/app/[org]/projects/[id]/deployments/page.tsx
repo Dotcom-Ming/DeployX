@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GitBranch, Copy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,9 +34,7 @@ const statusBadgeVariant: Record<string, "success" | "destructive" | "secondary"
 };
 
 export default function DeploymentsPage() {
-  const params = useParams<{ org: string; id: string }>();
-  const orgSlug = params.org;
-  const projectId = params.id;
+  const { org: orgSlug = '', id: projectId = '' } = useParams<{ org: string; id: string }>();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [branchFilter, setBranchFilter] = useState<string>("all");
   const [envFilter, setEnvFilter] = useState<string>("all");
@@ -129,7 +127,7 @@ export default function DeploymentsPage() {
                     <tr
                       key={dep.id}
                       className="border-b last:border-0 hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => window.location.href = `/${params.org}/projects/${params.id}/deployments/${dep.id}`}
+                      onClick={() => window.location.href = `/${orgSlug}/projects/${projectId}/deployments/${dep.id}`}
                     >
                       <td className="p-4">
                         <Badge variant={statusBadgeVariant[dep.status] || "outline"} className="capitalize">

@@ -1,17 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { FrameworkDetectorService } from './framework-detector.service';
 import { PLAN_LIMITS, Plan } from '@deployx/shared';
+import { NotFoundError, ForbiddenError, ConflictError, BadRequestError } from '../../common/errors';
 
-@Injectable()
 export class ProjectsService {
-  constructor(private readonly frameworkDetector: FrameworkDetectorService) {}
+  private frameworkDetector = new FrameworkDetectorService();
 
   async list(orgSlug: string) {
     const organization = await prisma.organization.findUnique({
@@ -19,7 +12,7 @@ export class ProjectsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const projects = await prisma.project.findMany({
@@ -51,12 +44,12 @@ export class ProjectsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const membership = organization.memberships[0];
     if (!membership || (membership.role !== 'OWNER' && membership.role !== 'ADMIN' && membership.role !== 'DEVELOPER')) {
-      throw new ForbiddenException('You do not have permission to create projects in this organization');
+      throw ForbiddenError('You do not have permission to create projects in this organization');
     }
 
     // Check project limit based on plan
@@ -68,7 +61,7 @@ export class ProjectsService {
     const limits = PLAN_LIMITS[plan] || PLAN_LIMITS[Plan.HOBBY];
 
     if (limits.projects > 0 && projectCount >= limits.projects) {
-      throw new BadRequestException(
+      throw BadRequestError(
         `Project limit reached (${projectCount}/${limits.projects}). Upgrade your plan to create more projects.`,
       );
     }
@@ -85,7 +78,7 @@ export class ProjectsService {
     });
 
     if (existingProject) {
-      throw new ConflictException('A project with this name already exists in the organization');
+      throw ConflictError('A project with this name already exists in the organization');
     }
 
     let framework = data.framework || 'OTHER';
@@ -129,7 +122,7 @@ export class ProjectsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const project = await prisma.project.findFirst({
@@ -147,7 +140,7 @@ export class ProjectsService {
     });
 
     if (!project) {
-      throw new NotFoundException('Project not found');
+      throw NotFoundError('Project not found');
     }
 
     return project;
@@ -166,7 +159,7 @@ export class ProjectsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const project = await prisma.project.findFirst({
@@ -177,7 +170,7 @@ export class ProjectsService {
     });
 
     if (!project) {
-      throw new NotFoundException('Project not found');
+      throw NotFoundError('Project not found');
     }
 
     const updateData: Record<string, unknown> = {};
@@ -202,7 +195,7 @@ export class ProjectsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const project = await prisma.project.findFirst({
@@ -213,7 +206,7 @@ export class ProjectsService {
     });
 
     if (!project) {
-      throw new NotFoundException('Project not found');
+      throw NotFoundError('Project not found');
     }
 
     await prisma.project.delete({

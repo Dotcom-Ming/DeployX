@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Rocket, GitBranch, UserPlus, Settings, Loader2,
@@ -52,9 +52,8 @@ function groupByDate(items: any[]): Map<string, any[]> {
 }
 
 export default function ActivityPage() {
-  const params = useParams<{ org: string }>();
-  const router = useRouter();
-  const orgSlug = params.org;
+  const { org: orgSlug = '' } = useParams<{ org: string }>();
+  const navigate = useNavigate();
 
   const { data: projectsData, isLoading: projectsLoading } = useQuery({
     queryKey: ["projects", orgSlug],
@@ -143,7 +142,7 @@ export default function ActivityPage() {
                   <div
                     key={dep.id}
                     className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
-                    onClick={() => router.push(`/${orgSlug}/projects/${dep.projectId}/deployments/${dep.id}`)}
+                    onClick={() => navigate(`/${orgSlug}/projects/${dep.projectId}/deployments/${dep.id}`)}
                   >
                     <div className={`mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border ${
                       isError ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950" : "border-border bg-muted"

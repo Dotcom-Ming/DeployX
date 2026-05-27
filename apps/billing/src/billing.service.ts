@@ -1,11 +1,8 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { StripeService } from './stripe.service';
 import { Plan, SubscriptionStatus } from '@deployx/shared';
 
-@Injectable()
 export class BillingService {
-  private readonly logger = new Logger(BillingService.name);
   private readonly prisma = new PrismaClient();
 
   constructor(private readonly stripeService: StripeService) {}
@@ -16,7 +13,7 @@ export class BillingService {
     });
 
     if (!org) {
-      throw new NotFoundException(`Organization ${orgId} not found`);
+      throw new Error(`Organization ${orgId} not found`);
     }
 
     // Check if subscription already exists
@@ -61,7 +58,7 @@ export class BillingService {
       data: { plan },
     });
 
-    this.logger.log(`Created subscription for org ${orgId} on plan ${plan}`);
+    console.log(`Created subscription for org ${orgId} on plan ${plan}`);
     return subscription;
   }
 
@@ -72,7 +69,7 @@ export class BillingService {
     });
 
     if (!subscription) {
-      throw new NotFoundException(`No subscription found for organization ${orgId}`);
+      throw new Error(`No subscription found for organization ${orgId}`);
     }
 
     return subscription;
@@ -107,7 +104,7 @@ export class BillingService {
       data: { plan: newPlan },
     });
 
-    this.logger.log(`Updated subscription for org ${orgId} to plan ${newPlan}`);
+    console.log(`Updated subscription for org ${orgId} to plan ${newPlan}`);
     return updated;
   }
 
@@ -127,7 +124,7 @@ export class BillingService {
       },
     });
 
-    this.logger.log(`Canceled subscription for org ${orgId} (at period end)`);
+    console.log(`Canceled subscription for org ${orgId} (at period end)`);
     return updated;
   }
 

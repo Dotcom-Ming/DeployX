@@ -1,13 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { SslStatus } from '@deployx/shared';
 import { DnsVerificationService } from './dns-verification.service';
 
-@Injectable()
 export class DomainsService {
-  private readonly logger = new Logger(DomainsService.name);
-
-  constructor(private readonly dnsVerificationService: DnsVerificationService) {}
+  private dnsVerificationService = new DnsVerificationService();
 
   async list(projectId: string) {
     return prisma.domain.findMany({
@@ -33,7 +29,7 @@ export class DomainsService {
       },
     });
 
-    this.logger.log(`Domain ${domain} added to project ${projectId}`);
+    console.log(`Domain ${domain} added to project ${projectId}`);
 
     return record;
   }
@@ -51,7 +47,7 @@ export class DomainsService {
       where: { id: domainId },
     });
 
-    this.logger.log(`Domain ${domain.domain} removed`);
+    console.log(`Domain ${domain.domain} removed`);
 
     return { deleted: true };
   }
@@ -73,7 +69,7 @@ export class DomainsService {
         where: { id: domainId },
         data: { verified: true },
       });
-      this.logger.log(`Domain ${domain.domain} DNS verified`);
+      console.log(`Domain ${domain.domain} DNS verified`);
     }
 
     return {

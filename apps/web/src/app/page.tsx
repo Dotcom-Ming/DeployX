@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { Navigate } from "react-router-dom";
 
 export default function HomePage() {
-  redirect("/login");
+  return <Navigate to="/login" replace />;
 }

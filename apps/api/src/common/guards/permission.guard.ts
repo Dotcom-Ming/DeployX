@@ -1,70 +1,86 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import fp from 'fastify-plugin';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { CasbinEnforcer } from '@deployx/auth';
-import { PERMISSION_KEY } from '../decorators/require-permission';
+import { prisma } from '@deployx/database';
+import { AbacService } from './abac.service';
 
-@Injectable()
-export class PermissionGuard implements CanActivate {
-  private enforcer: CasbinEnforcer;
+async function permissionGuardPlugin(app: FastifyInstance) {
+  const enforcer = new CasbinEnforcer();
+  await enforcer.init();
 
-  constructor(private reflector: Reflector) {
-    this.enforcer = new CasbinEnforcer();
-  }
+  const abacService = new AbacService();
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermission = this.reflector.getAllAndOverride<string>(
-      PERMISSION_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+  app.decorate('requirePermission', function (permission: string) {
+    const [obj, act] = permission.split(':') as [string, string];
 
-    if (!requiredPermission) {
-      return true;
-    }
+    return async (request: FastifyRequest, reply: FastifyReply) => {
+      const user = (request as any).user as { sub: string; orgId?: string; role?: string } | undefined;
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+      if (!user) {
+        reply.status(401).send({ success: false, message: 'Authentication required', statusCode: 401 });
+        return;
+      }
 
-    if (!user) {
-      throw new ForbiddenException('User not authenticated');
-    }
+      let role = user.role?.toLowerCase();
+      let orgId = user.orgId;
 
-    const [object, action] = requiredPermission.split(':');
+      const slug = (request.params as any)?.slug;
+      if (slug && slug !== orgId) {
+        const org = await prisma.organization.findUnique({
+          where: { slug },
+          select: { id: true },
+        });
+        if (org) {
+          orgId = org.id;
+          const membership = await prisma.membership.findUnique({
+            where: { userId_orgId: { userId: user.sub, orgId } },
+            select: { role: true },
+          });
+          if (membership) {
+            role = membership.role.toLowerCase();
+          } else {
+            reply.status(403).send({ success: false, message: 'You do not have access to this organization', statusCode: 403 });
+            return;
+          }
+        }
+      }
 
-    if (!object || !action) {
-      return true;
-    }
+      if (!role || !orgId) {
+        reply.status(403).send({ success: false, message: 'Insufficient permissions', statusCode: 403 });
+        return;
+      }
 
-    const orgId = user.orgId || request.params?.slug || request.headers['x-org-id'];
-
-    try {
-      const allowed = await this.enforcer.enforce(
-        user.role || 'viewer',
-        orgId || '*',
-        object,
-        action,
-      );
-
+      const allowed = await enforcer.enforce(role, orgId, obj, act);
       if (!allowed) {
-        throw new ForbiddenException(
-          `You do not have permission to ${action} ${object} in this organization`,
-        );
+        reply.status(403).send({ success: false, message: `Permission denied: ${permission}`, statusCode: 403 });
+        return;
       }
 
-      return true;
-    } catch (error) {
-      if (error instanceof ForbiddenException) {
-        throw error;
+      const resourceId = (request.params as any)?.id || (request.params as any)?.did;
+      if (resourceId && role !== 'owner' && role !== 'admin') {
+        const resourceAccess = await abacService.enforceResourceAccess(
+          user.sub,
+          orgId,
+          obj,
+          act,
+          resourceId,
+        );
+        if (!resourceAccess) {
+          reply.status(403).send({ success: false, message: `Resource access denied: ${permission}`, statusCode: 403 });
+          return;
+        }
       }
-      // If Casbin is not initialized, allow in development
-      if (process.env.NODE_ENV === 'development') {
-        return true;
-      }
-      throw new ForbiddenException('Permission check failed');
-    }
+    };
+  });
+}
+
+export default fp(permissionGuardPlugin, {
+  name: 'permission-guard',
+  fastify: '5.x',
+});
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    requirePermission(permission: string): (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }

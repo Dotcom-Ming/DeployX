@@ -1,7 +1,7 @@
 import { toast } from "sonner";
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
 class ApiClient {
   private baseUrl: string;
@@ -53,7 +53,7 @@ class ApiClient {
         return Promise.reject(new Error("未授权"));
       }
 
-      if (process.env.NEXT_PUBLIC_SENTRY_DSN_WEB) {
+      if (import.meta.env.VITE_SENTRY_DSN_WEB) {
         Sentry.captureException(new Error(message), {
           tags: {
             module: "web",

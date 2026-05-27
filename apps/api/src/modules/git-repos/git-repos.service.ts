@@ -1,9 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
-
-@Injectable()
 export class GitReposService {
-  private readonly logger = new Logger(GitReposService.name);
-
   async fetchGitHubRepos(token: string) {
     try {
       const response = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
@@ -34,7 +29,7 @@ export class GitReposService {
         defaultBranch: repo.default_branch,
       }));
     } catch (error) {
-      this.logger.error('Failed to fetch GitHub repos', error);
+      console.error('Failed to fetch GitHub repos', error);
       throw error;
     }
   }
@@ -67,7 +62,7 @@ export class GitReposService {
         defaultBranch: repo.default_branch,
       }));
     } catch (error) {
-      this.logger.error('Failed to fetch GitLab repos', error);
+      console.error('Failed to fetch GitLab repos', error);
       throw error;
     }
   }

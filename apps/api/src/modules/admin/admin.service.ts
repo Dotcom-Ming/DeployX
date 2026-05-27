@@ -1,7 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 
-@Injectable()
 export class AdminService {
   async getDashboardStats() {
     const now = new Date();

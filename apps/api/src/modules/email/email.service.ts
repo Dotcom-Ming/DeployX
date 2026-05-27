@@ -1,9 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
-@Injectable()
 export class EmailService {
-  private readonly logger = new Logger(EmailService.name);
   private transporter: nodemailer.Transporter;
 
   constructor() {
@@ -35,7 +32,7 @@ export class EmailService {
         </div>
       `,
     });
-    this.logger.log(`Verification email sent to ${email}`);
+    console.log(`Verification email sent to ${email}`);
   }
 
   async sendPasswordResetEmail(email: string, resetUrl: string) {
@@ -55,7 +52,7 @@ export class EmailService {
         </div>
       `,
     });
-    this.logger.log(`Password reset email sent to ${email}`);
+    console.log(`Password reset email sent to ${email}`);
   }
 
   async sendEmail(to: string, subject: string, html: string) {

@@ -1,9 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../../modules/auth/auth.service';
-import { TokenService } from '../../modules/auth/token.service';
-import { MfaService } from '../../modules/auth/mfa.service';
 import * as bcrypt from 'bcrypt';
 
 jest.mock('@deployx/database', () => ({
@@ -19,7 +14,31 @@ jest.mock('@deployx/database', () => ({
     membership: {
       findFirst: jest.fn(),
     },
+    emailVerificationToken: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      deleteMany: jest.fn(),
+      delete: jest.fn(),
+    },
+    passwordResetToken: {
+      deleteMany: jest.fn(),
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
   },
+}));
+
+jest.mock('@deployx/auth', () => ({
+  signAccessToken: jest.fn().mockReturnValue('mock-access-token'),
+  signRefreshToken: jest.fn().mockReturnValue('mock-refresh-token'),
+  verifyRefreshToken: jest.fn().mockReturnValue({ sub: 'user-1', tokenVersion: 0 }),
+}));
+
+jest.mock('nodemailer', () => ({
+  createTransport: jest.fn().mockReturnValue({
+    sendMail: jest.fn().mockResolvedValue(true),
+  }),
 }));
 
 jest.mock('bcrypt', () => ({
@@ -32,6 +51,7 @@ jest.mock('otplib', () => ({
     generateSecret: jest.fn().mockReturnValue('TESTSECRET'),
     keyuri: jest.fn().mockReturnValue('otpauth://totp/DeployX:test@test.com?secret=TESTSECRET'),
     check: jest.fn(),
+    verify: jest.fn().mockReturnValue(true),
   },
 }));
 
@@ -44,29 +64,9 @@ const mockBcrypt = bcrypt as any;
 
 describe('AuthService', () => {
   let service: AuthService;
-  let tokenService: TokenService;
-  let mfaService: MfaService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthService,
-        TokenService,
-        MfaService,
-        {
-          provide: JwtService,
-          useValue: {
-            signAsync: jest.fn().mockResolvedValue('mock-jwt-token'),
-            verifyAsync: jest.fn().mockResolvedValue({ sub: 'user-1', email: 'test@test.com' }),
-          },
-        },
-      ],
-    }).compile();
-
-    service = module.get<AuthService>(AuthService);
-    tokenService = module.get<TokenService>(TokenService);
-    mfaService = module.get<MfaService>(MfaService);
-
+  beforeEach(() => {
+    service = new AuthService();
     jest.clearAllMocks();
   });
 
@@ -109,7 +109,7 @@ describe('AuthService', () => {
       expect(result.user).not.toHaveProperty('passwordHash');
     });
 
-    it('should throw ConflictException if email already registered', async () => {
+    it('should throw ConflictError if email already registered', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
         id: 'user-1',
         email: 'test@test.com',
@@ -122,7 +122,7 @@ describe('AuthService', () => {
           password: 'password123',
           name: 'Test User',
         }),
-      ).rejects.toThrow(ConflictException);
+      ).rejects.toThrow('Email already registered');
     });
   });
 
@@ -177,7 +177,7 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('tempToken');
     });
 
-    it('should throw UnauthorizedException for invalid password', async () => {
+    it('should throw UnauthorizedError for invalid password', async () => {
       const mockUser = {
         id: 'user-1',
         email: 'test@test.com',
@@ -192,10 +192,10 @@ describe('AuthService', () => {
           email: 'test@test.com',
           password: 'wrong-password',
         }),
-      ).rejects.toThrow(UnauthorizedException);
+      ).rejects.toThrow('Invalid email or password');
     });
 
-    it('should throw UnauthorizedException for non-existent user', async () => {
+    it('should throw UnauthorizedError for non-existent user', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -203,7 +203,7 @@ describe('AuthService', () => {
           email: 'nonexistent@test.com',
           password: 'password123',
         }),
-      ).rejects.toThrow(UnauthorizedException);
+      ).rejects.toThrow('Invalid email or password');
     });
   });
 
@@ -226,20 +226,20 @@ describe('AuthService', () => {
       expect(mockPrisma.user.update).toHaveBeenCalled();
     });
 
-    it('should throw BadRequestException if MFA already enabled', async () => {
+    it('should throw BadRequestError if MFA already enabled', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
         id: 'user-1',
         email: 'test@test.com',
         mfaSecret: 'existing-secret',
       });
 
-      await expect(service.enableMFA('user-1')).rejects.toThrow(BadRequestException);
+      await expect(service.enableMFA('user-1')).rejects.toThrow('MFA is already enabled');
     });
 
-    it('should throw NotFoundException if user not found', async () => {
+    it('should throw NotFoundError if user not found', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.enableMFA('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.enableMFA('nonexistent')).rejects.toThrow('User not found');
     });
   });
 
@@ -261,14 +261,14 @@ describe('AuthService', () => {
       expect(result.user).toHaveProperty('mfaEnabled', true);
     });
 
-    it('should throw BadRequestException if MFA not enabled', async () => {
+    it('should throw BadRequestError if MFA not enabled', async () => {
       mockPrisma.user.findUnique.mockResolvedValue({
         id: 'user-1',
         email: 'test@test.com',
         mfaSecret: null,
       });
 
-      await expect(service.verifyMFA('user-1', '123456')).rejects.toThrow(BadRequestException);
+      await expect(service.verifyMFA('user-1', '123456')).rejects.toThrow('MFA is not enabled');
     });
   });
 });

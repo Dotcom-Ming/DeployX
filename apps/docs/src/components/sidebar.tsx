@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface SidebarItem {
   href: string;
@@ -14,12 +14,12 @@ interface SidebarSection {
 }
 
 export function Sidebar({ sections }: { sections: SidebarSection[] }) {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
 
   return (
     <aside className="hidden w-64 flex-shrink-0 border-r border-border bg-card overflow-y-auto md:block">
       <div className="flex h-12 items-center border-b border-border px-4">
-        <Link href="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
             <span className="text-xs font-bold text-primary-foreground">D</span>
           </div>
@@ -37,8 +37,7 @@ export function Sidebar({ sections }: { sections: SidebarSection[] }) {
                 const isActive = pathname === item.href;
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
+                    <Link to={item.href}
                       className={`block rounded-md px-3 py-1.5 text-sm transition-colors ${
                         isActive
                           ? "bg-accent text-accent-foreground font-medium"

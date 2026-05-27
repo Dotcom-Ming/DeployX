@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Plus, Copy, Trash2, ShieldCheck, ShieldAlert, ShieldX, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,9 +29,7 @@ const sslStatusConfig: Record<string, { icon: typeof ShieldCheck; color: string;
 };
 
 export default function DomainsPage() {
-  const params = useParams<{ org: string; id: string }>();
-  const orgSlug = params.org;
-  const projectId = params.id;
+  const { org: orgSlug = '', id: projectId = '' } = useParams<{ org: string; id: string }>();
   const queryClient = useQueryClient();
 
   const [newDomain, setNewDomain] = useState("");

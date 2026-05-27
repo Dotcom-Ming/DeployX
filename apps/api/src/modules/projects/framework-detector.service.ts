@@ -1,4 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { Framework } from '@deployx/shared';
 
 export interface FrameworkDetectionResult {
@@ -8,9 +7,7 @@ export interface FrameworkDetectionResult {
   installCmd: string;
 }
 
-@Injectable()
 export class FrameworkDetectorService {
-  private readonly logger = new Logger(FrameworkDetectorService.name);
 
   private readonly frameworkRules: Array<{
     framework: Framework;
@@ -57,7 +54,7 @@ export class FrameworkDetectorService {
   ];
 
   async detect(repoUrl: string, rootDir: string): Promise<FrameworkDetectionResult> {
-    this.logger.log(`Detecting framework for ${repoUrl} (root: ${rootDir})`);
+    console.log(`Detecting framework for ${repoUrl} (root: ${rootDir})`);
 
     // In production, this would clone the repo and read package.json
     // For now, return a default based on heuristics or the URL

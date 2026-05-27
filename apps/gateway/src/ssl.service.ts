@@ -1,4 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 
 export interface CertificateInfo {
@@ -8,9 +7,7 @@ export interface CertificateInfo {
   issuer?: string;
 }
 
-@Injectable()
 export class SslService {
-  private readonly logger = new Logger(SslService.name);
   private readonly prisma = new PrismaClient();
 
   async getCertificate(domain: string): Promise<CertificateInfo | null> {
@@ -25,7 +22,7 @@ export class SslService {
     return {
       domain: domainRecord.domain,
       status: domainRecord.sslStatus,
-      expiresAt: undefined, // Not tracked in current schema
+      expiresAt: undefined,
       issuer: "Let's Encrypt",
     };
   }
@@ -63,6 +60,6 @@ spec:
       data: { sslStatus: status as any },
     });
 
-    this.logger.log(`Updated SSL status for ${domain} to ${status}`);
+    console.log(`Updated SSL status for ${domain} to ${status}`);
   }
 }

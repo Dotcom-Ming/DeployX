@@ -1,9 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
 
-@Injectable()
 export class GitHubService {
-  private readonly logger = new Logger(GitHubService.name);
 
   verifySignature(payload: string, signature: string, secret: string): boolean {
     if (!signature || !secret) {
@@ -47,7 +44,7 @@ export class GitHubService {
         repo: body.repository?.full_name || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse GitHub push event', error);
+      console.error('Failed to parse GitHub push event', error);
       return null;
     }
   }
@@ -73,7 +70,7 @@ export class GitHubService {
         action: body.action || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse GitHub pull request event', error);
+      console.error('Failed to parse GitHub pull request event', error);
       return null;
     }
   }
@@ -86,7 +83,7 @@ export class GitHubService {
   ): Promise<void> {
     const token = process.env.GITHUB_APP_TOKEN || process.env.GITHUB_PAT;
     if (!token) {
-      this.logger.warn('GitHub token not configured, skipping PR comment');
+      console.warn('GitHub token not configured, skipping PR comment');
       return;
     }
 
@@ -118,13 +115,13 @@ export class GitHubService {
 
       if (!response.ok) {
         const errorText = await response.text();
-        this.logger.error(`Failed to create PR comment: ${response.status} ${errorText}`);
+        console.error(`Failed to create PR comment: ${response.status} ${errorText}`);
         return;
       }
 
-      this.logger.log(`PR comment created for ${repo}#${prNumber}`);
+      console.log(`PR comment created for ${repo}#${prNumber}`);
     } catch (error) {
-      this.logger.error('Failed to create PR comment', error);
+      console.error('Failed to create PR comment', error);
     }
   }
 
@@ -136,7 +133,7 @@ export class GitHubService {
   ): Promise<void> {
     const token = process.env.GITHUB_APP_TOKEN || process.env.GITHUB_PAT;
     if (!token) {
-      this.logger.warn('GitHub token not configured, skipping PR comment update');
+      console.warn('GitHub token not configured, skipping PR comment update');
       return;
     }
 
@@ -168,13 +165,13 @@ export class GitHubService {
 
       if (!response.ok) {
         const errorText = await response.text();
-        this.logger.error(`Failed to update PR comment: ${response.status} ${errorText}`);
+        console.error(`Failed to update PR comment: ${response.status} ${errorText}`);
         return;
       }
 
-      this.logger.log(`PR comment updated for ${repo}#${commentId}`);
+      console.log(`PR comment updated for ${repo}#${commentId}`);
     } catch (error) {
-      this.logger.error('Failed to update PR comment', error);
+      console.error('Failed to update PR comment', error);
     }
   }
 

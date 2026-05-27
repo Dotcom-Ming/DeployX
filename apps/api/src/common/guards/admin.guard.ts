@@ -1,47 +1,42 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { prisma } from '@deployx/database';
 
-@Injectable()
-export class AdminGuard implements CanActivate {
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.authorization;
-    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+export async function adminGuard(request: FastifyRequest, reply: FastifyReply) {
+  const authHeader = request.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
-    // Development mode: allow access without token if ADMIN_DEV_MODE=true
-    if (process.env.ADMIN_DEV_MODE === 'true') {
-      request.user = { sub: 'dev-admin', email: 'admin@deployx.io' };
-      return true;
+  if (process.env.ADMIN_DEV_MODE === 'true') {
+    (request as any).user = { sub: 'dev-admin', email: 'admin@deployx.io', role: 'super_admin', type: 'admin' };
+    return;
+  }
+
+  if (!token) {
+    reply.status(401).send({ success: false, message: 'Access token is missing', statusCode: 401 });
+    return;
+  }
+
+  const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret';
+  try {
+    const { verify } = await import('jsonwebtoken');
+    const payload = verify(token, jwtSecret) as any;
+
+    if (payload.type !== 'admin') {
+      reply.status(403).send({ success: false, message: 'Admin access required', statusCode: 403 });
+      return;
     }
 
-    if (!token) {
-      throw new UnauthorizedException('Access token is missing');
-    }
-
-    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret';
-    let payload: any;
-    try {
-      const { verify } = await import('jsonwebtoken');
-      payload = verify(token, jwtSecret);
-    } catch {
-      throw new UnauthorizedException('Invalid or expired access token');
-    }
-
-    const user = await prisma.user.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { id: payload.sub },
-      select: { email: true },
+      select: { id: true, email: true, role: true },
     });
 
-    if (!user) {
-      throw new ForbiddenException('User not found');
+    if (!admin) {
+      reply.status(403).send({ success: false, message: 'Admin not found', statusCode: 403 });
+      return;
     }
 
-    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map((e) => e.trim().toLowerCase());
-    if (!adminEmails.includes(user.email.toLowerCase())) {
-      throw new ForbiddenException('Admin access required');
-    }
-
-    request.user = { sub: payload.sub, email: user.email };
-    return true;
+    (request as any).user = { sub: admin.id, email: admin.email, role: admin.role, type: 'admin' };
+  } catch {
+    reply.status(401).send({ success: false, message: 'Invalid or expired access token', statusCode: 401 });
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname, useParams } from "next/navigation";
-import Link from "next/link";
+import { useLocation, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,8 @@ interface Tab {
 const tabs: Tab[] = [
   { label: "项目", href: "", pattern: /\/projects\/[^/]+$/ },
   { label: "部署", href: "/deployments", pattern: /\/deployments/ },
+  { label: "域名", href: "/domains", pattern: /\/domains/ },
+  { label: "环境变量", href: "/env", pattern: /\/env/ },
   { label: "分析", href: "/analytics", pattern: /\/analytics/ },
   { label: "日志", href: "/logs", pattern: /\/logs/ },
   { label: "存储", href: "/storage", pattern: /\/storage/ },
@@ -25,9 +27,8 @@ export default function ProjectLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const params = useParams<{ org: string; id: string }>();
-  const { org, id } = params;
+  const pathname = useLocation().pathname;
+  const { org = '', id = '' } = useParams<{ org: string; id: string }>();
 
   const activeIndex = tabs.findIndex((tab) => tab.pattern.test(pathname));
   const activeTab = activeIndex >= 0 ? activeIndex : 0;
@@ -44,7 +45,7 @@ export default function ProjectLayout({
             return (
               <Link
                 key={tab.label}
-                href={href}
+                to={href}
                 className={cn(
                   "relative px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap",
                   isActive

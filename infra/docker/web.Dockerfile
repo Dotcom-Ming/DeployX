@@ -13,21 +13,11 @@ RUN pnpm install --frozen-lockfile
 # ---- Build ----
 FROM deps AS build
 COPY apps/web/ ./apps/web/
-ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter @deployx/web build
 
 # ---- Production ----
-FROM node:20-alpine AS production
-RUN apk add --no-cache tini
-USER node
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
-COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=build --chown=node:node /app/apps/web/public ./apps/web/public
+FROM nginx:alpine AS production
+COPY --from=build /app/apps/web/dist /usr/share/nginx/html
+COPY --from=build /app/apps/web/nginx.conf /etc/nginx/conf.d/default.conf || true
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "apps/web/server.js"]
+CMD ["nginx", "-g", "daemon off;"]

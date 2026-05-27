@@ -1,9 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 
-@Injectable()
 export class AnalyticsService {
-  private readonly logger = new Logger(AnalyticsService.name);
+
 
   async getProjectAnalytics(
     projectId: string,

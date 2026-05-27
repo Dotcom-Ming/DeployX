@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, Check, Plus } from "lucide-react";
 import { useAuth } from "@/components/providers/auth-provider";
-import { usePathname, useRouter } from "next/navigation";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -28,8 +28,8 @@ import { cn } from "@/lib/utils";
 export function OrgSwitcher() {
   const { orgs, currentOrg, switchOrg } = useAuth();
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = useLocation().pathname;
+  const navigate = useNavigate();
   const orgLabel = currentOrg?.name ?? "Select org";
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export function OrgSwitcher() {
     switchOrg(orgId);
     const org = orgs.find((o) => o.id === orgId);
     if (org) {
-      router.push(`/${org.slug}/dashboard`);
+      navigate(`/${org.slug}/dashboard`);
     }
     setOpen(false);
   };
@@ -144,7 +144,7 @@ export function OrgSwitcher() {
               className="w-full justify-start gap-2"
               onClick={() => {
                 setOpen(false);
-                router.push("/signup?createOrg=true");
+                navigate("/signup?createOrg=true");
               }}
             >
               <Plus className="h-4 w-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from "@sentry/react";
 
 let initialized = false;
 
@@ -11,7 +11,7 @@ export function SentryProvider() {
       return;
     }
 
-    const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN_WEB;
+    const dsn = import.meta.env.VITE_SENTRY_DSN_WEB;
     if (!dsn) {
       return;
     }
@@ -19,11 +19,11 @@ export function SentryProvider() {
     Sentry.init({
       dsn,
       environment:
-        process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ||
-        process.env.NODE_ENV ||
+        import.meta.env.VITE_SENTRY_ENVIRONMENT ||
+        import.meta.env.MODE ||
         "development",
       tracesSampleRate: Number(
-        process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || "0.2"
+        import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE || "0.2"
       ),
     });
 

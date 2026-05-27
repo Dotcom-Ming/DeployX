@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/providers/auth-provider";
 
 export function Shortcuts() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { currentOrg } = useAuth();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function Shortcuts() {
         e.preventDefault();
         const orgSlug = currentOrg?.slug;
         if (orgSlug) {
-          router.push(`/${orgSlug}/projects/new`);
+          navigate(`/${orgSlug}/projects/new`);
         }
       }
 
@@ -35,7 +35,7 @@ export function Shortcuts() {
         e.preventDefault();
         const orgSlug = currentOrg?.slug;
         if (orgSlug) {
-          router.push(`/${orgSlug}/dashboard`);
+          navigate(`/${orgSlug}/dashboard`);
         }
       }
 
@@ -54,7 +54,7 @@ export function Shortcuts() {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [router, currentOrg]);
+  }, [navigate, currentOrg]);
 
   return null;
 }

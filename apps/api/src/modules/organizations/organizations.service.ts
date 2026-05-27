@@ -1,17 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  ForbiddenException,
-  BadRequestException,
-} from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { MembershipRole, PLAN_LIMITS, Plan } from '@deployx/shared';
 import { MembersService } from './members.service';
+import { NotFoundError, ConflictError, ForbiddenError, BadRequestError } from '../../common/errors';
 
-@Injectable()
 export class OrganizationsService {
-  constructor(private readonly membersService: MembersService) {}
+  private membersService = new MembersService();
 
   async create(userId: string, data: { name: string; slug?: string }) {
     const slug = data.slug || this.generateSlug(data.name);
@@ -21,7 +14,7 @@ export class OrganizationsService {
     });
 
     if (existingOrg) {
-      throw new ConflictException('Organization slug already taken');
+      throw ConflictError('Organization slug already taken');
     }
 
     const organization = await prisma.organization.create({
@@ -48,7 +41,7 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     return organization;
@@ -65,12 +58,12 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     const membership = organization.memberships[0];
     if (!membership || (membership.role !== 'OWNER' && membership.role !== 'ADMIN')) {
-      throw new ForbiddenException('You do not have permission to update this organization');
+      throw ForbiddenError('You do not have permission to update this organization');
     }
 
     if (data.slug && data.slug !== slug) {
@@ -78,7 +71,7 @@ export class OrganizationsService {
         where: { slug: data.slug },
       });
       if (existing) {
-        throw new ConflictException('Organization slug already taken');
+        throw ConflictError('Organization slug already taken');
       }
     }
 
@@ -99,11 +92,11 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     if (organization.ownerId !== userId) {
-      throw new ForbiddenException('Only the organization owner can delete the organization');
+      throw ForbiddenError('Only the organization owner can delete the organization');
     }
 
     await prisma.organization.delete({
@@ -119,7 +112,7 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     return this.membersService.getMembers(organization.id);
@@ -134,7 +127,7 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     // Check member limit based on plan
@@ -143,7 +136,7 @@ export class OrganizationsService {
     const limits = PLAN_LIMITS[plan] || PLAN_LIMITS[Plan.HOBBY];
 
     if (limits.members > 0 && memberCount >= limits.members) {
-      throw new BadRequestException(
+      throw BadRequestError(
         `Member limit reached (${memberCount}/${limits.members}). Upgrade your plan to add more members.`,
       );
     }
@@ -157,7 +150,7 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     return this.membersService.updateMember(organization.id, memberId, role);
@@ -169,7 +162,7 @@ export class OrganizationsService {
     });
 
     if (!organization) {
-      throw new NotFoundException('Organization not found');
+      throw NotFoundError('Organization not found');
     }
 
     return this.membersService.removeMember(organization.id, memberId);

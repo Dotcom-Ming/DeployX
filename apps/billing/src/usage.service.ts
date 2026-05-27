@@ -1,10 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { UsageMetric } from '@deployx/shared';
 
-@Injectable()
 export class UsageService {
-  private readonly logger = new Logger(UsageService.name);
   private readonly prisma = new PrismaClient();
 
   async recordUsage(

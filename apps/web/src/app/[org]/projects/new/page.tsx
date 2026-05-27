@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Github, Gitlab, Box, Search, ChevronRight, ChevronLeft,

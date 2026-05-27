@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
 
-@Injectable()
 export class MfaService {
   generateSecret(userId: string): { secret: string; otpauthUrl: string } {
     const secret = authenticator.generateSecret();

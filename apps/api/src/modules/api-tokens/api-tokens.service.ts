@@ -1,10 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import * as crypto from 'crypto';
 
-@Injectable()
 export class ApiTokensService {
-  private readonly logger = new Logger(ApiTokensService.name);
+
 
   async list(userId: string) {
     const tokens = await prisma.apiToken.findMany({
@@ -37,7 +35,7 @@ export class ApiTokensService {
       },
     });
 
-    this.logger.log(`API token "${name}" created for user ${userId}`);
+    console.log(`API token "${name}" created for user ${userId}`);
 
     return {
       id: token.id,
@@ -63,7 +61,7 @@ export class ApiTokensService {
       data: { revokedAt: new Date() },
     });
 
-    this.logger.log(`API token "${token.name}" revoked`);
+    console.log(`API token "${token.name}" revoked`);
 
     return { revoked: true };
   }

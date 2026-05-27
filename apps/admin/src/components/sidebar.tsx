@@ -1,8 +1,6 @@
-"use client";
-
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/lib/auth-context";
 
 const navItems = [
   { href: "/dashboard", label: "控制台", icon: DashboardIcon },
@@ -11,6 +9,10 @@ const navItems = [
   { href: "/deployments", label: "部署管理", icon: DeployIcon },
   { href: "/billing", label: "账单", icon: BillingIcon },
   { href: "/system", label: "系统", icon: SystemIcon },
+];
+
+const superAdminItems = [
+  { href: "/admins", label: "管理员", icon: AdminIcon },
 ];
 
 function DashboardIcon() {
@@ -62,6 +64,14 @@ function SystemIcon() {
   );
 }
 
+function AdminIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    </svg>
+  );
+}
+
 function CollapseIcon() {
   return (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -71,8 +81,10 @@ function CollapseIcon() {
 }
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [collapsed, setCollapsed] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <aside
@@ -82,7 +94,7 @@ export function Sidebar() {
     >
       <div className="flex h-14 items-center justify-between border-b border-border px-4">
         {!collapsed && (
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link to="/dashboard" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="text-sm font-bold text-primary-foreground">D</span>
             </div>
@@ -90,7 +102,7 @@ export function Sidebar() {
           </Link>
         )}
         {collapsed && (
-          <Link href="/dashboard" className="flex items-center justify-center w-full">
+          <Link to="/dashboard" className="flex items-center justify-center w-full">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="text-sm font-bold text-primary-foreground">D</span>
             </div>
@@ -109,7 +121,7 @@ export function Sidebar() {
           return (
             <Link
               key={item.href}
-              href={item.href}
+              to={item.href}
               className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-accent text-accent-foreground"
@@ -122,19 +134,53 @@ export function Sidebar() {
             </Link>
           );
         })}
+        {user?.role === "super_admin" && (
+          <>
+            <div className="px-3 py-1">
+              <div className="h-px bg-border" />
+            </div>
+            {superAdminItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              }`}
+              title={collapsed ? item.label : undefined}
+            >
+              <item.icon />
+              {!collapsed && <span>{item.label}</span>}
+            </Link>
+          );
+        })}
+          </>
+        )}
       </nav>
       <div className="border-t border-border p-4">
-        {!collapsed && (
+        {!collapsed && user ? (
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">
-              AD
+              {user.name?.charAt(0)?.toUpperCase() || "A"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">管理员</p>
-              <p className="text-xs text-muted-foreground truncate">admin@deployx.io</p>
+              <p className="text-sm font-medium text-foreground truncate">{user.name || "管理员"}</p>
+              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </div>
+            <button
+              onClick={logout}
+              className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              title="退出登录"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+            </button>
           </div>
-        )}
+        ) : !collapsed ? null : null}
       </div>
     </aside>
   );

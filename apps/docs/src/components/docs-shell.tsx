@@ -1,8 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 
 const navSections = [
   {
@@ -40,7 +37,7 @@ const navSections = [
 ];
 
 export function DocsShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   const toggleTheme = () => {
@@ -69,7 +66,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         }}
       >
         <Link
-          href="/"
+          to="/"
           style={{
             fontWeight: 700,
             fontSize: "1.125rem",
@@ -226,7 +223,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  to={item.href}
                   style={{
                     display: "block",
                     padding: "0.375rem 1.25rem",

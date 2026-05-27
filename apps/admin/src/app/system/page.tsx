@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3006/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3006/api";
 
 interface SystemData {
   services: { name: string; status: string; uptime: string; lastCheck: string; details: string }[];

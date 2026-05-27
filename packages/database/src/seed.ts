@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -52,9 +53,23 @@ async function main() {
 
   console.log('Created owner membership');
 
+  // Create default admin account
+  const passwordHash = await bcrypt.hash('admin123', 12);
+  await prisma.admin.upsert({
+    where: { email: 'admin@deployx.io' },
+    update: {},
+    create: {
+      email: 'admin@deployx.io',
+      name: 'Super Admin',
+      passwordHash,
+      role: 'super_admin',
+    },
+  });
+
+  console.log('Created default admin: admin@deployx.io / admin123');
+
   // Seed CasbinRule with default RBAC policies for all 5 roles
   const rbacPolicies = [
-    // Owner - full access to everything
     { ptype: 'p', v0: 'OWNER', v1: 'organization', v2: '*' },
     { ptype: 'p', v0: 'OWNER', v1: 'project', v2: '*' },
     { ptype: 'p', v0: 'OWNER', v1: 'deployment', v2: '*' },
@@ -65,8 +80,6 @@ async function main() {
     { ptype: 'p', v0: 'OWNER', v1: 'api_token', v2: '*' },
     { ptype: 'p', v0: 'OWNER', v1: 'audit_log', v2: '*' },
     { ptype: 'p', v0: 'OWNER', v1: 'subscription', v2: '*' },
-
-    // Admin - full access except billing and member management
     { ptype: 'p', v0: 'ADMIN', v1: 'organization', v2: 'read' },
     { ptype: 'p', v0: 'ADMIN', v1: 'organization', v2: 'update' },
     { ptype: 'p', v0: 'ADMIN', v1: 'project', v2: '*' },
@@ -78,8 +91,6 @@ async function main() {
     { ptype: 'p', v0: 'ADMIN', v1: 'api_token', v2: '*' },
     { ptype: 'p', v0: 'ADMIN', v1: 'audit_log', v2: 'read' },
     { ptype: 'p', v0: 'ADMIN', v1: 'subscription', v2: 'read' },
-
-    // Developer - project and deployment access
     { ptype: 'p', v0: 'DEVELOPER', v1: 'organization', v2: 'read' },
     { ptype: 'p', v0: 'DEVELOPER', v1: 'project', v2: 'read' },
     { ptype: 'p', v0: 'DEVELOPER', v1: 'project', v2: 'create' },
@@ -89,8 +100,6 @@ async function main() {
     { ptype: 'p', v0: 'DEVELOPER', v1: 'env_variable', v2: 'read' },
     { ptype: 'p', v0: 'DEVELOPER', v1: 'member', v2: 'read' },
     { ptype: 'p', v0: 'DEVELOPER', v1: 'audit_log', v2: 'read' },
-
-    // Viewer - read-only access
     { ptype: 'p', v0: 'VIEWER', v1: 'organization', v2: 'read' },
     { ptype: 'p', v0: 'VIEWER', v1: 'project', v2: 'read' },
     { ptype: 'p', v0: 'VIEWER', v1: 'deployment', v2: 'read' },
@@ -98,29 +107,20 @@ async function main() {
     { ptype: 'p', v0: 'VIEWER', v1: 'env_variable', v2: 'read' },
     { ptype: 'p', v0: 'VIEWER', v1: 'member', v2: 'read' },
     { ptype: 'p', v0: 'VIEWER', v1: 'audit_log', v2: 'read' },
-
-    // Billing Manager - billing and subscription access
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'organization', v2: 'read' },
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'billing', v2: '*' },
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'subscription', v2: '*' },
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'invoice', v2: '*' },
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'usage_record', v2: 'read' },
     { ptype: 'p', v0: 'BILLING_MANAGER', v1: 'member', v2: 'read' },
-
-    // Role hierarchy: OWNER inherits ADMIN, ADMIN inherits DEVELOPER, etc.
     { ptype: 'g', v0: 'OWNER', v1: 'ADMIN' },
     { ptype: 'g', v0: 'ADMIN', v1: 'DEVELOPER' },
     { ptype: 'g', v0: 'DEVELOPER', v1: 'VIEWER' },
   ];
 
+  await prisma.casbinRule.deleteMany();
   for (const policy of rbacPolicies) {
-    await prisma.casbinRule.upsert({
-      where: {
-        id: 0, // Placeholder, will be handled by create
-      },
-      update: {},
-      create: policy,
-    });
+    await prisma.casbinRule.create({ data: policy });
   }
 
   console.log(`Seeded ${rbacPolicies.length} RBAC policies into CasbinRule`);

@@ -1,7 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { prisma } from '@deployx/database';
+import { NotFoundError } from '../../common/errors';
 
-@Injectable()
 export class UsersService {
   async getMe(userId: string) {
     const user = await prisma.user.findUnique({
@@ -22,7 +21,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw NotFoundError('User not found');
     }
 
     const { mfaSecret, ...userWithoutSecret } = user;
@@ -39,7 +38,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw NotFoundError('User not found');
     }
 
     const updateData: { name?: string; avatarUrl?: string } = {};

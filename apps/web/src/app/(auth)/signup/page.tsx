@@ -13,7 +13,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 const signupSchema = z.object({
   name: z.string().min(2, "姓名至少需要2个字符"),
@@ -29,7 +29,7 @@ type SignupForm = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
   const {
     register,
@@ -46,7 +46,7 @@ export default function SignupPage() {
   const onSubmit = async (data: SignupForm) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${apiBaseUrl}/api/auth/register`, {
+      const res = await fetch(`${apiBaseUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -78,7 +78,7 @@ export default function SignupPage() {
   };
 
   const handleOAuth = (provider: string) => {
-    window.location.href = `${apiBaseUrl}/api/auth/oauth/${provider.toLowerCase()}`;
+    window.location.href = `${apiBaseUrl}/auth/oauth/${provider.toLowerCase()}`;
   };
 
   return (
@@ -199,9 +199,9 @@ export default function SignupPage() {
                 />
                 <label htmlFor="terms" className="text-sm text-muted-foreground leading-none pt-0.5">
                   我同意{" "}
-                  <Link href="#" className="text-foreground hover:underline">服务条款</Link>{" "}
-                  和{" "}
-                  <Link href="#" className="text-foreground hover:underline">隐私政策</Link>
+                   <Link to="#" className="text-foreground hover:underline">服务条款</Link>{" "}
+                   和{" "}
+                   <Link to="#" className="text-foreground hover:underline">隐私政策</Link>
                 </label>
               </div>
               {errors.terms && (
@@ -225,7 +225,7 @@ export default function SignupPage() {
           <CardFooter className="justify-center pb-6">
             <p className="text-sm text-muted-foreground">
               已有账号？{" "}
-              <Link href="/login" className="text-foreground font-medium hover:underline">
+               <Link to="/login" className="text-foreground font-medium hover:underline">
                 登录
               </Link>
             </p>

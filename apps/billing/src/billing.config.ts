@@ -1,6 +1,4 @@
-import { registerAs } from '@nestjs/config';
-
-export default registerAs('billing', () => ({
+export default {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
   planPriceIds: {
@@ -8,4 +6,4 @@ export default registerAs('billing', () => ({
     PRO: process.env.STRIPE_PRO_PRICE_ID || 'price_pro',
     ENTERPRISE: process.env.STRIPE_ENTERPRISE_PRICE_ID || 'price_enterprise',
   },
-}));
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Plus, Eye, EyeOff, Trash2, Edit, Lock, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,9 +24,7 @@ type EnvTab = "production" | "preview" | "development";
 type EnvVar = { id: string; key: string; value: string; target: string };
 
 export default function EnvPage() {
-  const params = useParams<{ org: string; id: string }>();
-  const orgSlug = params.org;
-  const projectId = params.id;
+  const { org: orgSlug = '', id: projectId = '' } = useParams<{ org: string; id: string }>();
   const queryClient = useQueryClient();
 
   const [activeTab, setActiveTab] = useState<EnvTab>("production");

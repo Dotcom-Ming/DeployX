@@ -1,10 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { encrypt, decrypt } from '@deployx/shared';
 
-@Injectable()
 export class EnvVariablesService {
-  private readonly logger = new Logger(EnvVariablesService.name);
 
   private get encryptionKey(): string {
     return process.env.ENCRYPTION_KEY || 'default-encryption-key-change-me';
@@ -47,7 +44,7 @@ export class EnvVariablesService {
       },
     });
 
-    this.logger.log(`Env var ${key} created for project ${projectId}`);
+    console.log(`Env var ${key} created for project ${projectId}`);
 
     return {
       id: variable.id,
@@ -87,7 +84,7 @@ export class EnvVariablesService {
       data: updateData,
     });
 
-    this.logger.log(`Env var ${updated.key} updated`);
+    console.log(`Env var ${updated.key} updated`);
 
     return {
       id: updated.id,
@@ -112,7 +109,7 @@ export class EnvVariablesService {
       where: { id: varId },
     });
 
-    this.logger.log(`Env var ${variable.key} deleted`);
+    console.log(`Env var ${variable.key} deleted`);
 
     return { deleted: true };
   }

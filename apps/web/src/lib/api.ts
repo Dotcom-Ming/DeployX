@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
 function getHeaders(): Record<string, string> {
   const headers: Record<string, string> = {

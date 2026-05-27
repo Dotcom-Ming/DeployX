@@ -1,8 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
-
-@Injectable()
 export class GitLabService {
-  private readonly logger = new Logger(GitLabService.name);
 
   verifyToken(token: string, secret: string): boolean {
     if (!token || !secret) {
@@ -34,7 +30,7 @@ export class GitLabService {
         repo: body.project?.path_with_namespace || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse GitLab push event', error);
+      console.error('Failed to parse GitLab push event', error);
       return null;
     }
   }
@@ -60,7 +56,7 @@ export class GitLabService {
         action: mr.action || body.object_kind || '',
       };
     } catch (error) {
-      this.logger.error('Failed to parse GitLab merge request event', error);
+      console.error('Failed to parse GitLab merge request event', error);
       return null;
     }
   }

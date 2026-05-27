@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.prisma = exports.PrismaClient = void 0;
 var client_1 = require("@prisma/client");
 Object.defineProperty(exports, "PrismaClient", { enumerable: true, get: function () { return client_1.PrismaClient; } });
-var client_2 = require("./client");
-Object.defineProperty(exports, "prisma", { enumerable: true, get: function () { return client_2.prisma; } });
+var client_js_1 = require("./client.js");
+Object.defineProperty(exports, "prisma", { enumerable: true, get: function () { return client_js_1.prisma; } });
 __exportStar(require("@prisma/client"), exports);
 //# sourceMappingURL=index.js.map

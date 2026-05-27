@@ -24,6 +24,6 @@ COPY --from=build --chown=node:node /app/apps/gateway/dist ./dist
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/apps/gateway/package.json ./
 ENV NODE_ENV=production
-EXPOSE 3000
+EXPOSE 3004
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "dist/main.js"]

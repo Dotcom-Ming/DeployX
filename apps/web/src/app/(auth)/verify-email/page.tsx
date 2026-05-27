@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 function VerifyEmailForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3006";
+  const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3006";
 
   useEffect(() => {
     if (!token) {
@@ -25,7 +25,7 @@ function VerifyEmailForm() {
 
     const verify = async () => {
       try {
-        const res = await fetch(`${apiBaseUrl}/api/auth/verify-email?token=${token}`);
+        const res = await fetch(`${apiBaseUrl}/auth/verify-email?token=${token}`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -78,15 +78,15 @@ function VerifyEmailForm() {
         </CardHeader>
         <CardFooter className="flex justify-center gap-3">
           {status === "success" ? (
-            <Link href="/login">
+            <Link to="/login">
               <Button>登录</Button>
             </Link>
           ) : (
             <>
-              <Link href="/login">
+              <Link to="/login">
                 <Button variant="outline">返回登录</Button>
               </Link>
-              <Link href="/signup">
+              <Link to="/signup">
                 <Button>创建新账号</Button>
               </Link>
             </>

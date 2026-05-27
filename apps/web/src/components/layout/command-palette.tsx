@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import {
   Dialog,
@@ -31,7 +31,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
   const { setTheme } = useTheme();
   const { currentOrg } = useAuth();
 
@@ -64,7 +64,7 @@ export function CommandPalette() {
             <CommandGroup heading="页面">
               <CommandItem
                 onSelect={() =>
-                  runCommand(() => router.push(`/${orgSlug}/dashboard`))
+                  runCommand(() => navigate(`/${orgSlug}/dashboard`))
                 }
               >
                 <LayoutDashboard className="mr-2" />
@@ -72,7 +72,7 @@ export function CommandPalette() {
               </CommandItem>
               <CommandItem
                 onSelect={() =>
-                  runCommand(() => router.push(`/${orgSlug}/projects`))
+                  runCommand(() => navigate(`/${orgSlug}/projects`))
                 }
               >
                 <FolderKanban className="mr-2" />
@@ -80,7 +80,7 @@ export function CommandPalette() {
               </CommandItem>
               <CommandItem
                 onSelect={() =>
-                  runCommand(() => router.push(`/${orgSlug}/projects/new`))
+                  runCommand(() => navigate(`/${orgSlug}/projects/new`))
                 }
               >
                 <Plus className="mr-2" />
@@ -90,7 +90,7 @@ export function CommandPalette() {
             <CommandGroup heading="操作">
               <CommandItem
                 onSelect={() =>
-                  runCommand(() => router.push(`/${orgSlug}/projects/new`))
+                  runCommand(() => navigate(`/${orgSlug}/projects/new`))
                 }
               >
                 <Rocket className="mr-2" />

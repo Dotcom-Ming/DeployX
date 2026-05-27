@@ -1,5 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
-
 export interface TraefikIngressRoute {
   apiVersion: string;
   kind: string;
@@ -24,9 +22,7 @@ export interface TraefikIngressRoute {
   };
 }
 
-@Injectable()
 export class TraefikProvider {
-  private readonly logger = new Logger(TraefikProvider.name);
 
   generateIngressRoute(
     domain: string,

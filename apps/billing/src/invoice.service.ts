@@ -1,10 +1,7 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import Stripe from 'stripe';
 
-@Injectable()
 export class InvoiceService {
-  private readonly logger = new Logger(InvoiceService.name);
   private readonly prisma = new PrismaClient();
   private readonly stripe: Stripe;
 
@@ -30,14 +27,14 @@ export class InvoiceService {
     });
 
     if (!invoice) {
-      throw new NotFoundException(`Invoice ${invoiceId} not found`);
+      throw new Error(`Invoice ${invoiceId} not found`);
     }
 
     return invoice;
   }
 
   async syncInvoiceFromStripe(stripeInvoiceId: string): Promise<any> {
-    this.logger.log(`Syncing invoice ${stripeInvoiceId} from Stripe`);
+    console.log(`Syncing invoice ${stripeInvoiceId} from Stripe`);
 
     const stripeInvoice = await this.stripe.invoices.retrieve(stripeInvoiceId);
 
@@ -77,7 +74,7 @@ export class InvoiceService {
       }
     }
 
-    throw new NotFoundException(
+    throw new Error(
       `Cannot determine organization for Stripe invoice ${stripeInvoiceId}`,
     );
   }

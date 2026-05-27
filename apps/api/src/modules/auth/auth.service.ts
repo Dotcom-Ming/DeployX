@@ -1,11 +1,3 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-  BadRequestException,
-  NotFoundException,
-  Logger,
-} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { prisma } from '@deployx/database';
 import { TokenService } from './token.service';
@@ -15,16 +7,12 @@ import { registerSchema, RegisterDto } from './dto/register.dto';
 import { loginSchema, LoginDto } from './dto/login.dto';
 import { mfaVerifySchema, MfaVerifyDto } from './dto/mfa.dto';
 import * as crypto from 'crypto';
+import { ConflictError, UnauthorizedError, BadRequestError, NotFoundError } from '../../common/errors';
 
-@Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
-
-  constructor(
-    private readonly tokenService: TokenService,
-    private readonly mfaService: MfaService,
-    private readonly emailService: EmailService,
-  ) {}
+  private tokenService = new TokenService();
+  private mfaService = new MfaService();
+  private emailService = new EmailService();
 
   async register(dto: RegisterDto) {
     const validated = registerSchema.parse(dto);
@@ -34,7 +22,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email already registered');
+      throw ConflictError('Email already registered');
     }
 
     const passwordHash = await bcrypt.hash(validated.password, 12);
@@ -87,7 +75,7 @@ export class AuthService {
     const verificationUrl = `${clientUrl}/auth/verify-email?token=${verificationToken}`;
 
     await this.emailService.sendVerificationEmail(user.email, verificationUrl).catch((err) => {
-      this.logger.warn(`Failed to send verification email: ${err.message}`);
+      console.warn(`Failed to send verification email: ${err.message}`);
     });
 
     const { passwordHash: _, ...userWithoutPassword } = user;
@@ -124,13 +112,13 @@ export class AuthService {
     });
 
     if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw UnauthorizedError('Invalid email or password');
     }
 
     const passwordValid = await bcrypt.compare(validated.password, user.passwordHash);
 
     if (!passwordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw UnauthorizedError('Invalid email or password');
     }
 
     if (user.mfaSecret) {
@@ -182,7 +170,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw UnauthorizedError('User not found');
     }
 
     const membership = user.memberships[0];
@@ -205,7 +193,7 @@ export class AuthService {
     const email = emails?.find((e) => e.primary)?.value || emails?.[0]?.value;
 
     if (!email) {
-      throw new BadRequestException('No email found in OAuth profile');
+      throw BadRequestError('No email found in OAuth profile');
     }
 
     let user = await prisma.user.findUnique({
@@ -281,11 +269,11 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw NotFoundError('User not found');
     }
 
     if (user.mfaSecret) {
-      throw new BadRequestException('MFA is already enabled');
+      throw BadRequestError('MFA is already enabled');
     }
 
     const { secret, otpauthUrl } = this.mfaService.generateSecret(userId);
@@ -310,17 +298,17 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw NotFoundError('User not found');
     }
 
     if (!user.mfaSecret) {
-      throw new BadRequestException('MFA is not enabled');
+      throw BadRequestError('MFA is not enabled');
     }
 
     const isValid = this.mfaService.verifyCode(user.mfaSecret, validated.code);
 
     if (!isValid) {
-      throw new UnauthorizedException('Invalid MFA code');
+      throw UnauthorizedError('Invalid MFA code');
     }
 
     const membership = await prisma.membership.findFirst({
@@ -369,11 +357,11 @@ export class AuthService {
     });
 
     if (!verificationToken) {
-      throw new BadRequestException('Invalid verification token');
+      throw BadRequestError('Invalid verification token');
     }
 
     if (verificationToken.expiresAt < new Date()) {
-      throw new BadRequestException('Verification token has expired');
+      throw BadRequestError('Verification token has expired');
     }
 
     if (verificationToken.user.emailVerified) {
@@ -398,11 +386,11 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw NotFoundError('User not found');
     }
 
     if (user.emailVerified) {
-      throw new BadRequestException('Email is already verified');
+      throw BadRequestError('Email is already verified');
     }
 
     await prisma.emailVerificationToken.deleteMany({
@@ -460,7 +448,7 @@ export class AuthService {
     const resetUrl = `${clientUrl}/auth/reset-password?token=${resetToken}`;
 
     await this.emailService.sendPasswordResetEmail(user.email, resetUrl).catch((err) => {
-      this.logger.warn(`Failed to send password reset email: ${err.message}`);
+      console.warn(`Failed to send password reset email: ${err.message}`);
     });
 
     return { message: 'If an account exists with this email, a reset link has been sent' };
@@ -473,15 +461,15 @@ export class AuthService {
     });
 
     if (!resetToken) {
-      throw new BadRequestException('Invalid reset token');
+      throw BadRequestError('Invalid reset token');
     }
 
     if (resetToken.expiresAt < new Date()) {
-      throw new BadRequestException('Reset token has expired');
+      throw BadRequestError('Reset token has expired');
     }
 
     if (resetToken.used) {
-      throw new BadRequestException('Reset token has already been used');
+      throw BadRequestError('Reset token has already been used');
     }
 
     const passwordHash = await bcrypt.hash(newPassword, 12);

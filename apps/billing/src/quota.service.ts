@@ -1,4 +1,3 @@
-import { Injectable, Logger, ForbiddenException } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { PLAN_LIMITS, Plan, UsageMetric } from '@deployx/shared';
 
@@ -11,9 +10,7 @@ export interface QuotaUsage {
   };
 }
 
-@Injectable()
 export class QuotaService {
-  private readonly logger = new Logger(QuotaService.name);
   private readonly prisma = new PrismaClient();
 
   async checkQuota(
@@ -105,10 +102,10 @@ export class QuotaService {
     const { allowed, used, limit } = await this.checkQuota(orgId, metric);
 
     if (!allowed) {
-      this.logger.warn(
+      console.warn(
         `Quota exceeded for org ${orgId}, metric ${metric}: ${used}/${limit}`,
       );
-      throw new ForbiddenException(
+      throw new Error(
         `Quota exceeded for ${metric}. Used ${used} of ${limit}. Please upgrade your plan.`,
       );
     }

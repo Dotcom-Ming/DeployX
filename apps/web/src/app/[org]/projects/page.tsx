@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,7 +124,7 @@ function getDomain(project: Project): string {
     if (verified) return verified.domain;
     return project.domains[0].domain;
   }
-  const defaultDomain = process.env.NEXT_PUBLIC_DEFAULT_DOMAIN || "deployx.app";
+  const defaultDomain = import.meta.env.VITE_DEFAULT_DOMAIN || "deployx.app";
   return `${project.slug}.${defaultDomain}`;
 }
 
@@ -133,8 +133,7 @@ function getDomain(project: Project): string {
 // ---------------------------------------------------------------------------
 
 export default function ProjectsPage() {
-  const params = useParams<{ org: string }>();
-  const org = params.org;
+  const { org = '' } = useParams<{ org: string }>();
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -303,7 +302,7 @@ export default function ProjectsPage() {
 
         {/* Add New */}
         <Button size="sm" asChild>
-          <Link href={`/${org}/projects/new`}>
+          <Link to={`/${org}/projects/new`}>
             <Plus className="h-4 w-4 mr-1" />
             添加项目
           </Link>
@@ -355,7 +354,7 @@ export default function ProjectsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 min-w-0">
                       <Link
-                        href={`/${org}/projects/${project.id}`}
+                        to={`/${org}/projects/${project.id}`}
                         className="font-semibold truncate hover:underline"
                       >
                         {project.name}
@@ -378,7 +377,7 @@ export default function ProjectsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/${org}/projects/${project.id}/settings`}>
+                          <Link to={`/${org}/projects/${project.id}/settings`}>
                             <Settings className="h-4 w-4 mr-2" />
                             设置
                           </Link>
@@ -452,7 +451,7 @@ export default function ProjectsPage() {
                   <TableRow key={project.id}>
                     <TableCell>
                       <Link
-                        href={`/${org}/projects/${project.id}`}
+                        to={`/${org}/projects/${project.id}`}
                         className="font-medium hover:underline"
                       >
                         {project.name}

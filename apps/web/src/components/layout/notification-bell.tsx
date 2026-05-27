@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

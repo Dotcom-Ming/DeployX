@@ -1,4 +1,3 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
 import { PrismaClient } from '@deployx/database';
 import { DeploymentsService } from '../deployments/deployments.service';
 import { GitHubService } from './github.service';
@@ -7,17 +6,12 @@ import { BitbucketService } from './bitbucket.service';
 import { DeploymentType } from '@deployx/shared';
 import * as crypto from 'crypto';
 
-@Injectable()
 export class GitWebhooksService {
-  private readonly logger = new Logger(GitWebhooksService.name);
-
-  constructor(
-    @Inject('PRISMA_CLIENT') private readonly prisma: PrismaClient,
-    private readonly deploymentsService: DeploymentsService,
-    private readonly githubService: GitHubService,
-    private readonly gitlabService: GitLabService,
-    private readonly bitbucketService: BitbucketService,
-  ) {}
+  private prisma = new PrismaClient();
+  private deploymentsService = new DeploymentsService();
+  private githubService = new GitHubService();
+  private gitlabService = new GitLabService();
+  private bitbucketService = new BitbucketService();
 
   private generatePreviewDomain(projectSlug: string, branch: string, prNumber: number): string {
     const defaultDomain = process.env.DEFAULT_DOMAIN || 'deployx.app';
@@ -39,11 +33,11 @@ export class GitWebhooksService {
 
     const rawBody = typeof body === 'string' ? body : JSON.stringify(body);
     if (!this.githubService.verifySignature(rawBody, signature, secret)) {
-      this.logger.warn('GitHub webhook signature verification failed');
+      console.warn('GitHub webhook signature verification failed');
       throw new Error('Invalid signature');
     }
 
-    this.logger.log(`GitHub webhook received: ${event}`);
+    console.log(`GitHub webhook received: ${event}`);
 
     if (event === 'push') {
       const parsed = this.githubService.parsePushEvent(body);
@@ -65,12 +59,12 @@ export class GitWebhooksService {
     const secret = process.env.GITLAB_WEBHOOK_SECRET || '';
 
     if (!this.gitlabService.verifyToken(token, secret)) {
-      this.logger.warn('GitLab webhook token verification failed');
+      console.warn('GitLab webhook token verification failed');
       throw new Error('Invalid token');
     }
 
     const eventKind = body.object_kind || '';
-    this.logger.log(`GitLab webhook received: ${eventKind}`);
+    console.log(`GitLab webhook received: ${eventKind}`);
 
     if (eventKind === 'push') {
       const parsed = this.gitlabService.parsePushEvent(body);
@@ -88,7 +82,7 @@ export class GitWebhooksService {
   }
 
   async handleBitbucketWebhook(headers: Record<string, string>, body: any) {
-    this.logger.log('Bitbucket webhook received');
+    console.log('Bitbucket webhook received');
 
     const eventKey = headers['x-event-key'] || body.eventKey || '';
 
@@ -113,7 +107,7 @@ export class GitWebhooksService {
     commitSha: string,
     commitMessage: string,
   ) {
-    this.logger.log(`Processing push event: ${repo} branch=${branch} sha=${commitSha}`);
+    console.log(`Processing push event: ${repo} branch=${branch} sha=${commitSha}`);
 
     const project = await this.prisma.project.findFirst({ where: { gitRepo: repo } });
     if (project) {
@@ -125,7 +119,7 @@ export class GitWebhooksService {
         type: DeploymentType.PRODUCTION,
       });
 
-      this.logger.log(`Production deployment triggered for project ${project.id}, URL: ${deploymentUrl}`);
+      console.log(`Production deployment triggered for project ${project.id}, URL: ${deploymentUrl}`);
     }
   }
 
@@ -136,7 +130,7 @@ export class GitWebhooksService {
     commitSha: string,
     provider: 'github' | 'gitlab' | 'bitbucket' = 'github',
   ) {
-    this.logger.log(`Processing PR event: ${repo} pr=#${prNumber} branch=${branch} sha=${commitSha}`);
+    console.log(`Processing PR event: ${repo} pr=#${prNumber} branch=${branch} sha=${commitSha}`);
 
     const project = await this.prisma.project.findFirst({ where: { gitRepo: repo } });
     if (project) {
@@ -148,14 +142,12 @@ export class GitWebhooksService {
         type: DeploymentType.PREVIEW,
       });
 
-      this.logger.log(`Preview deployment triggered for project ${project.id}, URL: ${previewUrl}`);
+      console.log(`Preview deployment triggered for project ${project.id}, URL: ${previewUrl}`);
 
-      // Create PR comment with deployment URL
       if (provider === 'github') {
         await this.githubService.createPRComment(repo, prNumber, previewUrl, 'building');
       }
 
-      // Update deployment with preview URL
       if (deployment?.id) {
         await this.prisma.deployment.update({
           where: { id: deployment.id },

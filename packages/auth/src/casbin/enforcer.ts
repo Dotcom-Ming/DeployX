@@ -1,5 +1,12 @@
-import casbin from "casbin";
+import * as casbin from "casbin";
 import path from "path";
+
+export interface AbacContext {
+  resourceOwnerId?: string;
+  resourceProjectId?: string;
+  resourceOrgId?: string;
+  resourceVisibility?: string;
+}
 
 export class CasbinEnforcer {
   private enforcer: casbin.Enforcer | null = null;
@@ -20,6 +27,39 @@ export class CasbinEnforcer {
       throw new Error("CasbinEnforcer not initialized. Call init() first.");
     }
     return this.enforcer.enforce(sub, dom, obj, act);
+  }
+
+  async enforceWithAbac(
+    sub: string,
+    dom: string,
+    obj: string,
+    act: string,
+    context: AbacContext = {},
+  ): Promise<boolean> {
+    if (!this.enforcer) {
+      throw new Error("CasbinEnforcer not initialized. Call init() first.");
+    }
+
+    const rbacAllowed = await this.enforcer.enforce(sub, dom, obj, act);
+    if (!rbacAllowed) return false;
+
+    if (sub === "owner" || sub === "admin") return true;
+
+    if (context.resourceOwnerId && context.resourceOwnerId !== sub) {
+      if (sub === "viewer" || sub === "billing_manager") {
+        const readActions = ["view", "read", "list"];
+        const action = act.toLowerCase();
+        if (!readActions.includes(action)) {
+          return false;
+        }
+      }
+    }
+
+    if (context.resourceOrgId && context.resourceOrgId !== dom) {
+      return false;
+    }
+
+    return true;
   }
 
   async addPolicy(sub: string, dom: string, obj: string, act: string): Promise<boolean> {

@@ -1,5 +1,3 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { prisma } from '@deployx/database';
 import { SslStatus } from '@deployx/shared';
 import * as dns from 'dns';
@@ -7,15 +5,28 @@ import { promisify } from 'util';
 
 const resolveCname = promisify(dns.resolveCname);
 
-@Injectable()
 export class DomainVerificationService {
-  private readonly logger = new Logger(DomainVerificationService.name);
   private readonly expectedCname = process.env.GATEWAY_CNAME || 'gateway.deployx.app';
-  private readonly verificationTimeout = 24 * 60 * 60 * 1000; // 24 hours
+  private readonly verificationTimeout = 24 * 60 * 60 * 1000;
+  private cronTimers: ReturnType<typeof setInterval>[] = [];
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  startCron() {
+    this.cronTimers.push(setInterval(() => this.verifyPendingDomains(), 10 * 60 * 1000));
+    this.cronTimers.push(setInterval(() => this.renewExpiringCertificates(), 60 * 60 * 1000));
+
+    this.verifyPendingDomains();
+    this.renewExpiringCertificates();
+
+    console.log('Domain verification cron jobs started');
+  }
+
+  stopCron() {
+    this.cronTimers.forEach(timer => clearInterval(timer));
+    this.cronTimers = [];
+  }
+
   async verifyPendingDomains() {
-    this.logger.log('Checking pending domain verifications...');
+    console.log('Checking pending domain verifications...');
 
     const pendingDomains = await prisma.domain.findMany({
       where: {
@@ -40,12 +51,12 @@ export class DomainVerificationService {
             },
           });
 
-          this.logger.log(`Domain ${domain.domain} verified successfully`);
+          console.log(`Domain ${domain.domain} verified successfully`);
 
           await this.triggerCertificateIssuance(domain);
         }
       } catch (error: any) {
-        this.logger.error(`Failed to verify domain ${domain.domain}: ${error.message}`);
+        console.error(`Failed to verify domain ${domain.domain}: ${error.message}`);
       }
     }
   }
@@ -64,7 +75,7 @@ export class DomainVerificationService {
       );
 
       if (!isMatch) {
-        this.logger.warn(
+        console.warn(
           `CNAME mismatch for ${domainName}. Expected: ${expectedTarget}, Got: ${records.join(', ')}`,
         );
       }
@@ -84,7 +95,7 @@ export class DomainVerificationService {
         projectId,
       );
 
-      this.logger.log(`Generated cert-manager resource for ${domain.domain}`);
+      console.log(`Generated cert-manager resource for ${domain.domain}`);
 
       await this.applyCertManagerResource(certResource);
 
@@ -93,9 +104,9 @@ export class DomainVerificationService {
         data: { sslStatus: SslStatus.PENDING },
       });
 
-      this.logger.log(`Certificate issuance triggered for ${domain.domain}`);
+      console.log(`Certificate issuance triggered for ${domain.domain}`);
     } catch (error: any) {
-      this.logger.error(
+      console.error(
         `Failed to trigger certificate issuance for ${domain.domain}: ${error.message}`,
       );
 
@@ -148,9 +159,9 @@ spec:
 
       fs.unlinkSync(tempFile);
 
-      this.logger.log('cert-manager resource applied successfully');
+      console.log('cert-manager resource applied successfully');
     } catch (error: any) {
-      this.logger.error(`Failed to apply cert-manager resource: ${error.message}`);
+      console.error(`Failed to apply cert-manager resource: ${error.message}`);
       throw error;
     }
   }
@@ -176,9 +187,8 @@ spec:
     }
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
   async renewExpiringCertificates() {
-    this.logger.log('Checking for certificates nearing expiration...');
+    console.log('Checking for certificates nearing expiration...');
 
     const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
@@ -197,7 +207,7 @@ spec:
           await this.triggerCertificateIssuance(domain);
         }
       } catch (error: any) {
-        this.logger.error(
+        console.error(
           `Failed to check certificate status for ${domain.domain}: ${error.message}`,
         );
       }
@@ -222,9 +232,9 @@ spec:
         { encoding: 'utf-8', stdio: 'pipe' },
       );
 
-      this.logger.log(`Removed certificate for ${domain.domain}`);
+      console.log(`Removed certificate for ${domain.domain}`);
     } catch (error: any) {
-      this.logger.error(
+      console.error(
         `Failed to remove certificate for ${domain.domain}: ${error.message}`,
       );
     }
@@ -233,6 +243,6 @@ spec:
       where: { id: domainId },
     });
 
-    this.logger.log(`Domain ${domain.domain} removed`);
+    console.log(`Domain ${domain.domain} removed`);
   }
 }

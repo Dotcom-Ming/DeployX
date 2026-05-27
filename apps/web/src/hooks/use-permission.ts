@@ -55,6 +55,18 @@ const rolePermissionMap: Record<MembershipRole, string[]> = {
   ],
 };
 
+function resolvePermission(
+  userPermissions: string[],
+  permission: string
+): boolean {
+  if (userPermissions.includes("*")) return true;
+
+  const [resource] = permission.split(":");
+  if (userPermissions.includes(`${resource}:*`)) return true;
+
+  return userPermissions.includes(permission);
+}
+
 export function usePermission(permission: string): boolean {
   const { user } = useAuth();
 
@@ -63,13 +75,29 @@ export function usePermission(permission: string): boolean {
   const role = user.role as MembershipRole;
   const permissions = rolePermissionMap[role] ?? [];
 
-  // Check for wildcard
-  if (permissions.includes("*")) return true;
+  return resolvePermission(permissions, permission);
+}
 
-  // Check for resource-level wildcard (e.g., "project:*")
-  const [resource] = permission.split(":");
-  if (permissions.includes(`${resource}:*`)) return true;
+export function usePermissions(permissions: string[]) {
+  const { user } = useAuth();
 
-  // Check for exact match
-  return permissions.includes(permission);
+  if (!user) {
+    return {
+      hasAll: false,
+      hasAny: false,
+      getPermissions: () => [] as string[],
+    };
+  }
+
+  const role = user.role as MembershipRole;
+  const userPermissions = rolePermissionMap[role] ?? [];
+
+  const hasAll = permissions.every((p) => resolvePermission(userPermissions, p));
+  const hasAny = permissions.some((p) => resolvePermission(userPermissions, p));
+
+  return {
+    hasAll,
+    hasAny,
+    getPermissions: () => userPermissions,
+  };
 }

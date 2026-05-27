@@ -20,7 +20,7 @@ export function useDeploymentLogs(deploymentId: string | null): UseDeploymentLog
     if (!deploymentId) return;
 
     const wsUrl =
-      process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8080";
+      import.meta.env.VITE_WS_URL ?? "ws://localhost:8080";
     const ws = new WebSocket(
       `${wsUrl}/deployments/${deploymentId}/logs`
     );

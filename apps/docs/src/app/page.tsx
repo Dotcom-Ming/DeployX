@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 const quickLinks = [
   {
@@ -52,7 +52,7 @@ export default function DocsHome() {
           }}
         >
           <Link
-            href="/getting-started"
+            to="/getting-started"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -73,7 +73,7 @@ export default function DocsHome() {
             </svg>
           </Link>
           <Link
-            href="/api-reference"
+            to="/api-reference"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -103,7 +103,7 @@ export default function DocsHome() {
         {quickLinks.map((link) => (
           <Link
             key={link.href}
-            href={link.href}
+            to={link.href}
             style={{
               display: "block",
               padding: "1.5rem",

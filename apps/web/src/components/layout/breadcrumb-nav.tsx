@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useLocation } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export function BreadcrumbNav() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const segments = pathname.split("/").filter(Boolean);
 
   if (segments.length === 0) {

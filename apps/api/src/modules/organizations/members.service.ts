@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { prisma } from '@deployx/database';
 import { MembershipRole } from '@deployx/shared';
+import { NotFoundError, ConflictError } from '../../common/errors';
 
-@Injectable()
 export class MembersService {
   async getMembers(orgId: string) {
     const memberships = await prisma.membership.findMany({
@@ -36,7 +35,7 @@ export class MembersService {
     });
 
     if (!user) {
-      throw new NotFoundException(`No user found with email: ${email}`);
+      throw NotFoundError(`No user found with email: ${email}`);
     }
 
     const existingMembership = await prisma.membership.findUnique({
@@ -49,7 +48,7 @@ export class MembersService {
     });
 
     if (existingMembership) {
-      throw new ConflictException('User is already a member of this organization');
+      throw ConflictError('User is already a member of this organization');
     }
 
     const membership = await prisma.membership.create({
@@ -87,7 +86,7 @@ export class MembersService {
     });
 
     if (!membership) {
-      throw new NotFoundException('Membership not found');
+      throw NotFoundError('Membership not found');
     }
 
     const updated = await prisma.membership.update({
@@ -121,7 +120,7 @@ export class MembersService {
     });
 
     if (!membership) {
-      throw new NotFoundException('Membership not found');
+      throw NotFoundError('Membership not found');
     }
 
     const org = await prisma.organization.findUnique({
@@ -129,7 +128,7 @@ export class MembersService {
     });
 
     if (org && membership.userId === org.ownerId) {
-      throw new ConflictException('Cannot remove the organization owner');
+      throw ConflictError('Cannot remove the organization owner');
     }
 
     await prisma.membership.delete({

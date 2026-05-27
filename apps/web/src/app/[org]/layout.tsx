@@ -5,15 +5,14 @@ import { TabNavigation } from "@/components/layout/tab-navigation";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { Shortcuts } from "@/components/layout/shortcuts";
 import { AuthProvider } from "@/components/providers/auth-provider";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 
 export default function OrgLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const params = useParams<{ org: string }>();
-  const org = params.org;
+  const { org = '' } = useParams<{ org: string }>();
 
   return (
     <AuthProvider>

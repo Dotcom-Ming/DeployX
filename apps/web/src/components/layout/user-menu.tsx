@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/providers/auth-provider";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import {
 
 export function UserMenu() {
   const { user, logout } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const initials = user?.name
     ? user.name
@@ -51,15 +51,15 @@ export function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/account")}>
+        <DropdownMenuItem onClick={() => navigate("/account")}>
           <User className="mr-2 h-4 w-4" />
           账号
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}>
+        <DropdownMenuItem onClick={() => navigate("/settings")}>
           <Settings className="mr-2 h-4 w-4" />
           设置
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/tokens")}>
+        <DropdownMenuItem onClick={() => navigate("/tokens")}>
           <KeyRound className="mr-2 h-4 w-4" />
           API 令牌
         </DropdownMenuItem>
